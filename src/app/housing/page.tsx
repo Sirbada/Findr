@@ -245,9 +245,9 @@ export default function HousingPage() {
                   </span>
                 )}
                 {selectedType !== 'all' && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">
+                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">
                     🏠 {content.propertyTypes.find(t => t.value === selectedType)?.label}
-                    <button onClick={() => setSelectedType('all')} className="hover:text-purple-900">
+                    <button onClick={() => setSelectedType('all')} className="hover:text-blue-900">
                       <X className="w-3 h-3" />
                     </button>
                   </span>

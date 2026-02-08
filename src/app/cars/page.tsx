@@ -119,12 +119,12 @@ export default function CarsPage() {
       <Header />
       
       {/* Hero Search - Sixt/Mobile.de Style */}
-      <div className="bg-gradient-to-r from-orange-500 to-orange-700 text-white py-12">
+      <div className="bg-blue-600 text-white py-12">
         <div className="max-w-6xl mx-auto px-4">
           <h1 className="text-3xl md:text-4xl font-bold mb-2">
             {content.heroTitle}
           </h1>
-          <p className="text-orange-100 mb-8">
+          <p className="text-blue-100 mb-8">
             {content.heroSubtitle}
           </p>
           
@@ -134,7 +134,7 @@ export default function CarsPage() {
               onClick={() => setRentalType('rent')}
               className={`px-6 py-2 rounded-full font-medium transition-colors ${
                 rentalType === 'rent'
-                  ? 'bg-white text-orange-600'
+                  ? 'bg-white text-blue-600'
                   : 'bg-white/20 text-white hover:bg-white/30'
               }`}
             >
@@ -144,7 +144,7 @@ export default function CarsPage() {
               onClick={() => setRentalType('buy')}
               className={`px-6 py-2 rounded-full font-medium transition-colors ${
                 rentalType === 'buy'
-                  ? 'bg-white text-orange-600'
+                  ? 'bg-white text-blue-600'
                   : 'bg-white/20 text-white hover:bg-white/30'
               }`}
             >
@@ -163,7 +163,7 @@ export default function CarsPage() {
                 <select
                   value={selectedCity}
                   onChange={(e) => setSelectedCity(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   {content.cities.map(city => (
                     <option key={city.value} value={city.value}>{city.label}</option>
@@ -180,7 +180,7 @@ export default function CarsPage() {
                     </label>
                     <input
                       type="date"
-                      className="w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
                   
@@ -191,7 +191,7 @@ export default function CarsPage() {
                     </label>
                     <input
                       type="date"
-                      className="w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
                 </>
@@ -207,7 +207,7 @@ export default function CarsPage() {
                     <select
                       value={selectedBrand}
                       onChange={(e) => setSelectedBrand(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
                       {content.carBrands.map(brand => (
                         <option key={brand.value} value={brand.value}>{brand.label}</option>
@@ -223,7 +223,7 @@ export default function CarsPage() {
                     <select
                       value={selectedFuel}
                       onChange={(e) => setSelectedFuel(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
                       {content.fuelTypes.map(fuel => (
                         <option key={fuel.value} value={fuel.value}>{fuel.label}</option>
@@ -235,7 +235,7 @@ export default function CarsPage() {
               
               {/* Search Button */}
               <div className="flex items-end">
-                <Button size="lg" className="w-full md:w-auto bg-orange-600 hover:bg-orange-700">
+                <Button size="lg" className="w-full md:w-auto bg-blue-600 hover:bg-blue-700">
                   <Search className="w-5 h-5 mr-2" />
                   {content.search}
                 </Button>
@@ -252,7 +252,7 @@ export default function CarsPage() {
             {content.categories.map((cat, idx) => (
               <button
                 key={idx}
-                className="flex-shrink-0 flex items-center gap-3 px-4 py-2 bg-gray-50 hover:bg-orange-50 rounded-lg transition-colors"
+                className="flex-shrink-0 flex items-center gap-3 px-4 py-2 bg-gray-50 hover:bg-blue-50 rounded-lg transition-colors"
               >
                 <span className="text-2xl">{cat.icon}</span>
                 <div className="text-left">
@@ -343,7 +343,7 @@ export default function CarsPage() {
                       {/* Brand & Model */}
                       <div className="flex items-center gap-2 mb-1">
                         {listing.car_brand && (
-                          <span className="text-xs font-medium text-orange-600 bg-orange-50 px-2 py-0.5 rounded">
+                          <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
                             {listing.car_brand}
                           </span>
                         )}
@@ -352,7 +352,7 @@ export default function CarsPage() {
                         )}
                       </div>
                       
-                      <h3 className="font-semibold text-gray-900 group-hover:text-orange-600 transition-colors mb-2">
+                      <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors mb-2">
                         {listing.title}
                       </h3>
                       
@@ -388,20 +388,20 @@ export default function CarsPage() {
                       <div className="flex items-center justify-between pt-3 border-t">
                         {listing.price_per_day ? (
                           <div>
-                            <span className="text-2xl font-bold text-orange-600">
+                            <span className="text-2xl font-bold text-blue-600">
                               {formatPrice(listing.price_per_day)}
                             </span>
                             <span className="text-gray-500 text-sm"> XAF{t.listings.perDay}</span>
                           </div>
                         ) : (
                           <div>
-                            <span className="text-2xl font-bold text-orange-600">
+                            <span className="text-2xl font-bold text-blue-600">
                               {formatPrice(listing.price)}
                             </span>
                             <span className="text-gray-500 text-sm"> XAF</span>
                           </div>
                         )}
-                        <Button size="sm" variant="outline" className="text-orange-600 border-orange-600 hover:bg-orange-50">
+                        <Button size="sm" variant="outline" className="text-blue-600 border-blue-600 hover:bg-blue-50">
                           {content.view}
                         </Button>
                       </div>

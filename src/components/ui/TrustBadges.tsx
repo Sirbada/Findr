@@ -30,7 +30,7 @@ export function VerifiedBadge({ type, size = 'md' }: VerifiedBadgeProps) {
   }
   
   return (
-    <span className="inline-flex items-center gap-1 text-emerald-600" title={labels[type]}>
+    <span className="inline-flex items-center gap-1 text-blue-600" title={labels[type]}>
       <CheckCircle className={sizes[size]} />
       <span className="text-xs font-medium">{labels[type]}</span>
     </span>
@@ -47,7 +47,7 @@ export function SocialProof({ viewingNow, recentlyContacted, totalViews }: Socia
   return (
     <div className="flex flex-wrap gap-3 text-sm">
       {viewingNow && viewingNow > 0 && (
-        <span className="inline-flex items-center gap-1 text-orange-600 bg-orange-50 px-2 py-1 rounded-full">
+        <span className="inline-flex items-center gap-1 text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
           <Users className="w-3 h-3" />
           <span className="font-medium">{viewingNow} personnes regardent</span>
         </span>
@@ -85,14 +85,14 @@ export function ScarcityAlert({ type, message }: ScarcityAlertProps) {
     },
     popular: {
       icon: TrendingUp,
-      bg: 'bg-orange-50',
-      text: 'text-orange-700',
+      bg: 'bg-blue-50',
+      text: 'text-blue-700',
       defaultMessage: 'Très demandé - 5 personnes ont contacté le vendeur aujourd\'hui',
     },
     new: {
       icon: Star,
-      bg: 'bg-emerald-50',
-      text: 'text-emerald-700',
+      bg: 'bg-blue-50',
+      text: 'text-blue-700',
       defaultMessage: 'Nouveau sur Findr',
     },
   }
@@ -115,7 +115,7 @@ interface TrustGuaranteeProps {
 export function TrustGuarantee({ variant = 'default' }: TrustGuaranteeProps) {
   if (variant === 'compact') {
     return (
-      <div className="flex items-center gap-2 text-emerald-600 text-sm">
+      <div className="flex items-center gap-2 text-blue-600 text-sm">
         <Shield className="w-4 h-4" />
         <span>Protection Findr</span>
       </div>
@@ -123,12 +123,12 @@ export function TrustGuarantee({ variant = 'default' }: TrustGuaranteeProps) {
   }
   
   return (
-    <div className="border border-emerald-200 bg-emerald-50 rounded-lg p-4">
-      <div className="flex items-center gap-2 text-emerald-700 mb-2">
+    <div className="border border-blue-200 bg-blue-50 rounded-lg p-4">
+      <div className="flex items-center gap-2 text-blue-700 mb-2">
         <Shield className="w-5 h-5" />
         <span className="font-semibold">Protection Findr</span>
       </div>
-      <ul className="text-sm text-emerald-600 space-y-1">
+      <ul className="text-sm text-blue-600 space-y-1">
         <li>✓ Vendeurs vérifiés</li>
         <li>✓ Paiement sécurisé</li>
         <li>✓ Support 24/7</li>
@@ -210,7 +210,7 @@ export function PriceHighlight({
       )}
       
       <div className="flex items-baseline gap-2">
-        <span className="text-2xl font-bold text-emerald-600">
+        <span className="text-2xl font-bold text-blue-600">
           {formatPrice(currentPrice)} {currency}
         </span>
         {period && (
@@ -219,7 +219,7 @@ export function PriceHighlight({
       </div>
       
       {isGoodDeal && (
-        <span className="inline-flex items-center gap-1 text-emerald-600 text-sm font-medium">
+        <span className="inline-flex items-center gap-1 text-blue-600 text-sm font-medium">
           <CheckCircle className="w-4 h-4" />
           Bon prix pour ce quartier
         </span>

@@ -22,25 +22,25 @@ const benefits = [
     icon: TrendingUp,
     title: 'Visibilité maximale',
     description: 'Vos annonces vues par des milliers de chercheurs chaque jour.',
-    color: 'from-blue-500 to-cyan-500',
+    color: 'bg-blue-600',
   },
   {
     icon: Shield,
     title: 'Profil vérifié',
     description: 'Badge de confiance qui rassure vos clients potentiels.',
-    color: 'from-emerald-500 to-teal-500',
+    color: 'bg-blue-600',
   },
   {
     icon: BarChart3,
     title: 'Analytics complets',
     description: 'Suivez vos performances en temps réel.',
-    color: 'from-purple-500 to-pink-500',
+    color: 'bg-blue-600',
   },
   {
     icon: Zap,
     title: 'Outils rapides',
     description: 'Publiez et gérez vos annonces en quelques clics.',
-    color: 'from-orange-500 to-red-500',
+    color: 'bg-blue-600',
   },
 ]
 
@@ -81,7 +81,7 @@ export default function ProPage() {
         {/* Animated gradient background */}
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900"></div>
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
           <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
         </div>
         
@@ -91,7 +91,7 @@ export default function ProPage() {
             <div>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
                 Développez votre
-                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">
+                <span className="block text-blue-400">
                   activité immobilière
                 </span>
               </h1>
@@ -116,15 +116,15 @@ export default function ProPage() {
               {/* Trust indicators */}
               <div className="flex items-center gap-8 mt-12 pt-8 border-t border-gray-700">
                 <div>
-                  <div className="text-3xl font-bold text-emerald-400">500+</div>
+                  <div className="text-3xl font-bold text-blue-400">500+</div>
                   <div className="text-sm text-gray-400">Professionnels</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold text-emerald-400">2 000+</div>
+                  <div className="text-3xl font-bold text-blue-400">2 000+</div>
                   <div className="text-sm text-gray-400">Annonces actives</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold text-emerald-400">50k+</div>
+                  <div className="text-3xl font-bold text-blue-400">50k+</div>
                   <div className="text-sm text-gray-400">Visiteurs/mois</div>
                 </div>
               </div>
@@ -142,21 +142,21 @@ export default function ProPage() {
                 <div className="space-y-4">
                   <div className="h-8 bg-gray-700 rounded w-1/2"></div>
                   <div className="grid grid-cols-3 gap-3">
-                    <div className="h-20 bg-emerald-500/20 rounded-lg border border-emerald-500/30 flex items-center justify-center">
-                      <span className="text-emerald-400 font-bold">12</span>
+                    <div className="h-20 bg-blue-500/20 rounded-lg border border-blue-500/30 flex items-center justify-center">
+                      <span className="text-blue-400 font-bold">12</span>
                     </div>
                     <div className="h-20 bg-blue-500/20 rounded-lg border border-blue-500/30 flex items-center justify-center">
                       <span className="text-blue-400 font-bold">847</span>
                     </div>
-                    <div className="h-20 bg-purple-500/20 rounded-lg border border-purple-500/30 flex items-center justify-center">
-                      <span className="text-purple-400 font-bold">23</span>
+                    <div className="h-20 bg-blue-500/20 rounded-lg border border-blue-500/30 flex items-center justify-center">
+                      <span className="text-blue-400 font-bold">23</span>
                     </div>
                   </div>
                   <div className="h-32 bg-gray-700/50 rounded-lg"></div>
                 </div>
               </div>
               {/* Floating elements */}
-              <div className="absolute -top-4 -right-4 bg-emerald-500 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg">
+              <div className="absolute -top-4 -right-4 bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg">
                 ✓ Vérifié
               </div>
             </div>
@@ -180,10 +180,10 @@ export default function ProPage() {
             {steps.map((step, index) => (
               <div key={step.number} className="relative">
                 {index < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-12 left-full w-full h-0.5 bg-gradient-to-r from-emerald-300 to-transparent -translate-x-1/2"></div>
+                  <div className="hidden md:block absolute top-12 left-full w-full h-0.5 bg-gradient-to-r from-blue-300 to-transparent -translate-x-1/2"></div>
                 )}
                 <div className="text-center">
-                  <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white text-3xl font-bold mb-6 shadow-lg shadow-emerald-500/30">
+                  <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-white text-3xl font-bold mb-6 shadow-lg shadow-blue-500/30">
                     {step.number}
                   </div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">{step.title}</h3>
@@ -213,10 +213,10 @@ export default function ProPage() {
                 key={benefit.title}
                 className="group relative bg-white rounded-2xl p-6 border border-gray-100 hover:border-transparent hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden"
               >
-                {/* Hover gradient */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${benefit.color} opacity-0 group-hover:opacity-5 transition-opacity`}></div>
+                {/* Hover background */}
+                <div className="absolute inset-0 bg-blue-50 opacity-0 group-hover:opacity-50 transition-opacity"></div>
                 
-                <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${benefit.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                <div className={`w-14 h-14 rounded-xl ${benefit.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-sm`}>
                   <benefit.icon className="w-7 h-7 text-white" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -247,14 +247,14 @@ export default function ProPage() {
             {testimonials.map((testimonial) => (
               <div 
                 key={testimonial.name}
-                className="bg-gray-800 rounded-2xl p-6 border border-gray-700 hover:border-emerald-500/50 transition-colors"
+                className="bg-gray-800 rounded-2xl p-6 border border-gray-700 hover:border-blue-500/50 transition-colors"
               >
-                <Quote className="w-10 h-10 text-emerald-500/30 mb-4" />
+                <Quote className="w-10 h-10 text-blue-500/30 mb-4" />
                 <p className="text-gray-300 mb-6 leading-relaxed">
                   "{testimonial.content}"
                 </p>
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold">
                     {testimonial.name.charAt(0)}
                   </div>
                   <div>
@@ -276,7 +276,7 @@ export default function ProPage() {
       {/* CTA Section */}
       <section className="py-20">
         <div className="max-w-4xl mx-auto px-4">
-          <div className="relative bg-gradient-to-br from-emerald-600 to-teal-700 rounded-3xl p-12 text-center text-white overflow-hidden">
+          <div className="relative bg-gradient-to-br from-blue-600 to-blue-700 rounded-3xl p-12 text-center text-white overflow-hidden">
             {/* Decorative elements */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-black/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
@@ -285,17 +285,17 @@ export default function ProPage() {
               <h2 className="text-3xl sm:text-4xl font-bold mb-4">
                 Prêt à développer votre activité ?
               </h2>
-              <p className="text-emerald-100 text-lg mb-8 max-w-2xl mx-auto">
+              <p className="text-blue-100 text-lg mb-8 max-w-2xl mx-auto">
                 Créez votre compte Pro gratuitement et commencez à recevoir 
                 des demandes de clients qualifiés dès aujourd'hui.
               </p>
               <Link href="/signup?pro=true">
-                <Button size="lg" className="bg-white text-emerald-700 hover:bg-emerald-50">
+                <Button size="lg" className="bg-white text-blue-700 hover:bg-blue-50">
                   Créer mon compte Pro — C'est gratuit
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </Link>
-              <p className="text-emerald-200 text-sm mt-4">
+              <p className="text-blue-200 text-sm mt-4">
                 Aucune carte bancaire requise
               </p>
             </div>

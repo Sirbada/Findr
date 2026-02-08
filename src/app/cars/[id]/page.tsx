@@ -128,7 +128,7 @@ export default function CarDetailPage() {
         {/* Breadcrumb */}
         <div className="bg-white border-b">
           <div className="max-w-6xl mx-auto px-4 py-3">
-            <Link href="/cars" className="flex items-center text-sm text-gray-600 hover:text-orange-600">
+            <Link href="/cars" className="flex items-center text-sm text-gray-600 hover:text-blue-600">
               <ArrowLeft className="w-4 h-4 mr-2" />
               {t.listings.backToResults}
             </Link>
@@ -190,7 +190,7 @@ export default function CarDetailPage() {
                         key={idx}
                         onClick={() => setCurrentImage(idx)}
                         className={`flex-shrink-0 w-20 h-14 rounded-lg overflow-hidden border-2 ${
-                          currentImage === idx ? 'border-orange-500' : 'border-transparent'
+                          currentImage === idx ? 'border-blue-500' : 'border-transparent'
                         }`}
                       >
                         <img src={img} alt="" className="w-full h-full object-cover" />
@@ -206,7 +206,7 @@ export default function CarDetailPage() {
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       {listing.car_brand && (
-                        <span className="bg-orange-100 text-orange-700 text-sm font-medium px-3 py-1 rounded-full">
+                        <span className="bg-blue-100 text-blue-700 text-sm font-medium px-3 py-1 rounded-full">
                           {listing.car_brand}
                         </span>
                       )}
@@ -236,22 +236,22 @@ export default function CarDetailPage() {
                 {/* Specifications */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="bg-gray-50 rounded-xl p-4 text-center">
-                    <Fuel className="w-6 h-6 mx-auto mb-2 text-orange-600" />
+                    <Fuel className="w-6 h-6 mx-auto mb-2 text-blue-600" />
                     <p className="text-sm text-gray-500">{content.fuel}</p>
                     <p className="font-semibold">{getFuelType(listing.fuel_type)}</p>
                   </div>
                   <div className="bg-gray-50 rounded-xl p-4 text-center">
-                    <Settings2 className="w-6 h-6 mx-auto mb-2 text-orange-600" />
+                    <Settings2 className="w-6 h-6 mx-auto mb-2 text-blue-600" />
                     <p className="text-sm text-gray-500">{content.transmission}</p>
                     <p className="font-semibold">{getTransmission(listing.transmission)}</p>
                   </div>
                   <div className="bg-gray-50 rounded-xl p-4 text-center">
-                    <Users className="w-6 h-6 mx-auto mb-2 text-orange-600" />
+                    <Users className="w-6 h-6 mx-auto mb-2 text-blue-600" />
                     <p className="text-sm text-gray-500">{content.seats}</p>
                     <p className="font-semibold">{listing.seats || 5}</p>
                   </div>
                   <div className="bg-gray-50 rounded-xl p-4 text-center">
-                    <Calendar className="w-6 h-6 mx-auto mb-2 text-orange-600" />
+                    <Calendar className="w-6 h-6 mx-auto mb-2 text-blue-600" />
                     <p className="text-sm text-gray-500">{content.year}</p>
                     <p className="font-semibold">{listing.car_year || 'N/A'}</p>
                   </div>
@@ -285,7 +285,7 @@ export default function CarDetailPage() {
               <div className="sticky top-24 bg-white rounded-xl shadow-lg p-6">
                 {/* Price */}
                 <div className="text-center mb-6 pb-6 border-b">
-                  <span className="text-4xl font-bold text-orange-600">
+                  <span className="text-4xl font-bold text-blue-600">
                     {formatPrice(pricePerDay)}
                   </span>
                   <span className="text-gray-500"> XAF{content.perDay}</span>
@@ -316,10 +316,10 @@ export default function CarDetailPage() {
                 </div>
 
                 {/* Total */}
-                <div className="bg-orange-50 rounded-lg p-4 mb-6">
+                <div className="bg-blue-50 rounded-lg p-4 mb-6">
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">{content.total}</span>
-                    <span className="text-2xl font-bold text-orange-600">
+                    <span className="text-2xl font-bold text-blue-600">
                       {formatPrice(totalPrice)} XAF
                     </span>
                   </div>
@@ -327,7 +327,7 @@ export default function CarDetailPage() {
 
                 {/* CTA Buttons - WhatsApp Priority */}
                 <div className="space-y-3">
-                  <Button className="w-full bg-orange-600 hover:bg-orange-700" size="lg">
+                  <Button className="w-full bg-blue-600 hover:bg-blue-700" size="lg">
                     {content.bookNow}
                   </Button>
                   <WhatsAppButton
@@ -342,8 +342,8 @@ export default function CarDetailPage() {
                 {/* Owner Info */}
                 <div className="mt-6 pt-6 border-t">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
-                      <Car className="w-6 h-6 text-orange-600" />
+                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                      <Car className="w-6 h-6 text-blue-600" />
                     </div>
                     <div>
                       <p className="font-medium text-gray-900">{content.proOwner}</p>

@@ -13,7 +13,7 @@ export function Footer() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-xl">F</span>
               </div>
               <span className="text-xl font-bold text-white">Findr</span>
@@ -56,7 +56,7 @@ export function Footer() {
             <ul className="space-y-2 text-sm">
               <li>
                 <Link href="/pro" className="hover:text-white flex items-center gap-1">
-                  <span className="text-emerald-400">→</span>
+                  <span className="text-blue-400">→</span>
                   {lang === 'fr' ? 'Findr Pro' : 'Findr Pro'}
                 </Link>
               </li>

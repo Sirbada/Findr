@@ -103,7 +103,7 @@ export default function AdminPage() {
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold">F</span>
               </div>
               <span className="font-bold text-gray-900">Findr</span>
@@ -118,8 +118,8 @@ export default function AdminPage() {
               <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
             </button>
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
-                <span className="text-emerald-600 font-semibold text-sm">A</span>
+              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                <span className="text-blue-600 font-semibold text-sm">A</span>
               </div>
               <span className="text-sm font-medium">Admin</span>
             </div>
@@ -144,7 +144,7 @@ export default function AdminPage() {
                 onClick={() => setActiveTab(item.id as Tab)}
                 className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-colors ${
                   activeTab === item.id
-                    ? 'bg-emerald-50 text-emerald-600'
+                    ? 'bg-blue-50 text-blue-600'
                     : 'text-gray-600 hover:bg-gray-50'
                 }`}
               >
@@ -196,8 +196,8 @@ export default function AdminPage() {
 
                 <div className="bg-white rounded-xl p-6 shadow-sm">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
-                      <Home className="w-6 h-6 text-emerald-600" />
+                    <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                      <Home className="w-6 h-6 text-blue-600" />
                     </div>
                     <span className="text-green-600 text-sm font-medium flex items-center">
                       <TrendingUp className="w-4 h-4 mr-1" />
@@ -311,17 +311,17 @@ export default function AdminPage() {
                         placeholder="Rechercher une annonce..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                        className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
                   </div>
-                  <select className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500">
+                  <select className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
                     <option>Tous les statuts</option>
                     <option>En attente</option>
                     <option>Approuvé</option>
                     <option>Rejeté</option>
                   </select>
-                  <select className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500">
+                  <select className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
                     <option>Toutes les catégories</option>
                     <option>Immobilier</option>
                     <option>Véhicules</option>
@@ -353,7 +353,7 @@ export default function AdminPage() {
                         </td>
                         <td className="px-6 py-4">
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            listing.category === 'housing' ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-700'
+                            listing.category === 'housing' ? 'bg-blue-100 text-blue-700' : 'bg-blue-100 text-blue-700'
                           }`}>
                             {listing.category === 'housing' ? 'Immobilier' : 'Véhicule'}
                           </span>
@@ -404,7 +404,7 @@ export default function AdminPage() {
                     <input
                       type="text"
                       placeholder="Rechercher un utilisateur..."
-                      className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500"
+                      className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                   <select className="px-4 py-2 border rounded-lg">
@@ -434,8 +434,8 @@ export default function AdminPage() {
                       <tr key={user.id} className="hover:bg-gray-50">
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
-                              <span className="text-emerald-600 font-semibold">{user.name.charAt(0)}</span>
+                            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                              <span className="text-blue-600 font-semibold">{user.name.charAt(0)}</span>
                             </div>
                             <span className="font-medium text-gray-900">{user.name}</span>
                           </div>
@@ -529,15 +529,15 @@ export default function AdminPage() {
                   <div className="space-y-4">
                     <label className="flex items-center justify-between">
                       <span className="text-gray-700">Validation automatique des annonces</span>
-                      <input type="checkbox" className="w-5 h-5 text-emerald-600 rounded" />
+                      <input type="checkbox" className="w-5 h-5 text-blue-600 rounded" />
                     </label>
                     <label className="flex items-center justify-between">
                       <span className="text-gray-700">Filtrage des mots interdits</span>
-                      <input type="checkbox" className="w-5 h-5 text-emerald-600 rounded" defaultChecked />
+                      <input type="checkbox" className="w-5 h-5 text-blue-600 rounded" defaultChecked />
                     </label>
                     <label className="flex items-center justify-between">
                       <span className="text-gray-700">Détection automatique de spam</span>
-                      <input type="checkbox" className="w-5 h-5 text-emerald-600 rounded" defaultChecked />
+                      <input type="checkbox" className="w-5 h-5 text-blue-600 rounded" defaultChecked />
                     </label>
                   </div>
                 </div>
@@ -547,11 +547,11 @@ export default function AdminPage() {
                   <div className="space-y-4">
                     <label className="flex items-center justify-between">
                       <span className="text-gray-700">Nouvelle annonce en attente</span>
-                      <input type="checkbox" className="w-5 h-5 text-emerald-600 rounded" defaultChecked />
+                      <input type="checkbox" className="w-5 h-5 text-blue-600 rounded" defaultChecked />
                     </label>
                     <label className="flex items-center justify-between">
                       <span className="text-gray-700">Nouveau signalement</span>
-                      <input type="checkbox" className="w-5 h-5 text-emerald-600 rounded" defaultChecked />
+                      <input type="checkbox" className="w-5 h-5 text-blue-600 rounded" defaultChecked />
                     </label>
                   </div>
                 </div>
@@ -632,7 +632,7 @@ function RevenueTab({ transactions }: { transactions: Transaction[] }) {
           <select 
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value as any)}
-            className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500"
+            className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
           >
             <option value="all">Toutes catégories</option>
             <option value="housing">Immobilier</option>
@@ -647,18 +647,18 @@ function RevenueTab({ transactions }: { transactions: Transaction[] }) {
 
       {/* Revenue Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl p-6 text-white">
+        <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white">
           <div className="flex items-center justify-between mb-4">
             <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
               <DollarSign className="w-6 h-6" />
             </div>
-            <span className={`flex items-center text-sm font-medium ${Number(revenueChange) >= 0 ? 'text-emerald-100' : 'text-red-200'}`}>
+            <span className={`flex items-center text-sm font-medium ${Number(revenueChange) >= 0 ? 'text-blue-100' : 'text-red-200'}`}>
               {Number(revenueChange) >= 0 ? <ArrowUpRight className="w-4 h-4 mr-1" /> : <ArrowDownRight className="w-4 h-4 mr-1" />}
               {revenueChange}%
             </span>
           </div>
           <p className="text-3xl font-bold">{formatCurrency(totalRevenue)}</p>
-          <p className="text-emerald-100 text-sm mt-1">Revenus totaux (commissions)</p>
+          <p className="text-blue-100 text-sm mt-1">Revenus totaux (commissions)</p>
         </div>
 
         <div className="bg-white rounded-xl p-6 shadow-sm">
@@ -673,8 +673,8 @@ function RevenueTab({ transactions }: { transactions: Transaction[] }) {
 
         <div className="bg-white rounded-xl p-6 shadow-sm">
           <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-              <PieChart className="w-6 h-6 text-purple-600" />
+            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+              <PieChart className="w-6 h-6 text-blue-600" />
             </div>
           </div>
           <p className="text-3xl font-bold text-gray-900">{completedTransactions.length}</p>
@@ -683,8 +683,8 @@ function RevenueTab({ transactions }: { transactions: Transaction[] }) {
 
         <div className="bg-white rounded-xl p-6 shadow-sm">
           <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-              <TrendingUp className="w-6 h-6 text-orange-600" />
+            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+              <TrendingUp className="w-6 h-6 text-blue-600" />
             </div>
           </div>
           <p className="text-3xl font-bold text-gray-900">{formatCurrency(Math.round(avgCommission))}</p>
@@ -705,7 +705,7 @@ function RevenueTab({ transactions }: { transactions: Transaction[] }) {
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
                     <div 
-                      className="h-4 bg-emerald-500 rounded"
+                      className="h-4 bg-blue-500 rounded"
                       style={{ width: `${(month.totalRevenue / Math.max(...monthlyRevenue.map(m => m.totalRevenue))) * 100}%`, minWidth: '8px' }}
                     />
                     <span className="text-sm font-medium">{formatCurrency(month.totalRevenue)}</span>
@@ -741,14 +741,14 @@ function RevenueTab({ transactions }: { transactions: Transaction[] }) {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-orange-500 rounded-full" />
+                    <div className="w-3 h-3 bg-blue-500 rounded-full" />
                     <span className="text-sm text-gray-600">Véhicules</span>
                   </div>
                   <span className="font-semibold">{formatCurrency(thisMonth.byCategory.cars.revenue)}</span>
                 </div>
                 <div className="w-full bg-gray-100 rounded-full h-2">
                   <div 
-                    className="bg-orange-500 h-2 rounded-full" 
+                    className="bg-blue-500 h-2 rounded-full" 
                     style={{ width: `${(thisMonth.byCategory.cars.revenue / thisMonth.totalRevenue) * 100}%` }}
                   />
                 </div>
@@ -758,7 +758,7 @@ function RevenueTab({ transactions }: { transactions: Transaction[] }) {
               <div className="pt-4 border-t">
                 <div className="flex items-center justify-between">
                   <span className="text-gray-600">Total ce mois</span>
-                  <span className="text-xl font-bold text-emerald-600">{formatCurrency(thisMonth.totalRevenue)}</span>
+                  <span className="text-xl font-bold text-blue-600">{formatCurrency(thisMonth.totalRevenue)}</span>
                 </div>
               </div>
             </div>
@@ -791,12 +791,12 @@ function RevenueTab({ transactions }: { transactions: Transaction[] }) {
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
                       <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                        tx.category === 'housing' ? 'bg-blue-100' : 'bg-orange-100'
+                        tx.category === 'housing' ? 'bg-blue-100' : 'bg-blue-100'
                       }`}>
                         {tx.category === 'housing' ? (
-                          <Home className={`w-4 h-4 ${tx.category === 'housing' ? 'text-blue-600' : 'text-orange-600'}`} />
+                          <Home className={`w-4 h-4 ${tx.category === 'housing' ? 'text-blue-600' : 'text-blue-600'}`} />
                         ) : (
-                          <Car className="w-4 h-4 text-orange-600" />
+                          <Car className="w-4 h-4 text-blue-600" />
                         )}
                       </div>
                       <span className="font-medium text-gray-900 text-sm">{tx.id}</span>
@@ -804,13 +804,13 @@ function RevenueTab({ transactions }: { transactions: Transaction[] }) {
                   </td>
                   <td className="px-6 py-4">
                     <span className={`px-2 py-1 rounded text-xs font-medium ${
-                      tx.transactionType === 'rental' ? 'bg-purple-100 text-purple-700' : 'bg-green-100 text-green-700'
+                      tx.transactionType === 'rental' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'
                     }`}>
                       {tx.transactionType === 'rental' ? 'Location' : 'Vente'}
                     </span>
                   </td>
                   <td className="px-6 py-4 font-medium text-gray-900">{formatCurrency(tx.amount)}</td>
-                  <td className="px-6 py-4 text-emerald-600 font-medium">{formatCurrency(tx.platformRevenue)}</td>
+                  <td className="px-6 py-4 text-blue-600 font-medium">{formatCurrency(tx.platformRevenue)}</td>
                   <td className="px-6 py-4">
                     <span className={`px-2 py-1 rounded text-xs ${
                       tx.paymentMethod === 'orange_money' ? 'bg-orange-100 text-orange-700' :
@@ -846,10 +846,10 @@ function RevenueTab({ transactions }: { transactions: Transaction[] }) {
         <h2 className="font-semibold text-gray-900 mb-4">Options Premium</h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {PREMIUM_LISTINGS.map((premium) => (
-            <div key={premium.id} className="border rounded-lg p-4 hover:border-emerald-500 transition-colors">
+            <div key={premium.id} className="border rounded-lg p-4 hover:border-blue-500 transition-colors">
               <div className="flex items-center justify-between mb-2">
                 <span className="font-medium text-gray-900">{premium.name}</span>
-                <span className="text-emerald-600 font-bold">{formatCurrency(premium.price)}</span>
+                <span className="text-blue-600 font-bold">{formatCurrency(premium.price)}</span>
               </div>
               <p className="text-sm text-gray-500">{premium.description}</p>
               <p className="text-xs text-gray-400 mt-2">Durée: {premium.duration} jours</p>

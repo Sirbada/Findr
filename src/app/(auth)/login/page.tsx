@@ -153,7 +153,7 @@ export default function LoginPage() {
               {lang === 'fr' ? 'Redirection en cours...' : 'Redirecting...'}
             </p>
             <div className="mt-4">
-              <Loader2 className="w-6 h-6 animate-spin text-emerald-500 mx-auto" />
+              <Loader2 className="w-6 h-6 animate-spin text-blue-500 mx-auto" />
             </div>
           </div>
         </div>
@@ -167,7 +167,7 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center space-x-2">
-            <div className="w-10 h-10 bg-emerald-600 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-2xl">F</span>
             </div>
             <span className="text-2xl font-bold text-gray-900">Findr</span>
@@ -191,7 +191,7 @@ export default function LoginPage() {
                   onClick={() => setMethod('phone')}
                   className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     method === 'phone' 
-                      ? 'bg-white text-emerald-600 shadow-sm' 
+                      ? 'bg-white text-blue-600 shadow-sm' 
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
@@ -202,7 +202,7 @@ export default function LoginPage() {
                   onClick={() => setMethod('email')}
                   className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     method === 'email' 
-                      ? 'bg-white text-emerald-600 shadow-sm' 
+                      ? 'bg-white text-blue-600 shadow-sm' 
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
@@ -228,7 +228,7 @@ export default function LoginPage() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="vous@exemple.com"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       required
                     />
                   </div>
@@ -241,7 +241,7 @@ export default function LoginPage() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       required
                     />
                   </div>
@@ -283,7 +283,7 @@ export default function LoginPage() {
               <span className="text-gray-600">
                 {lang === 'fr' ? 'Pas encore de compte ?' : "Don't have an account?"}
               </span>{' '}
-              <Link href="/signup" className="text-emerald-600 font-medium hover:underline">
+              <Link href="/signup" className="text-blue-600 font-medium hover:underline">
                 {lang === 'fr' ? "S'inscrire" : 'Sign up'}
               </Link>
             </div>
@@ -292,7 +292,7 @@ export default function LoginPage() {
 
         {/* Back to home */}
         <div className="mt-6 text-center">
-          <Link href="/" className="text-sm text-gray-600 hover:text-emerald-600">
+          <Link href="/" className="text-sm text-gray-600 hover:text-blue-600">
             ← {lang === 'fr' ? "Retour à l'accueil" : 'Back to home'}
           </Link>
         </div>

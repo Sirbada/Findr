@@ -86,12 +86,12 @@ export function FeaturedListings() {
                     </div>
                   )}
                   {listing.is_featured && (
-                    <span className="absolute top-3 left-3 bg-emerald-600 text-white text-xs font-medium px-2 py-1 rounded">
+                    <span className="absolute top-3 left-3 bg-blue-600 text-white text-xs font-medium px-2 py-1 rounded">
                       {t.listings.featured}
                     </span>
                   )}
                   {listing.is_verified && (
-                    <span className="absolute top-3 right-3 bg-white/90 text-emerald-600 text-xs font-medium px-2 py-1 rounded flex items-center gap-1">
+                    <span className="absolute top-3 right-3 bg-white/90 text-green-600 text-xs font-medium px-2 py-1 rounded flex items-center gap-1">
                       <CheckCircle className="w-3 h-3" />
                       {t.listings.verified}
                     </span>
@@ -105,7 +105,7 @@ export function FeaturedListings() {
 
                 {/* Content */}
                 <div className="p-4">
-                  <h3 className="font-semibold text-gray-900 mb-2 line-clamp-1 group-hover:text-emerald-600 transition-colors">
+                  <h3 className="font-semibold text-gray-900 mb-2 line-clamp-1 group-hover:text-blue-600 transition-colors">
                     {listing.title}
                   </h3>
                   <div className="flex items-center text-gray-500 text-sm mb-3">
@@ -128,7 +128,7 @@ export function FeaturedListings() {
                       )}
                     </div>
                     {/* Price */}
-                    <div className="text-emerald-600 font-bold text-right">
+                    <div className="text-blue-600 font-bold text-right">
                       {listing.category === 'housing' && listing.price > 0 && (
                         <>
                           {formatPrice(listing.price)}

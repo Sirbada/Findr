@@ -89,7 +89,7 @@ export default function NewListingPage() {
       <header className="bg-white shadow-sm">
         <div className="max-w-3xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link href="/dashboard" className="flex items-center text-gray-600 hover:text-emerald-600">
+            <Link href="/dashboard" className="flex items-center text-gray-600 hover:text-blue-600">
               <ArrowLeft className="w-5 h-5 mr-2" />
               Retour
             </Link>
@@ -105,7 +105,7 @@ export default function NewListingPage() {
         <div className="max-w-3xl mx-auto px-4">
           <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
             <div 
-              className="h-full bg-emerald-600 transition-all duration-300"
+              className="h-full bg-blue-600 transition-all duration-300"
               style={{ width: `${(step / 3) * 100}%` }}
             />
           </div>
@@ -128,8 +128,8 @@ export default function NewListingPage() {
                 onClick={() => { setCategory('housing'); setStep(2); }}
                 className={`p-6 rounded-2xl border-2 text-left transition-all ${
                   category === 'housing'
-                    ? 'border-emerald-600 bg-emerald-50'
-                    : 'border-gray-200 hover:border-emerald-300 hover:bg-gray-50'
+                    ? 'border-blue-600 bg-blue-50'
+                    : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
                 }`}
               >
                 <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
@@ -147,12 +147,12 @@ export default function NewListingPage() {
                 onClick={() => { setCategory('cars'); setStep(2); }}
                 className={`p-6 rounded-2xl border-2 text-left transition-all ${
                   category === 'cars'
-                    ? 'border-emerald-600 bg-emerald-50'
-                    : 'border-gray-200 hover:border-emerald-300 hover:bg-gray-50'
+                    ? 'border-blue-600 bg-blue-50'
+                    : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
                 }`}
               >
-                <div className="w-14 h-14 bg-orange-100 rounded-xl flex items-center justify-center mb-4">
-                  <Car className="w-7 h-7 text-orange-600" />
+                <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+                  <Car className="w-7 h-7 text-blue-600" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-1">
                   Véhicule
@@ -189,7 +189,7 @@ export default function NewListingPage() {
                     ? "Ex: Appartement 3 pièces à Bonanjo" 
                     : "Ex: Toyota Corolla 2020 à louer"
                   }
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
@@ -204,7 +204,7 @@ export default function NewListingPage() {
                       <select
                         value={formData.housingType}
                         onChange={(e) => setFormData({...formData, housingType: e.target.value})}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       >
                         <option value="">Sélectionner</option>
                         {housingTypes.map(type => (
@@ -219,7 +219,7 @@ export default function NewListingPage() {
                       <select
                         value={formData.rentalPeriod}
                         onChange={(e) => setFormData({...formData, rentalPeriod: e.target.value})}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       >
                         {rentalPeriods.map(period => (
                           <option key={period.value} value={period.value}>{period.label}</option>
@@ -238,7 +238,7 @@ export default function NewListingPage() {
                         value={formData.rooms}
                         onChange={(e) => setFormData({...formData, rooms: e.target.value})}
                         placeholder="0"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                     <div>
@@ -250,7 +250,7 @@ export default function NewListingPage() {
                         value={formData.bathrooms}
                         onChange={(e) => setFormData({...formData, bathrooms: e.target.value})}
                         placeholder="0"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                     <div>
@@ -262,7 +262,7 @@ export default function NewListingPage() {
                         value={formData.surface}
                         onChange={(e) => setFormData({...formData, surface: e.target.value})}
                         placeholder="0"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                   </div>
@@ -280,7 +280,7 @@ export default function NewListingPage() {
                           onClick={() => toggleAmenity(amenity)}
                           className={`px-3 py-1.5 rounded-full text-sm transition-colors ${
                             selectedAmenities.includes(amenity)
-                              ? 'bg-emerald-600 text-white'
+                              ? 'bg-blue-600 text-white'
                               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                           }`}
                         >
@@ -304,7 +304,7 @@ export default function NewListingPage() {
                         value={formData.carBrand}
                         onChange={(e) => setFormData({...formData, carBrand: e.target.value})}
                         placeholder="Ex: Toyota"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                     <div>
@@ -316,7 +316,7 @@ export default function NewListingPage() {
                         value={formData.carModel}
                         onChange={(e) => setFormData({...formData, carModel: e.target.value})}
                         placeholder="Ex: Corolla"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                   </div>
@@ -331,7 +331,7 @@ export default function NewListingPage() {
                         value={formData.carYear}
                         onChange={(e) => setFormData({...formData, carYear: e.target.value})}
                         placeholder="2020"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                     <div>
@@ -341,7 +341,7 @@ export default function NewListingPage() {
                       <select
                         value={formData.fuelType}
                         onChange={(e) => setFormData({...formData, fuelType: e.target.value})}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       >
                         <option value="petrol">Essence</option>
                         <option value="diesel">Diesel</option>
@@ -356,7 +356,7 @@ export default function NewListingPage() {
                       <select
                         value={formData.transmission}
                         onChange={(e) => setFormData({...formData, transmission: e.target.value})}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       >
                         <option value="manual">Manuelle</option>
                         <option value="automatic">Automatique</option>
@@ -376,7 +376,7 @@ export default function NewListingPage() {
                   onChange={(e) => setFormData({...formData, description: e.target.value})}
                   rows={4}
                   placeholder="Décrivez votre bien en détail..."
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
@@ -389,7 +389,7 @@ export default function NewListingPage() {
                   <select
                     value={formData.city}
                     onChange={(e) => setFormData({...formData, city: e.target.value})}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">Sélectionner</option>
                     {cities.map(city => (
@@ -406,7 +406,7 @@ export default function NewListingPage() {
                     value={formData.neighborhood}
                     onChange={(e) => setFormData({...formData, neighborhood: e.target.value})}
                     placeholder="Ex: Bonanjo, Bastos..."
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -425,7 +425,7 @@ export default function NewListingPage() {
                       [category === 'housing' ? 'price' : 'pricePerDay']: e.target.value
                     })}
                     placeholder="0"
-                    className="w-full px-4 py-3 pr-20 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full px-4 py-3 pr-20 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
                     XAF {category === 'cars' ? '/ jour' : formData.rentalPeriod === 'sale' ? '' : '/ mois'}
@@ -458,7 +458,7 @@ export default function NewListingPage() {
 
             <div className="bg-white rounded-2xl shadow-sm p-6">
               {/* Upload area */}
-              <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-emerald-500 transition-colors cursor-pointer">
+              <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-blue-500 transition-colors cursor-pointer">
                 <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                 <p className="text-gray-600 mb-2">
                   Glissez vos photos ici ou cliquez pour sélectionner
@@ -507,8 +507,8 @@ export default function NewListingPage() {
         {/* Step 4: Success */}
         {step === 4 && (
           <div className="text-center py-12">
-            <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <CheckCircle className="w-10 h-10 text-emerald-600" />
+            <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <CheckCircle className="w-10 h-10 text-blue-600" />
             </div>
             <h1 className="text-2xl font-bold text-gray-900 mb-2">
               Annonce publiée !

@@ -253,13 +253,13 @@ export default function ProDashboardPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white">
+      <header className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-4">
               <Link href="/" className="flex items-center space-x-2">
                 <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-                  <span className="text-emerald-600 font-bold text-xl">F</span>
+                  <span className="text-blue-600 font-bold text-xl">F</span>
                 </div>
                 <span className="text-xl font-bold">Findr</span>
               </Link>
@@ -295,8 +295,8 @@ export default function ProDashboardPage() {
                   <span className="text-sm text-gray-500">{t.plan.current}</span>
                   <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
                     agent.plan === 'basic' ? 'bg-gray-100 text-gray-700' :
-                    agent.plan === 'pro' ? 'bg-emerald-100 text-emerald-700' :
-                    'bg-purple-100 text-purple-700'
+                    agent.plan === 'pro' ? 'bg-blue-100 text-blue-700' :
+                    'bg-blue-100 text-blue-700'
                   }`}>
                     {t.plan[agent.plan]}
                   </span>
@@ -306,14 +306,14 @@ export default function ProDashboardPage() {
                 </div>
                 <div className="mt-2 h-2 bg-gray-200 rounded-full overflow-hidden">
                   <div 
-                    className="h-full bg-emerald-500 rounded-full transition-all"
+                    className="h-full bg-blue-500 rounded-full transition-all"
                     style={{ width: `${(agent.stats.listings / agent.stats.listingsLimit) * 100}%` }}
                   />
                 </div>
                 {agent.plan === 'basic' && (
                   <button
                     onClick={() => setActiveTab('upgrade')}
-                    className="mt-3 w-full text-sm text-emerald-600 font-medium hover:underline flex items-center justify-center gap-1"
+                    className="mt-3 w-full text-sm text-blue-600 font-medium hover:underline flex items-center justify-center gap-1"
                   >
                     <Zap className="w-4 h-4" />
                     {t.plan.upgrade} Pro
@@ -335,7 +335,7 @@ export default function ProDashboardPage() {
                     onClick={() => setActiveTab(item.id as typeof activeTab)}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
                       activeTab === item.id 
-                        ? 'bg-emerald-50 text-emerald-600' 
+                        ? 'bg-blue-50 text-blue-600' 
                         : 'text-gray-600 hover:bg-gray-50'
                     }`}
                   >
@@ -355,7 +355,7 @@ export default function ProDashboardPage() {
                   onClick={() => setActiveTab('upgrade')}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
                     activeTab === 'upgrade' 
-                      ? 'bg-purple-50 text-purple-600' 
+                      ? 'bg-blue-50 text-blue-600' 
                       : 'text-gray-600 hover:bg-gray-50'
                   }`}
                 >
@@ -394,7 +394,7 @@ export default function ProDashboardPage() {
                   
                   <div className="bg-white rounded-xl p-4 shadow-sm">
                     <div className="flex items-center justify-between mb-2">
-                      <Home className="w-5 h-5 text-emerald-500" />
+                      <Home className="w-5 h-5 text-blue-500" />
                     </div>
                     <p className="text-2xl font-bold text-gray-900">{agent.stats.listings}</p>
                     <p className="text-sm text-gray-500">{t.stats.totalListings}</p>
@@ -402,7 +402,7 @@ export default function ProDashboardPage() {
                   
                   <div className="bg-white rounded-xl p-4 shadow-sm">
                     <div className="flex items-center justify-between mb-2">
-                      <MessageSquare className="w-5 h-5 text-purple-500" />
+                      <MessageSquare className="w-5 h-5 text-blue-500" />
                       <span className="text-xs text-green-600 font-medium">+{agent.stats.requestsChange}%</span>
                     </div>
                     <p className="text-2xl font-bold text-gray-900">{agent.stats.requests}</p>
@@ -411,7 +411,7 @@ export default function ProDashboardPage() {
                   
                   <div className="bg-white rounded-xl p-4 shadow-sm">
                     <div className="flex items-center justify-between mb-2">
-                      <TrendingUp className="w-5 h-5 text-orange-500" />
+                      <TrendingUp className="w-5 h-5 text-blue-500" />
                     </div>
                     <p className="text-2xl font-bold text-gray-900">{agent.stats.conversionRate}%</p>
                     <p className="text-sm text-gray-500">{t.stats.conversionRate}</p>
@@ -424,7 +424,7 @@ export default function ProDashboardPage() {
                     <h2 className="font-semibold text-gray-900">{t.requests.title}</h2>
                     <button 
                       onClick={() => setActiveTab('requests')}
-                      className="text-sm text-emerald-600 hover:underline"
+                      className="text-sm text-blue-600 hover:underline"
                     >
                       Voir tout →
                     </button>
@@ -453,9 +453,9 @@ export default function ProDashboardPage() {
                 {/* Quick Actions */}
                 <div className="grid grid-cols-2 gap-4">
                   <Link href="/dashboard/new">
-                    <div className="bg-emerald-50 border-2 border-dashed border-emerald-200 rounded-xl p-6 text-center hover:border-emerald-400 transition-colors cursor-pointer">
-                      <Plus className="w-8 h-8 text-emerald-600 mx-auto mb-2" />
-                      <p className="font-medium text-emerald-700">Nouvelle annonce</p>
+                    <div className="bg-blue-50 border-2 border-dashed border-blue-200 rounded-xl p-6 text-center hover:border-blue-400 transition-colors cursor-pointer">
+                      <Plus className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+                      <p className="font-medium text-blue-700">Nouvelle annonce</p>
                     </div>
                   </Link>
                   <div 
@@ -484,9 +484,9 @@ export default function ProDashboardPage() {
 
                 {/* Bulk Upload (Pro/Business only) */}
                 {agent.plan !== 'basic' && (
-                  <div className="bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-xl p-4">
+                  <div className="bg-gradient-to-r from-blue-50 to-blue-50 border border-blue-200 rounded-xl p-4">
                     <div className="flex items-center gap-4">
-                      <Upload className="w-8 h-8 text-purple-600" />
+                      <Upload className="w-8 h-8 text-blue-600" />
                       <div className="flex-1">
                         <p className="font-semibold text-gray-900">{t.bulkUpload.title}</p>
                         <p className="text-sm text-gray-600">{t.bulkUpload.subtitle}</p>
@@ -543,7 +543,7 @@ export default function ProDashboardPage() {
                                 <button className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg">
                                   <Eye className="w-4 h-4" />
                                 </button>
-                                <button className="p-2 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg">
+                                <button className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg">
                                   <Edit className="w-4 h-4" />
                                 </button>
                                 <button className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg">
@@ -589,7 +589,7 @@ export default function ProDashboardPage() {
                         {Object.entries(t.verification.steps).map(([key, label], idx) => (
                           <div key={key} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                             <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                              idx < 2 ? 'bg-gray-200 text-gray-500' : 'bg-emerald-100 text-emerald-600'
+                              idx < 2 ? 'bg-gray-200 text-gray-500' : 'bg-blue-100 text-blue-600'
                             }`}>
                               {idx < 2 ? idx + 1 : <CheckCircle className="w-4 h-4" />}
                             </div>
@@ -623,16 +623,16 @@ export default function ProDashboardPage() {
                   {/* Basic Plan */}
                   <div className={`group relative bg-white rounded-2xl p-6 transition-all duration-300 cursor-pointer
                     ${agent.plan === 'basic' 
-                      ? 'ring-2 ring-emerald-500 shadow-lg shadow-emerald-500/20' 
-                      : 'shadow-sm hover:shadow-xl hover:shadow-emerald-500/10 hover:ring-2 hover:ring-emerald-400'
+                      ? 'ring-2 ring-blue-500 shadow-lg shadow-blue-500/20' 
+                      : 'shadow-sm hover:shadow-xl hover:shadow-blue-500/10 hover:ring-2 hover:ring-blue-400'
                     }`}
                   >
                     {/* Glow effect on hover */}
-                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-emerald-500/0 to-emerald-500/0 group-hover:from-emerald-500/5 group-hover:to-teal-500/5 transition-all duration-300"></div>
+                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-500/0 to-blue-500/0 group-hover:from-blue-500/5 group-hover:to-blue-500/5 transition-all duration-300"></div>
                     
                     <div className="relative">
                       <div className="text-center mb-6">
-                        <h3 className="text-lg font-semibold text-gray-900 group-hover:text-emerald-600 transition-colors">{t.plan.basic}</h3>
+                        <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">{t.plan.basic}</h3>
                         <div className="mt-2">
                           <span className="text-3xl font-bold text-gray-900">{t.plan.free}</span>
                         </div>
@@ -641,13 +641,13 @@ export default function ProDashboardPage() {
                       <ul className="space-y-3 mb-6">
                         {t.plan.features.basic.map((feature, idx) => (
                           <li key={idx} className="flex items-center gap-2 text-sm text-gray-600">
-                            <CheckCircle className="w-4 h-4 text-gray-400 group-hover:text-emerald-500 transition-colors" />
+                            <CheckCircle className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors" />
                             {feature}
                           </li>
                         ))}
                       </ul>
                       {agent.plan === 'basic' && (
-                        <div className="text-center text-sm text-emerald-600 font-medium py-2 bg-emerald-50 rounded-lg">
+                        <div className="text-center text-sm text-blue-600 font-medium py-2 bg-blue-50 rounded-lg">
                           ✓ {t.plan.current}
                         </div>
                       )}
@@ -657,28 +657,28 @@ export default function ProDashboardPage() {
                   {/* Pro Plan */}
                   <div className={`group relative bg-white rounded-2xl p-6 transition-all duration-300 cursor-pointer
                     ${agent.plan === 'pro' 
-                      ? 'ring-2 ring-emerald-500 shadow-lg shadow-emerald-500/20' 
-                      : 'shadow-sm hover:shadow-xl hover:shadow-emerald-500/20 hover:ring-2 hover:ring-emerald-500 hover:-translate-y-1'
+                      ? 'ring-2 ring-blue-500 shadow-lg shadow-blue-500/20' 
+                      : 'shadow-sm hover:shadow-xl hover:shadow-blue-500/20 hover:ring-2 hover:ring-blue-500 hover:-translate-y-1'
                     }`}
                   >
                     {/* Popular badge */}
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
-                      <span className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-xs font-semibold px-4 py-1 rounded-full shadow-lg">
+                      <span className="bg-gradient-to-r from-blue-600 to-blue-600 text-white text-xs font-semibold px-4 py-1 rounded-full shadow-lg">
                         ⭐ Populaire
                       </span>
                     </div>
                     
                     {/* Glow effect on hover */}
-                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-emerald-500/0 to-emerald-500/0 group-hover:from-emerald-500/10 group-hover:to-teal-500/10 transition-all duration-300"></div>
+                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-500/0 to-blue-500/0 group-hover:from-blue-500/10 group-hover:to-blue-500/10 transition-all duration-300"></div>
                     
                     <div className="relative">
                       <div className="text-center mb-6">
-                        <h3 className="text-lg font-semibold text-gray-900 flex items-center justify-center gap-2 group-hover:text-emerald-600 transition-colors">
-                          <Crown className="w-5 h-5 text-emerald-600" />
+                        <h3 className="text-lg font-semibold text-gray-900 flex items-center justify-center gap-2 group-hover:text-blue-600 transition-colors">
+                          <Crown className="w-5 h-5 text-blue-600" />
                           {t.plan.pro}
                         </h3>
                         <div className="mt-2">
-                          <span className="text-3xl font-bold text-gray-900 group-hover:text-emerald-600 transition-colors">15 000</span>
+                          <span className="text-3xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">15 000</span>
                           <span className="text-gray-500"> XAF{t.plan.perMonth}</span>
                         </div>
                         <p className="text-sm text-gray-500 mt-1">50 {t.plan.listings}</p>
@@ -686,18 +686,18 @@ export default function ProDashboardPage() {
                       <ul className="space-y-3 mb-6">
                         {t.plan.features.pro.map((feature, idx) => (
                           <li key={idx} className="flex items-center gap-2 text-sm text-gray-600">
-                            <CheckCircle className="w-4 h-4 text-emerald-500" />
+                            <CheckCircle className="w-4 h-4 text-blue-500" />
                             {feature}
                           </li>
                         ))}
                       </ul>
                       {agent.plan === 'pro' ? (
-                        <div className="text-center text-sm text-emerald-600 font-medium py-2 bg-emerald-50 rounded-lg">
+                        <div className="text-center text-sm text-blue-600 font-medium py-2 bg-blue-50 rounded-lg">
                           ✓ {t.plan.current}
                         </div>
                       ) : (
                         <Button 
-                          className="w-full group-hover:bg-emerald-700 transition-colors" 
+                          className="w-full group-hover:bg-blue-700 transition-colors" 
                           onClick={() => {
                             setSelectedPlan('pro')
                             setShowUpgradeModal(true)
@@ -712,21 +712,21 @@ export default function ProDashboardPage() {
                   {/* Business Plan */}
                   <div className={`group relative bg-white rounded-2xl p-6 transition-all duration-300 cursor-pointer
                     ${agent.plan === 'business' 
-                      ? 'ring-2 ring-purple-500 shadow-lg shadow-purple-500/20' 
-                      : 'shadow-sm hover:shadow-xl hover:shadow-purple-500/10 hover:ring-2 hover:ring-purple-400'
+                      ? 'ring-2 ring-blue-500 shadow-lg shadow-blue-500/20' 
+                      : 'shadow-sm hover:shadow-xl hover:shadow-blue-500/10 hover:ring-2 hover:ring-blue-400'
                     }`}
                   >
                     {/* Glow effect on hover */}
-                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-purple-500/0 to-purple-500/0 group-hover:from-purple-500/5 group-hover:to-pink-500/5 transition-all duration-300"></div>
+                    <div className="absolute inset-0 rounded-2xl bg-blue-500/0 hover:bg-blue-500/5 transition-all duration-300"></div>
                     
                     <div className="relative">
                       <div className="text-center mb-6">
-                        <h3 className="text-lg font-semibold text-gray-900 flex items-center justify-center gap-2 group-hover:text-purple-600 transition-colors">
-                          <Award className="w-5 h-5 text-purple-600" />
+                        <h3 className="text-lg font-semibold text-gray-900 flex items-center justify-center gap-2 group-hover:text-blue-600 transition-colors">
+                          <Award className="w-5 h-5 text-blue-600" />
                           {t.plan.business}
                         </h3>
                         <div className="mt-2">
-                          <span className="text-3xl font-bold text-gray-900 group-hover:text-purple-600 transition-colors">45 000</span>
+                          <span className="text-3xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">45 000</span>
                           <span className="text-gray-500"> XAF{t.plan.perMonth}</span>
                         </div>
                         <p className="text-sm text-gray-500 mt-1">{t.plan.unlimited}</p>
@@ -734,19 +734,19 @@ export default function ProDashboardPage() {
                       <ul className="space-y-3 mb-6">
                         {t.plan.features.business.map((feature, idx) => (
                           <li key={idx} className="flex items-center gap-2 text-sm text-gray-600">
-                            <CheckCircle className="w-4 h-4 text-purple-500" />
+                            <CheckCircle className="w-4 h-4 text-blue-500" />
                             {feature}
                           </li>
                         ))}
                       </ul>
                       {agent.plan === 'business' ? (
-                        <div className="text-center text-sm text-purple-600 font-medium py-2 bg-purple-50 rounded-lg">
+                        <div className="text-center text-sm text-blue-600 font-medium py-2 bg-blue-50 rounded-lg">
                           ✓ {t.plan.current}
                         </div>
                       ) : (
                         <Button 
                           variant="outline"
-                          className="w-full border-purple-300 text-purple-600 hover:bg-purple-50 group-hover:border-purple-500 transition-colors" 
+                          className="w-full border-blue-300 text-blue-600 hover:bg-blue-50 group-hover:border-blue-500 transition-colors" 
                           onClick={() => {
                             setSelectedPlan('business')
                             setShowUpgradeModal(true)

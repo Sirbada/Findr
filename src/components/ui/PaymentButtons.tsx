@@ -689,7 +689,7 @@ export function Checkout({ amount, orderId, description, onSuccess, onCancel }: 
           {lang === 'fr' ? 'Choisir un moyen de paiement' : 'Choose payment method'}
         </h2>
         <p className="text-gray-500 mt-1">{description}</p>
-        <p className="text-2xl font-bold text-emerald-600 mt-2">{formatXAF(amount)}</p>
+        <p className="text-2xl font-bold text-blue-600 mt-2">{formatXAF(amount)}</p>
       </div>
 
       {/* Local Payment Methods (Cameroon) */}

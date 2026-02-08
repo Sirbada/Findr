@@ -18,7 +18,7 @@ export function Header() {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-xl">F</span>
               </div>
               <span className="text-xl font-bold text-gray-900">Findr</span>
@@ -28,10 +28,10 @@ export function Header() {
           {/* Desktop Navigation - Centered */}
           <div className="hidden md:flex items-center justify-center flex-1">
             <div className="flex items-center space-x-8">
-              <Link href="/housing" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors">
+              <Link href="/housing" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">
                 🏠 {t.nav.housing}
               </Link>
-              <Link href="/cars" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors">
+              <Link href="/cars" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">
                 🚗 {t.nav.cars}
               </Link>
             </div>
@@ -45,7 +45,7 @@ export function Header() {
             {/* Language toggle */}
             <button
               onClick={() => setLang(lang === 'fr' ? 'en' : 'fr')}
-              className="flex items-center space-x-1 text-gray-600 hover:text-emerald-600"
+              className="flex items-center space-x-1 text-gray-600 hover:text-blue-600"
             >
               <Globe className="w-4 h-4" />
               <span className="text-sm font-medium">{lang.toUpperCase()}</span>
@@ -78,10 +78,10 @@ export function Header() {
         {mobileMenuOpen && (
           <div className="md:hidden py-4 border-t">
             <div className="space-y-3">
-              <Link href="/housing" className="block text-gray-600 hover:text-emerald-600 font-medium">
+              <Link href="/housing" className="block text-gray-600 hover:text-blue-600 font-medium">
                 {t.nav.housing}
               </Link>
-              <Link href="/cars" className="block text-gray-600 hover:text-emerald-600 font-medium">
+              <Link href="/cars" className="block text-gray-600 hover:text-blue-600 font-medium">
                 {t.nav.cars}
               </Link>
               <hr className="my-3" />

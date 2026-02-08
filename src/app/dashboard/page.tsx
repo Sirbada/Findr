@@ -73,20 +73,20 @@ export default function DashboardPage() {
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <Link href="/" className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                   <span className="text-white font-bold text-xl">F</span>
                 </div>
                 <span className="text-xl font-bold text-gray-900">Findr</span>
               </Link>
             </div>
             <div className="flex items-center space-x-4">
-              <button className="relative p-2 text-gray-600 hover:text-emerald-600">
+              <button className="relative p-2 text-gray-600 hover:text-blue-600">
                 <Bell className="w-5 h-5" />
                 <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
               </button>
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
-                  <span className="text-emerald-600 font-semibold text-sm">
+                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                  <span className="text-blue-600 font-semibold text-sm">
                     {user.name.charAt(0)}
                   </span>
                 </div>
@@ -104,25 +104,25 @@ export default function DashboardPage() {
             <div className="bg-white rounded-xl shadow-sm p-6">
               {/* User Info */}
               <div className="text-center mb-6">
-                <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <span className="text-emerald-600 font-bold text-2xl">
+                <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <span className="text-blue-600 font-bold text-2xl">
                     {user.name.charAt(0)}
                   </span>
                 </div>
                 <h2 className="font-semibold text-gray-900">{user.name}</h2>
                 <p className="text-sm text-gray-500">{user.phone}</p>
                 {!user.isVerified && (
-                  <button className="mt-2 text-xs text-emerald-600 hover:underline">
+                  <button className="mt-2 text-xs text-blue-600 hover:underline">
                     Vérifier mon compte →
                   </button>
                 )}
               </div>
 
               {/* Wallet Balance */}
-              <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-xl p-4 mb-6 text-white">
+              <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-4 mb-6 text-white">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-emerald-100 text-sm">Mon solde</span>
-                  <Wallet className="w-5 h-5 text-emerald-200" />
+                  <span className="text-blue-100 text-sm">Mon solde</span>
+                  <Wallet className="w-5 h-5 text-blue-200" />
                 </div>
                 <div className="text-2xl font-bold">
                   {user.balance.toLocaleString()} <span className="text-sm">XAF</span>
@@ -138,7 +138,7 @@ export default function DashboardPage() {
                   onClick={() => setActiveTab('listings')}
                   className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
                     activeTab === 'listings' 
-                      ? 'bg-emerald-50 text-emerald-600' 
+                      ? 'bg-blue-50 text-blue-600' 
                       : 'text-gray-600 hover:bg-gray-50'
                   }`}
                 >
@@ -152,7 +152,7 @@ export default function DashboardPage() {
                   onClick={() => setActiveTab('favorites')}
                   className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
                     activeTab === 'favorites' 
-                      ? 'bg-emerald-50 text-emerald-600' 
+                      ? 'bg-blue-50 text-blue-600' 
                       : 'text-gray-600 hover:bg-gray-50'
                   }`}
                 >
@@ -166,14 +166,14 @@ export default function DashboardPage() {
                   href="/dashboard/messages"
                   className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
                     activeTab === 'messages' 
-                      ? 'bg-emerald-50 text-emerald-600' 
+                      ? 'bg-blue-50 text-blue-600' 
                       : 'text-gray-600 hover:bg-gray-50'
                   }`}
                 >
                   <MessageSquare className="w-5 h-5" />
                   <span>Messages</span>
                   {user.messages > 0 && (
-                    <span className="ml-auto bg-emerald-600 text-white text-xs px-2 py-0.5 rounded-full">
+                    <span className="ml-auto bg-blue-600 text-white text-xs px-2 py-0.5 rounded-full">
                       {user.messages}
                     </span>
                   )}
@@ -182,7 +182,7 @@ export default function DashboardPage() {
                   onClick={() => setActiveTab('wallet')}
                   className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
                     activeTab === 'wallet' 
-                      ? 'bg-emerald-50 text-emerald-600' 
+                      ? 'bg-blue-50 text-blue-600' 
                       : 'text-gray-600 hover:bg-gray-50'
                   }`}
                 >
@@ -251,10 +251,10 @@ export default function DashboardPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm text-gray-500">Ce mois</p>
-                        <p className="text-2xl font-bold text-emerald-600">+23%</p>
+                        <p className="text-2xl font-bold text-blue-600">+23%</p>
                       </div>
-                      <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-                        <TrendingUp className="w-5 h-5 text-emerald-600" />
+                      <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <TrendingUp className="w-5 h-5 text-blue-600" />
                       </div>
                     </div>
                   </div>
@@ -307,7 +307,7 @@ export default function DashboardPage() {
                               </p>
                             </div>
                             <div className="flex items-center gap-2">
-                              <button className="p-2 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg">
+                              <button className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg">
                                 <Edit className="w-4 h-4" />
                               </button>
                               <button className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg">
@@ -328,8 +328,8 @@ export default function DashboardPage() {
                 <h1 className="text-2xl font-bold text-gray-900 mb-6">Mon portefeuille</h1>
                 
                 {/* Balance Card */}
-                <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-2xl p-6 text-white mb-6">
-                  <p className="text-emerald-100 mb-1">Solde disponible</p>
+                <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl p-6 text-white mb-6">
+                  <p className="text-blue-100 mb-1">Solde disponible</p>
                   <p className="text-4xl font-bold mb-4">
                     {user.balance.toLocaleString()} <span className="text-xl">XAF</span>
                   </p>

@@ -141,7 +141,7 @@ export default function MessagesPage() {
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <Link href="/dashboard" className="text-gray-600 hover:text-emerald-600">
+              <Link href="/dashboard" className="text-gray-600 hover:text-blue-600">
                 <ArrowLeft className="w-5 h-5" />
               </Link>
               <h1 className="text-xl font-semibold text-gray-900">Messages</h1>
@@ -163,7 +163,7 @@ export default function MessagesPage() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Rechercher une conversation..."
-                  className="w-full pl-10 pr-4 py-2 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full pl-10 pr-4 py-2 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
@@ -175,13 +175,13 @@ export default function MessagesPage() {
                   key={conversation.id}
                   onClick={() => setSelectedConversation(conversation.id)}
                   className={`w-full p-4 flex gap-3 hover:bg-gray-50 transition-colors ${
-                    selectedConversation === conversation.id ? 'bg-emerald-50' : ''
+                    selectedConversation === conversation.id ? 'bg-blue-50' : ''
                   }`}
                 >
                   {/* Avatar */}
                   <div className="relative flex-shrink-0">
-                    <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center">
-                      <span className="text-emerald-600 font-semibold">
+                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                      <span className="text-blue-600 font-semibold">
                         {conversation.user.name.charAt(0)}
                       </span>
                     </div>
@@ -213,12 +213,12 @@ export default function MessagesPage() {
                     <div className="flex items-center justify-between">
                       <p className="text-sm text-gray-600 truncate">
                         {conversation.lastMessage.isMine && (
-                          <CheckCheck className={`inline w-4 h-4 mr-1 ${conversation.lastMessage.isRead ? 'text-emerald-500' : 'text-gray-400'}`} />
+                          <CheckCheck className={`inline w-4 h-4 mr-1 ${conversation.lastMessage.isRead ? 'text-blue-500' : 'text-gray-400'}`} />
                         )}
                         {conversation.lastMessage.text}
                       </p>
                       {conversation.unread > 0 && (
-                        <span className="ml-2 bg-emerald-600 text-white text-xs px-2 py-0.5 rounded-full">
+                        <span className="ml-2 bg-blue-600 text-white text-xs px-2 py-0.5 rounded-full">
                           {conversation.unread}
                         </span>
                       )}
@@ -241,8 +241,8 @@ export default function MessagesPage() {
                   >
                     <ArrowLeft className="w-5 h-5" />
                   </button>
-                  <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
-                    <span className="text-emerald-600 font-semibold">
+                  <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                    <span className="text-blue-600 font-semibold">
                       {currentConversation.user.name.charAt(0)}
                     </span>
                   </div>
@@ -281,7 +281,7 @@ export default function MessagesPage() {
                     <p className="text-sm font-medium text-gray-900">
                       {currentConversation.listing.title}
                     </p>
-                    <Link href="#" className="text-xs text-emerald-600 hover:underline">
+                    <Link href="#" className="text-xs text-blue-600 hover:underline">
                       Voir l'annonce →
                     </Link>
                   </div>
@@ -298,12 +298,12 @@ export default function MessagesPage() {
                     <div
                       className={`max-w-[70%] rounded-2xl px-4 py-2 ${
                         message.isMine
-                          ? 'bg-emerald-600 text-white rounded-br-md'
+                          ? 'bg-blue-600 text-white rounded-br-md'
                           : 'bg-white border rounded-bl-md'
                       }`}
                     >
                       <p className="text-sm">{message.text}</p>
-                      <p className={`text-xs mt-1 ${message.isMine ? 'text-emerald-100' : 'text-gray-400'}`}>
+                      <p className={`text-xs mt-1 ${message.isMine ? 'text-blue-100' : 'text-gray-400'}`}>
                         {message.time}
                         {message.isMine && <CheckCheck className="inline w-4 h-4 ml-1" />}
                       </p>
@@ -324,7 +324,7 @@ export default function MessagesPage() {
                     onChange={(e) => setNewMessage(e.target.value)}
                     onKeyPress={handleKeyPress}
                     placeholder="Écrivez votre message..."
-                    className="flex-1 px-4 py-2 bg-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="flex-1 px-4 py-2 bg-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                   <Button 
                     onClick={handleSendMessage}

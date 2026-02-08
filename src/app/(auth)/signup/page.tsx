@@ -27,7 +27,7 @@ export default function SignupPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center space-x-2">
-            <div className="w-10 h-10 bg-emerald-600 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-2xl">F</span>
             </div>
             <span className="text-2xl font-bold text-gray-900">Findr</span>
@@ -48,7 +48,7 @@ export default function SignupPage() {
               onClick={() => setMethod('phone')}
               className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-md text-sm font-medium transition-colors ${
                 method === 'phone' 
-                  ? 'bg-white text-emerald-600 shadow-sm' 
+                  ? 'bg-white text-blue-600 shadow-sm' 
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -59,7 +59,7 @@ export default function SignupPage() {
               onClick={() => setMethod('email')}
               className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-md text-sm font-medium transition-colors ${
                 method === 'email' 
-                  ? 'bg-white text-emerald-600 shadow-sm' 
+                  ? 'bg-white text-blue-600 shadow-sm' 
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -81,7 +81,7 @@ export default function SignupPage() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Jean Dupont"
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
             </div>
@@ -106,7 +106,7 @@ export default function SignupPage() {
                     }}
                     placeholder="699000000"
                     maxLength={9}
-                    className="flex-1 px-4 py-3 border border-gray-300 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                    className="flex-1 px-4 py-3 border border-gray-300 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -121,7 +121,7 @@ export default function SignupPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="vous@exemple.com"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
                 <div>
@@ -133,7 +133,7 @@ export default function SignupPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Minimum 8 caractères"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
               </>
@@ -146,15 +146,15 @@ export default function SignupPage() {
                 id="terms"
                 checked={acceptTerms}
                 onChange={(e) => setAcceptTerms(e.target.checked)}
-                className="mt-1 h-4 w-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
+                className="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
               />
               <label htmlFor="terms" className="ml-2 text-sm text-gray-600">
                 J'accepte les{' '}
-                <Link href="/terms" className="text-emerald-600 hover:underline">
+                <Link href="/terms" className="text-blue-600 hover:underline">
                   conditions d'utilisation
                 </Link>{' '}
                 et la{' '}
-                <Link href="/privacy" className="text-emerald-600 hover:underline">
+                <Link href="/privacy" className="text-blue-600 hover:underline">
                   politique de confidentialité
                 </Link>
               </label>
@@ -179,7 +179,7 @@ export default function SignupPage() {
 
           <div className="mt-6 text-center text-sm">
             <span className="text-gray-600">Déjà inscrit ?</span>{' '}
-            <Link href="/login" className="text-emerald-600 font-medium hover:underline">
+            <Link href="/login" className="text-blue-600 font-medium hover:underline">
               Se connecter
             </Link>
           </div>
@@ -187,7 +187,7 @@ export default function SignupPage() {
 
         {/* Back to home */}
         <div className="mt-6 text-center">
-          <Link href="/" className="text-sm text-gray-600 hover:text-emerald-600">
+          <Link href="/" className="text-sm text-gray-600 hover:text-blue-600">
             ← Retour à l'accueil
           </Link>
         </div>

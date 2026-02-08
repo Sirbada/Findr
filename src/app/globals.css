@@ -3,6 +3,30 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  
+  /* Apple Design System Color Palette */
+  --color-primary: #3b82f6; /* blue-500 */
+  --color-primary-dark: #2563eb; /* blue-600 */
+  --color-primary-hover: #1d4ed8; /* blue-700 */
+  --color-primary-light: #dbeafe; /* blue-50 */
+  --color-primary-medium: #93c5fd; /* blue-300 */
+  
+  --color-text-primary: #111827; /* gray-900 */
+  --color-text-secondary: #6b7280; /* gray-500 */
+  --color-text-tertiary: #9ca3af; /* gray-400 */
+  
+  --color-bg-page: #ffffff; /* white */
+  --color-bg-card: #ffffff; /* white */
+  --color-bg-hover: #f9fafb; /* gray-50 */
+  --color-bg-subtle: #f3f4f6; /* gray-100 */
+  --color-border: #e5e7eb; /* gray-200 */
+  
+  --color-success: #10b981; /* green-500 */
+  --color-success-bg: #ecfdf5; /* green-50 */
+  --color-error: #ef4444; /* red-500 */
+  --color-error-bg: #fef2f2; /* red-50 */
+  --color-warning: #f59e0b; /* amber-500 */
+  --color-warning-bg: #fffbeb; /* amber-50 */
 }
 
 @theme inline {
@@ -16,6 +40,22 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    
+    /* Dark mode adjustments for Apple palette */
+    --color-primary: #60a5fa; /* blue-400 */
+    --color-primary-dark: #3b82f6; /* blue-500 */
+    --color-primary-hover: #2563eb; /* blue-600 */
+    --color-primary-light: #1e3a8a; /* blue-900 */
+    
+    --color-text-primary: #f9fafb; /* gray-50 */
+    --color-text-secondary: #d1d5db; /* gray-300 */
+    --color-text-tertiary: #9ca3af; /* gray-400 */
+    
+    --color-bg-page: #0a0a0a; /* gray-950 */
+    --color-bg-card: #111827; /* gray-900 */
+    --color-bg-hover: #1f2937; /* gray-800 */
+    --color-bg-subtle: #374151; /* gray-700 */
+    --color-border: #4b5563; /* gray-600 */
   }
 }
 

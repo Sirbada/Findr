@@ -63,7 +63,7 @@ export function PhoneInput({ onSubmit, loading = false, error }: PhoneInputProps
                 setLocalError(null)
               }}
               placeholder={t.phonePlaceholder}
-              className={`w-full px-4 py-3.5 border rounded-r-xl text-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent ${
+              className={`w-full px-4 py-3.5 border rounded-r-xl text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                 displayError ? 'border-red-300 bg-red-50' : 'border-gray-300'
               }`}
               disabled={loading}
@@ -219,7 +219,7 @@ export function OTPInput({
           <button
             type="button"
             onClick={onChangeNumber}
-            className="p-1 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded"
+            className="p-1 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded"
           >
             <Edit2 className="w-4 h-4" />
           </button>
@@ -238,11 +238,11 @@ export function OTPInput({
             onChange={(e) => handleChange(index, e.target.value)}
             onKeyDown={(e) => handleKeyDown(index, e)}
             maxLength={1}
-            className={`w-12 h-14 text-center text-2xl font-bold border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors ${
+            className={`w-12 h-14 text-center text-2xl font-bold border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
               displayError 
                 ? 'border-red-300 bg-red-50' 
                 : digit 
-                  ? 'border-emerald-500 bg-emerald-50' 
+                  ? 'border-blue-500 bg-blue-50' 
                   : 'border-gray-300'
             }`}
             disabled={loading}
@@ -285,7 +285,7 @@ export function OTPInput({
             type="button"
             onClick={onResend}
             disabled={loading}
-            className="text-sm text-emerald-600 font-medium hover:underline disabled:opacity-50"
+            className="text-sm text-blue-600 font-medium hover:underline disabled:opacity-50"
           >
             {t.resendCode}
           </button>
