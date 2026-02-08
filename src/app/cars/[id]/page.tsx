@@ -368,14 +368,20 @@ export default function CarDetailPage() {
         </div>
       </main>
 
-      <Footer />
+      {/* Sticky WhatsApp Button - Mobile */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 p-4 bg-white border-t shadow-lg md:hidden">
+        <a
+          href={`https://wa.me/237699000000?text=${encodeURIComponent(`Bonjour, je suis intéressé par votre véhicule "${listing.title}" sur Findr.`)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full bg-green-500 hover:bg-green-600 text-white py-4 px-6 rounded-xl font-semibold text-lg flex items-center justify-center gap-2 transition-colors"
+          style={{backgroundColor: '#25D366'}}
+        >
+          💬 Contacter via WhatsApp
+        </a>
+      </div>
 
-      {/* Floating WhatsApp Button (Mobile) */}
-      <WhatsAppFloatingButton
-        phone="+237 6 99 00 00 00"
-        listingTitle={listing.title}
-        listingType="cars"
-      />
+      <Footer />
     </div>
   )
 }

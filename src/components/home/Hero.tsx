@@ -14,23 +14,13 @@ export function Hero() {
 
   return (
     <section className="relative overflow-hidden">
-      {/* Background with Cameroon-inspired gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-green-900 via-gray-900 to-red-900" />
-      
-      {/* Cameroon flag accent stripes */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-20 -left-20 w-[600px] h-[600px] bg-green-500/8 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-[120%] bg-yellow-400/6 blur-3xl rotate-12" />
-        <div className="absolute -bottom-20 -right-20 w-[500px] h-[500px] bg-red-500/8 rounded-full blur-3xl animate-pulse delay-700" />
-        {/* Star accent */}
-        <div className="absolute top-16 right-1/4 text-yellow-400/20 text-8xl">★</div>
-      </div>
+      {/* Clean Apple-style gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 to-black" />
 
       <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
         <div className="text-center">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm mb-6">
-            <span className="inline-flex gap-0.5"><span className="w-2 h-2 bg-green-400 rounded-full" /><span className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse" /><span className="w-2 h-2 bg-red-400 rounded-full" /></span>
+          {/* Badge - Clean */}
+          <div className="inline-flex items-center bg-white/10 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm mb-6">
             {lang === 'fr' ? 'Le marketplace du Cameroun' : 'Cameroon\'s marketplace'}
           </div>
 
@@ -134,21 +124,7 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Quick stats */}
-          <div className="mt-12 flex flex-wrap justify-center gap-8 md:gap-16">
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-white">500+</div>
-              <div className="text-gray-200 text-sm">{lang === 'fr' ? 'Propriétés' : 'Properties'}</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-white">100+</div>
-              <div className="text-gray-200 text-sm">{lang === 'fr' ? 'Véhicules' : 'Vehicles'}</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-white">10k+</div>
-              <div className="text-gray-200 text-sm">{lang === 'fr' ? 'Utilisateurs' : 'Users'}</div>
-            </div>
-          </div>
+          {/* Stats removed - no fake numbers */}
 
           {/* Popular cities */}
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">

@@ -392,8 +392,12 @@ export default function CarsPage() {
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                       ) : (
-                        <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                          <Car className="w-12 h-12 text-gray-300" />
+                        <div className="w-full h-full bg-gray-200 flex flex-col items-center justify-center">
+                          <svg className="w-12 h-12 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                          <span className="text-gray-500 text-sm font-medium">Aucune photo</span>
                         </div>
                       )}
                       
@@ -408,9 +412,9 @@ export default function CarsPage() {
                       {/* Badges */}
                       <div className="absolute top-3 left-3 flex gap-2">
                         {listing.is_verified && (
-                          <span className="bg-green-600 text-white text-xs font-medium px-2 py-1 rounded flex items-center gap-1">
+                          <span className="bg-green-600 text-white text-xs font-medium px-2 py-1 rounded-full flex items-center gap-1">
                             <CheckCircle className="w-3 h-3" />
-                            {content.pro}
+                            Vérifié ✓
                           </span>
                         )}
                       </div>
@@ -418,6 +422,25 @@ export default function CarsPage() {
                     
                     {/* Content */}
                     <div className="p-4">
+                      {/* Price prominant */}
+                      <div className="mb-3">
+                        {listing.price_per_day ? (
+                          <>
+                            <span className="text-xl font-bold text-blue-600">
+                              {formatPrice(listing.price_per_day)}
+                            </span>
+                            <span className="text-gray-500 text-sm"> XAF{t.listings.perDay}</span>
+                          </>
+                        ) : (
+                          <>
+                            <span className="text-xl font-bold text-blue-600">
+                              {formatPrice(listing.price)}
+                            </span>
+                            <span className="text-gray-500 text-sm"> XAF</span>
+                          </>
+                        )}
+                      </div>
+                      
                       {/* Brand & Model */}
                       <div className="flex items-center gap-2 mb-1">
                         {listing.car_brand && (
@@ -434,10 +457,10 @@ export default function CarsPage() {
                         {listing.title}
                       </h3>
                       
-                      {/* Location */}
+                      {/* Ort/Quartier unter Titel */}
                       <div className="flex items-center text-gray-500 text-sm mb-3">
                         <MapPin className="w-4 h-4 mr-1" />
-                        <span>{listing.city}</span>
+                        <span>{listing.neighborhood ? `${listing.neighborhood}, ` : ''}{listing.city}</span>
                       </div>
                       
                       {/* Features - Mobile.de Style */}
@@ -461,28 +484,6 @@ export default function CarsPage() {
                           </span>
                         )}
                       </div>
-                      
-                      {/* Price */}
-                      <div className="flex items-center justify-between pt-3 border-t">
-                        {listing.price_per_day ? (
-                          <div>
-                            <span className="text-2xl font-bold text-blue-600">
-                              {formatPrice(listing.price_per_day)}
-                            </span>
-                            <span className="text-gray-500 text-sm"> XAF{t.listings.perDay}</span>
-                          </div>
-                        ) : (
-                          <div>
-                            <span className="text-2xl font-bold text-blue-600">
-                              {formatPrice(listing.price)}
-                            </span>
-                            <span className="text-gray-500 text-sm"> XAF</span>
-                          </div>
-                        )}
-                        <Button size="sm" variant="outline" className="text-blue-600 border-blue-600 hover:bg-blue-50">
-                          {content.view}
-                        </Button>
-                      </div>
                     </div>
                   </div>
                 </Link>
@@ -490,16 +491,30 @@ export default function CarsPage() {
             </div>
           )}
 
-          {/* No Results */}
+          {/* No Results - Empty State */}
           {!loading && filteredAndSortedListings.length === 0 && (
-            <div className="text-center py-12">
-              <Car className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                {content.noResults}
+            <div className="text-center py-16">
+              {/* CSS-only car illustration */}
+              <div className="relative w-24 h-24 mx-auto mb-8">
+                <div className="absolute inset-0 bg-gradient-to-b from-blue-100 to-blue-200 rounded-2xl"></div>
+                <div className="absolute top-6 left-3 w-18 h-8 bg-white rounded-lg shadow-sm flex items-center justify-center">
+                  <Car className="w-8 h-5 text-gray-400" />
+                </div>
+                <div className="absolute bottom-2 right-2 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold">+</div>
+              </div>
+              
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                Soyez le premier à publier dans cette catégorie!
               </h3>
-              <p className="text-gray-500">
-                {content.tryDifferent}
+              <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                Aucun véhicule ne correspond à vos critères. Partagez votre auto et trouvez vos premiers clients.
               </p>
+              
+              <Link href="/dashboard/new">
+                <Button size="lg" className="bg-blue-600 hover:bg-blue-700 px-8">
+                  Publier une annonce →
+                </Button>
+              </Link>
             </div>
           )}
         </div>

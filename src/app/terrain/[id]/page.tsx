@@ -271,6 +271,28 @@ export default function TerrainDetailPage() {
         </div>
       </main>
 
+      {/* Sticky WhatsApp Button - Mobile */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 p-4 bg-white border-t shadow-lg md:hidden">
+        {listing.whatsapp_number ? (
+          <a
+            href={`https://wa.me/${listing.whatsapp_number.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Bonjour, je suis intéressé par votre terrain "${listing.title}" sur Findr.`)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full bg-green-500 hover:bg-green-600 text-white py-4 px-6 rounded-xl font-semibold text-lg flex items-center justify-center gap-2 transition-colors"
+            style={{backgroundColor: '#25D366'}}
+          >
+            💬 Contacter via WhatsApp
+          </a>
+        ) : (
+          <button
+            className="w-full bg-green-500 hover:bg-green-600 text-white py-4 px-6 rounded-xl font-semibold text-lg flex items-center justify-center gap-2 transition-colors"
+            style={{backgroundColor: '#25D366'}}
+          >
+            💬 Demander le numéro
+          </button>
+        )}
+      </div>
+
       <Footer />
     </div>
   )
