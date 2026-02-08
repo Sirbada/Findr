@@ -29,16 +29,13 @@ export function Header() {
           <div className="hidden md:flex items-center justify-center flex-1">
             <div className="flex items-center space-x-8">
               <Link href="/housing" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">
-                🏠 Immobilier
+                🏠 Immobilier & Terrain
               </Link>
               <Link href="/cars" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">
-                🚗 Véhicules
+                🚗 Automobile
               </Link>
-              <Link href="/terrain" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">
-                🏗️ Terrain
-              </Link>
-              <Link href="/annonces" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">
-                📋 Annonces
+              <Link href="/annonces?cat=services,jobs" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">
+                💼 Services & Emplois
               </Link>
             </div>
           </div>
@@ -85,16 +82,13 @@ export function Header() {
           <div className="md:hidden py-4 border-t">
             <div className="space-y-3">
               <Link href="/housing" className="block text-gray-600 hover:text-blue-600 font-medium" onClick={() => setMobileMenuOpen(false)}>
-                🏠 Immobilier
+                🏠 Immobilier & Terrain
               </Link>
               <Link href="/cars" className="block text-gray-600 hover:text-blue-600 font-medium" onClick={() => setMobileMenuOpen(false)}>
-                🚗 Véhicules
+                🚗 Automobile
               </Link>
-              <Link href="/terrain" className="block text-gray-600 hover:text-blue-600 font-medium" onClick={() => setMobileMenuOpen(false)}>
-                🏗️ Terrain
-              </Link>
-              <Link href="/annonces" className="block text-gray-600 hover:text-blue-600 font-medium" onClick={() => setMobileMenuOpen(false)}>
-                📋 Annonces
+              <Link href="/annonces?cat=services,jobs" className="block text-gray-600 hover:text-blue-600 font-medium" onClick={() => setMobileMenuOpen(false)}>
+                💼 Services & Emplois
               </Link>
               <hr className="my-3" />
               <button

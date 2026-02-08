@@ -35,6 +35,17 @@ const cities = [
   { value: 'Buea', label: 'Buea' },
 ]
 
+const dureeOptions = [
+  { value: 'all', label: 'Tous' },
+  { value: '1-day', label: '1 jour' },
+  { value: '1-week', label: '1 semaine' },
+  { value: '1-month', label: '1 mois' },
+  { value: '3-months', label: '3 mois' },
+  { value: '6-months', label: '6 mois' },
+  { value: '1-year', label: '1 an' },
+  { value: 'long-term', label: 'Long terme (1 an+)' },
+]
+
 export default function TerrainPage() {
   const { lang } = useTranslation()
   const { user } = useAuth()
@@ -42,6 +53,7 @@ export default function TerrainPage() {
   const [loading, setLoading] = useState(true)
   const [selectedCity, setSelectedCity] = useState('all')
   const [selectedType, setSelectedType] = useState('all')
+  const [selectedDuree, setSelectedDuree] = useState('all')
   const [sortBy, setSortBy] = useState('newest')
   const { favorites, toggle: toggleFav } = useFavorites(user?.id)
 
@@ -57,6 +69,23 @@ export default function TerrainPage() {
   const filtered = listings.filter(l => {
     if (selectedCity !== 'all' && l.city !== selectedCity) return false
     if (selectedType !== 'all' && l.terrain_type !== selectedType) return false
+    
+    // Durée filter - based on created date
+    if (selectedDuree !== 'all') {
+      const now = new Date()
+      const listingDate = new Date(l.created_at)
+      const diffMs = now.getTime() - listingDate.getTime()
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+      
+      if (selectedDuree === '1-day' && diffDays > 1) return false
+      if (selectedDuree === '1-week' && diffDays > 7) return false
+      if (selectedDuree === '1-month' && diffDays > 30) return false
+      if (selectedDuree === '3-months' && diffDays > 90) return false
+      if (selectedDuree === '6-months' && diffDays > 180) return false
+      if (selectedDuree === '1-year' && diffDays > 365) return false
+      if (selectedDuree === 'long-term' && diffDays <= 365) return false
+    }
+
     return true
   }).sort((a, b) => {
     if (sortBy === 'price-low') return a.price - b.price
@@ -69,17 +98,17 @@ export default function TerrainPage() {
       <Header />
 
       {/* Hero */}
-      <div className="bg-gradient-to-r from-emerald-600 to-emerald-800 text-white py-12">
+      <div className="bg-gradient-to-r from-green-600 to-emerald-700 text-white py-12 min-h-[250px] flex items-center">
         <div className="max-w-6xl mx-auto px-4">
           <h1 className="text-3xl md:text-4xl font-bold mb-2">
-            🏗️ Terrains à vendre
+            Investissez dans la terre — le seul actif qui ne ment pas
           </h1>
-          <p className="text-emerald-100 mb-8">
-            Parcelles constructibles, agricoles et commerciales au Cameroun
+          <p className="text-green-100 mb-8">
+            Terrains titrés et vérifiés — constructibles, agricoles, commerciaux
           </p>
 
           <div className="bg-white rounded-xl p-4 shadow-lg">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1">Ville</label>
                 <select value={selectedCity} onChange={e => setSelectedCity(e.target.value)}
@@ -92,6 +121,13 @@ export default function TerrainPage() {
                 <select value={selectedType} onChange={e => setSelectedType(e.target.value)}
                   className="w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-emerald-500">
                   {terrainTypes.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1">Durée</label>
+                <select value={selectedDuree} onChange={e => setSelectedDuree(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-emerald-500">
+                  {dureeOptions.map(d => <option key={d.value} value={d.value}>{d.label}</option>)}
                 </select>
               </div>
               <div>

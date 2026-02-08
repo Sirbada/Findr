@@ -33,6 +33,17 @@ const priceRanges = [
   { value: '500000+', label: '> 500 000 XAF' },
 ]
 
+const dureeOptions = [
+  { value: 'all', label: 'Tous' },
+  { value: '1-day', label: '1 jour' },
+  { value: '1-week', label: '1 semaine' },
+  { value: '1-month', label: '1 mois' },
+  { value: '3-months', label: '3 mois' },
+  { value: '6-months', label: '6 mois' },
+  { value: '1-year', label: '1 an' },
+  { value: 'long-term', label: 'Long terme (1 an+)' },
+]
+
 function formatPrice(price: number): string {
   return new Intl.NumberFormat('fr-FR').format(price)
 }
@@ -46,6 +57,7 @@ export default function AnnoncesPage() {
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [selectedCity, setSelectedCity] = useState('Toutes')
   const [selectedPrice, setSelectedPrice] = useState('all')
+  const [selectedDuree, setSelectedDuree] = useState('all')
   const [sortBy, setSortBy] = useState('newest')
   const [view, setView] = useState<'grid' | 'list'>('grid')
   const { favorites, toggle: toggleFav } = useFavorites(user?.id)
@@ -79,6 +91,23 @@ export default function AnnoncesPage() {
       if (selectedPrice === '150000-500000' && (p < 150000 || p > 500000)) return false
       if (selectedPrice === '500000+' && p < 500000) return false
     }
+    
+    // Durée filter - based on created date
+    if (selectedDuree !== 'all') {
+      const now = new Date()
+      const listingDate = new Date(l.created_at)
+      const diffMs = now.getTime() - listingDate.getTime()
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+      
+      if (selectedDuree === '1-day' && diffDays > 1) return false
+      if (selectedDuree === '1-week' && diffDays > 7) return false
+      if (selectedDuree === '1-month' && diffDays > 30) return false
+      if (selectedDuree === '3-months' && diffDays > 90) return false
+      if (selectedDuree === '6-months' && diffDays > 180) return false
+      if (selectedDuree === '1-year' && diffDays > 365) return false
+      if (selectedDuree === 'long-term' && diffDays <= 365) return false
+    }
+
     return true
   }).sort((a, b) => {
     if (sortBy === 'price-low') return a.price - b.price
@@ -97,6 +126,18 @@ export default function AnnoncesPage() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
+
+      {/* Hero Header */}
+      <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white py-12 min-h-[250px] flex items-center">
+        <div className="max-w-6xl mx-auto px-4">
+          <h1 className="text-3xl md:text-4xl font-bold mb-2">
+            Trouvez le bon service, le bon emploi — aujourd'hui
+          </h1>
+          <p className="text-purple-100 mb-8">
+            Artisans, professionnels et opportunités vérifiés au Cameroun
+          </p>
+        </div>
+      </div>
 
       {/* Search Header */}
       <div className="bg-white border-b sticky top-16 z-40">
@@ -152,6 +193,13 @@ export default function AnnoncesPage() {
               className="px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white"
             >
               {priceRanges.map(r => <option key={r.value} value={r.value}>💰 {r.label}</option>)}
+            </select>
+            <select
+              value={selectedDuree}
+              onChange={(e) => setSelectedDuree(e.target.value)}
+              className="px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white"
+            >
+              {dureeOptions.map(d => <option key={d.value} value={d.value}>⏰ {d.label}</option>)}
             </select>
             <select
               value={sortBy}

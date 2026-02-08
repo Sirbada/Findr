@@ -9,6 +9,7 @@ import Link from 'next/link'
 export function Hero() {
   const { t, lang } = useTranslation()
   const [activeTab, setActiveTab] = useState<'housing' | 'cars'>('housing')
+  const [subFilter, setSubFilter] = useState<string>('all')
   const [searchQuery, setSearchQuery] = useState('')
 
   return (
@@ -53,7 +54,7 @@ export function Hero() {
             {/* Tabs */}
             <div className="flex mb-2">
               <button
-                onClick={() => setActiveTab('housing')}
+                onClick={() => { setActiveTab('housing'); setSubFilter('all') }}
                 className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-medium transition-all ${
                   activeTab === 'housing'
                     ? 'bg-blue-600 text-white'
@@ -64,7 +65,7 @@ export function Hero() {
                 {lang === 'fr' ? 'Immobilier' : 'Real Estate'}
               </button>
               <button
-                onClick={() => setActiveTab('cars')}
+                onClick={() => { setActiveTab('cars'); setSubFilter('all') }}
                 className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-medium transition-all ${
                   activeTab === 'cars'
                     ? 'bg-blue-600 text-white'
@@ -72,8 +73,40 @@ export function Hero() {
                 }`}
               >
                 <Car className="w-5 h-5" />
-                {lang === 'fr' ? 'Véhicules' : 'Vehicles'}
+                {lang === 'fr' ? 'Automobile' : 'Vehicles'}
               </button>
+            </div>
+
+            {/* Sub-filters */}
+            <div className="flex flex-wrap justify-center gap-2 mb-2 px-2">
+              {activeTab === 'housing' ? (
+                <>
+                  {[
+                    { key: 'all', fr: 'Tout', en: 'All' },
+                    { key: 'housing', fr: 'Logements', en: 'Housing' },
+                    { key: 'terrain', fr: 'Terrain', en: 'Land' },
+                  ].map(f => (
+                    <button key={f.key} onClick={() => setSubFilter(f.key)}
+                      className={`px-3 py-1 rounded-full text-sm font-medium transition-all ${subFilter === f.key ? 'bg-blue-100 text-blue-700' : 'text-gray-500 hover:bg-gray-100'}`}>
+                      {lang === 'fr' ? f.fr : f.en}
+                    </button>
+                  ))}
+                </>
+              ) : (
+                <>
+                  {[
+                    { key: 'all', fr: 'Tout', en: 'All' },
+                    { key: 'voitures', fr: 'Voitures', en: 'Cars' },
+                    { key: 'motos', fr: 'Motos', en: 'Motorcycles' },
+                    { key: 'camions', fr: 'Camions', en: 'Trucks' },
+                  ].map(f => (
+                    <button key={f.key} onClick={() => setSubFilter(f.key)}
+                      className={`px-3 py-1 rounded-full text-sm font-medium transition-all ${subFilter === f.key ? 'bg-blue-100 text-blue-700' : 'text-gray-500 hover:bg-gray-100'}`}>
+                      {lang === 'fr' ? f.fr : f.en}
+                    </button>
+                  ))}
+                </>
+              )}
             </div>
 
             {/* Search inputs */}
@@ -88,7 +121,11 @@ export function Hero() {
                   className="w-full pl-12 pr-4 py-4 bg-gray-50 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
                 />
               </div>
-              <Link href={searchQuery ? `/annonces?q=${encodeURIComponent(searchQuery)}` : (activeTab === 'housing' ? '/housing' : '/cars')}>
+              <Link href={searchQuery 
+                ? `/annonces?q=${encodeURIComponent(searchQuery)}${subFilter !== 'all' ? `&cat=${subFilter}` : ''}` 
+                : subFilter === 'terrain' ? '/terrain' 
+                : activeTab === 'housing' ? '/housing' : '/cars'
+              }>
                 <Button size="lg" className="w-full sm:w-auto px-8 py-4 text-lg">
                   <Search className="w-5 h-5 mr-2" />
                   {lang === 'fr' ? 'Rechercher' : 'Search'}

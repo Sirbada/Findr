@@ -25,6 +25,7 @@ export default function CarsPage() {
   const [selectedCity, setSelectedCity] = useState('all')
   const [selectedBrand, setSelectedBrand] = useState('all')
   const [selectedFuel, setSelectedFuel] = useState('all')
+  const [selectedDuree, setSelectedDuree] = useState('all')
   const [rentalType, setRentalType] = useState<'rent' | 'buy'>('rent')
   const [sortBy, setSortBy] = useState('newest')
 
@@ -55,8 +56,8 @@ export default function CarsPage() {
       { value: 'electric', label: t.fuelTypes.electric },
       { value: 'hybrid', label: t.fuelTypes.hybrid },
     ],
-    heroTitle: lang === 'fr' ? 'Location & Vente de véhicules' : 'Vehicle Rental & Sales',
-    heroSubtitle: lang === 'fr' ? 'Trouvez la voiture parfaite au Cameroun' : 'Find the perfect car in Cameroon',
+    heroTitle: lang === 'fr' ? 'La bonne affaire auto, sans mauvaise surprise' : 'The right car deal, without bad surprises',
+    heroSubtitle: lang === 'fr' ? 'Véhicules inspectés, prix transparents — Douala, Yaoundé et partout au Cameroun' : 'Inspected vehicles, transparent prices — Douala, Yaoundé and throughout Cameroon',
     rent: lang === 'fr' ? 'Louer' : 'Rent',
     buy: lang === 'fr' ? 'Acheter' : 'Buy',
     pickupLocation: lang === 'fr' ? 'Lieu de prise en charge' : 'Pickup location',
@@ -64,6 +65,26 @@ export default function CarsPage() {
     endDate: lang === 'fr' ? 'Date de fin' : 'End date',
     brand: lang === 'fr' ? 'Marque' : 'Brand',
     fuel: lang === 'fr' ? 'Carburant' : 'Fuel',
+    duree: lang === 'fr' ? 'Durée' : 'Duration',
+    dureeOptions: lang === 'fr' ? [
+      { value: 'all', label: 'Tous' },
+      { value: '1-day', label: '1 jour' },
+      { value: '1-week', label: '1 semaine' },
+      { value: '1-month', label: '1 mois' },
+      { value: '3-months', label: '3 mois' },
+      { value: '6-months', label: '6 mois' },
+      { value: '1-year', label: '1 an' },
+      { value: 'long-term', label: 'Long terme (1 an+)' },
+    ] : [
+      { value: 'all', label: 'All' },
+      { value: '1-day', label: '1 day' },
+      { value: '1-week', label: '1 week' },
+      { value: '1-month', label: '1 month' },
+      { value: '3-months', label: '3 months' },
+      { value: '6-months', label: '6 months' },
+      { value: '1-year', label: '1 year' },
+      { value: 'long-term', label: 'Long term (1+ year)' },
+    ],
     search: t.hero.search,
     categories: lang === 'fr' ? [
       { icon: '🚗', label: 'Économique', desc: 'Dès 15 000 XAF/jour' },
@@ -131,6 +152,22 @@ export default function CarsPage() {
       // Filter by rental type
       if (rentalType === 'rent' && !listing.price_per_day) return false
       if (rentalType === 'buy' && listing.price_per_day) return false
+
+      // Durée filter - based on created date
+      if (selectedDuree !== 'all') {
+        const now = new Date()
+        const listingDate = new Date(listing.created_at)
+        const diffMs = now.getTime() - listingDate.getTime()
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+        
+        if (selectedDuree === '1-day' && diffDays > 1) return false
+        if (selectedDuree === '1-week' && diffDays > 7) return false
+        if (selectedDuree === '1-month' && diffDays > 30) return false
+        if (selectedDuree === '3-months' && diffDays > 90) return false
+        if (selectedDuree === '6-months' && diffDays > 180) return false
+        if (selectedDuree === '1-year' && diffDays > 365) return false
+        if (selectedDuree === 'long-term' && diffDays <= 365) return false
+      }
       
       return true
     })
@@ -164,7 +201,7 @@ export default function CarsPage() {
       <Header />
       
       {/* Hero Search - Sixt/Mobile.de Style */}
-      <div className="bg-blue-600 text-white py-12">
+      <div className="bg-gradient-to-r from-black to-orange-600 text-white py-12 min-h-[250px] flex items-center">
         <div className="max-w-6xl mx-auto px-4">
           <h1 className="text-3xl md:text-4xl font-bold mb-2">
             {content.heroTitle}
@@ -199,7 +236,7 @@ export default function CarsPage() {
           
           {/* Search Bar - Mobile.de Style */}
           <div className="bg-white rounded-xl p-4 shadow-lg">
-            <div className="flex flex-col md:flex-row gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
               {/* Location */}
               <div className="flex-1">
                 <label className="block text-xs font-medium text-gray-500 mb-1">
@@ -261,7 +298,7 @@ export default function CarsPage() {
                   </div>
                   
                   {/* Fuel */}
-                  <div className="flex-1">
+                  <div>
                     <label className="block text-xs font-medium text-gray-500 mb-1">
                       ⛽ {content.fuel}
                     </label>
@@ -275,12 +312,26 @@ export default function CarsPage() {
                       ))}
                     </select>
                   </div>
+
+                  {/* Durée */}
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">{content.duree}</label>
+                    <select
+                      value={selectedDuree}
+                      onChange={(e) => setSelectedDuree(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                      {content.dureeOptions.map(duree => (
+                        <option key={duree.value} value={duree.value}>{duree.label}</option>
+                      ))}
+                    </select>
+                  </div>
                 </>
               )}
               
               {/* Search Button */}
               <div className="flex items-end">
-                <Button size="lg" className="w-full md:w-auto bg-blue-600 hover:bg-blue-700">
+                <Button size="lg" className="w-full bg-orange-600 hover:bg-orange-700">
                   <Search className="w-5 h-5 mr-2" />
                   {content.search}
                 </Button>

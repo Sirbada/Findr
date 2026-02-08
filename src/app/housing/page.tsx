@@ -29,6 +29,7 @@ export default function HousingPage() {
   const [selectedNeighborhood, setSelectedNeighborhood] = useState('all')
   const [selectedType, setSelectedType] = useState('all')
   const [selectedPrice, setSelectedPrice] = useState('all')
+  const [selectedDuree, setSelectedDuree] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState('newest')
 
@@ -76,14 +77,34 @@ export default function HousingPage() {
       { value: '200000-500000', label: '200,000 - 500,000 XAF' },
       { value: '500000+', label: 'Over 500,000 XAF' },
     ],
-    heroTitle: lang === 'fr' ? 'Trouvez votre logement idéal' : 'Find your ideal home',
-    heroSubtitle: lang === 'fr' ? 'Appartements, maisons et terrains au Cameroun' : 'Apartments, houses and land in Cameroon',
+    dureeOptions: lang === 'fr' ? [
+      { value: 'all', label: 'Tous' },
+      { value: '1-day', label: '1 jour' },
+      { value: '1-week', label: '1 semaine' },
+      { value: '1-month', label: '1 mois' },
+      { value: '3-months', label: '3 mois' },
+      { value: '6-months', label: '6 mois' },
+      { value: '1-year', label: '1 an' },
+      { value: 'long-term', label: 'Long terme (1 an+)' },
+    ] : [
+      { value: 'all', label: 'All' },
+      { value: '1-day', label: '1 day' },
+      { value: '1-week', label: '1 week' },
+      { value: '1-month', label: '1 month' },
+      { value: '3-months', label: '3 months' },
+      { value: '6-months', label: '6 months' },
+      { value: '1-year', label: '1 year' },
+      { value: 'long-term', label: 'Long term (1+ year)' },
+    ],
+    heroTitle: lang === 'fr' ? 'Votre prochain chez-vous vous attend' : 'Your next home awaits you',
+    heroSubtitle: lang === 'fr' ? 'Appartements, maisons et villas vérifiés — sans arnaques, sans stress' : 'Verified apartments, houses and villas — no scams, no stress',
     city: lang === 'fr' ? 'Ville' : 'City',
     neighborhood: lang === 'fr' ? 'Quartier' : 'Neighborhood',
     allNeighborhoods: lang === 'fr' ? 'Tous les quartiers' : 'All neighborhoods',
     selectCityFirst: lang === 'fr' ? 'Sélectionnez une ville' : 'Select a city first',
     propertyType: lang === 'fr' ? 'Type de bien' : 'Property type',
     budget: 'Budget',
+    duree: lang === 'fr' ? 'Durée' : 'Duration',
     search: t.hero.search,
     resultsFound: (count: number) => lang === 'fr' 
       ? `${count} logement${count > 1 ? 's' : ''} trouvé${count > 1 ? 's' : ''}`
@@ -143,6 +164,22 @@ export default function HousingPage() {
         if (selectedPrice === '200000-500000' && (price < 200000 || price > 500000)) return false
         if (selectedPrice === '500000+' && price < 500000) return false
       }
+
+      // Durée filter - based on created date
+      if (selectedDuree !== 'all') {
+        const now = new Date()
+        const listingDate = new Date(listing.created_at)
+        const diffMs = now.getTime() - listingDate.getTime()
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+        
+        if (selectedDuree === '1-day' && diffDays > 1) return false
+        if (selectedDuree === '1-week' && diffDays > 7) return false
+        if (selectedDuree === '1-month' && diffDays > 30) return false
+        if (selectedDuree === '3-months' && diffDays > 90) return false
+        if (selectedDuree === '6-months' && diffDays > 180) return false
+        if (selectedDuree === '1-year' && diffDays > 365) return false
+        if (selectedDuree === 'long-term' && diffDays <= 365) return false
+      }
       
       return true
     })
@@ -166,7 +203,7 @@ export default function HousingPage() {
       <Header />
       
       {/* Hero Search */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-12">
+      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-12 min-h-[250px] flex items-center">
         <div className="max-w-6xl mx-auto px-4">
           <h1 className="text-3xl md:text-4xl font-bold mb-2">
             {content.heroTitle}
@@ -177,7 +214,7 @@ export default function HousingPage() {
           
           {/* Search Bar */}
           <div className="bg-white rounded-xl p-4 shadow-lg">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
               {/* City */}
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1">{content.city}</label>
@@ -244,6 +281,20 @@ export default function HousingPage() {
                   ))}
                 </select>
               </div>
+
+              {/* Durée */}
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1">{content.duree}</label>
+                <select
+                  value={selectedDuree}
+                  onChange={(e) => setSelectedDuree(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  {content.dureeOptions.map(duree => (
+                    <option key={duree.value} value={duree.value}>{duree.label}</option>
+                  ))}
+                </select>
+              </div>
               
               {/* Search Button */}
               <div className="flex items-end">
@@ -255,7 +306,7 @@ export default function HousingPage() {
             </div>
 
             {/* Active Filters Tags */}
-            {(selectedCity !== 'all' || selectedNeighborhood !== 'all' || selectedType !== 'all' || selectedPrice !== 'all') && (
+            {(selectedCity !== 'all' || selectedNeighborhood !== 'all' || selectedType !== 'all' || selectedPrice !== 'all' || selectedDuree !== 'all') && (
               <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t">
                 {selectedCity !== 'all' && (
                   <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">
@@ -285,6 +336,14 @@ export default function HousingPage() {
                   <span className="inline-flex items-center gap-1 px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm">
                     💰 {content.priceRanges.find(r => r.value === selectedPrice)?.label}
                     <button onClick={() => setSelectedPrice('all')} className="hover:text-yellow-900">
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                )}
+                {selectedDuree !== 'all' && (
+                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">
+                    ⏰ {content.dureeOptions.find(d => d.value === selectedDuree)?.label}
+                    <button onClick={() => setSelectedDuree('all')} className="hover:text-purple-900">
                       <X className="w-3 h-3" />
                     </button>
                   </span>
