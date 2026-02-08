@@ -2,7 +2,7 @@ import { createClient } from './client'
 
 export type Listing = {
   id: string
-  category: 'housing' | 'cars' | 'jobs' | 'services'
+  category: 'housing' | 'cars' | 'terrain' | 'jobs' | 'services'
   title: string
   description: string | null
   price: number
@@ -29,6 +29,13 @@ export type Listing = {
   fuel_type: string | null
   transmission: string | null
   seats: number | null
+  // Terrain
+  terrain_type: string | null
+  zoning: string | null
+  title_deed: boolean | null
+  // GPS
+  latitude: number | null
+  longitude: number | null
   // Jobs
   job_type: string | null
   company_name: string | null

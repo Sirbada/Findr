@@ -18,6 +18,7 @@ const categoryConfig = [
   { value: 'all', label: 'Toutes', icon: '📋' },
   { value: 'housing', label: 'Immobilier', icon: '🏠' },
   { value: 'cars', label: 'Véhicules', icon: '🚗' },
+  { value: 'terrain', label: 'Terrain', icon: '🏗️' },
   { value: 'jobs', label: 'Emplois', icon: '💼' },
   { value: 'services', label: 'Services', icon: '⚙️' },
 ]
@@ -195,6 +196,8 @@ export default function AnnoncesPage() {
                   ? `/housing/${listing.id}`
                   : listing.category === 'cars'
                   ? `/cars/${listing.id}`
+                  : listing.category === 'terrain'
+                  ? `/terrain/${listing.id}`
                   : `/annonces/${listing.id}`
                 const isFav = favorites.has(listing.id)
 

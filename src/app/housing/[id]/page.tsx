@@ -395,6 +395,21 @@ export default function ListingDetailPage() {
                 </div>
               )}
 
+              {/* GPS Location */}
+              {listing.latitude && listing.longitude && (
+                <div className="bg-white rounded-xl p-6 shadow-sm">
+                  <h2 className="text-xl font-semibold text-gray-900 mb-4">📍 Localisation</h2>
+                  <a
+                    href={`https://www.google.com/maps?q=${listing.latitude},${listing.longitude}`}
+                    target="_blank" rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-3 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors font-medium"
+                  >
+                    <MapPin className="w-5 h-5" />
+                    Voir sur Google Maps
+                  </a>
+                </div>
+              )}
+
               {/* Host Profile */}
               {landlord && (
                 <div className="bg-white rounded-xl p-6 shadow-sm">

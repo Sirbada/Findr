@@ -29,7 +29,7 @@ export default function NewListingPage() {
   const router = useRouter()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [step, setStep] = useState(1)
-  const [category, setCategory] = useState<'housing' | 'cars' | 'jobs' | 'services' | null>(null)
+  const [category, setCategory] = useState<'housing' | 'cars' | 'terrain' | 'jobs' | 'services' | null>(null)
   const [loading, setLoading] = useState(false)
   const [uploadingImages, setUploadingImages] = useState(false)
   const [imageFiles, setImageFiles] = useState<File[]>([])
@@ -42,6 +42,8 @@ export default function NewListingPage() {
     whatsappNumber: '',
     housingType: '', rentalPeriod: 'month', rooms: '', bathrooms: '', surface: '',
     carBrand: '', carModel: '', carYear: '', fuelType: 'petrol', transmission: 'manual',
+    terrainType: '', zoning: '', titleDeed: false,
+    latitude: '', longitude: '',
   })
 
   useEffect(() => {
@@ -111,6 +113,16 @@ export default function NewListingPage() {
           fuel_type: formData.fuelType,
           transmission: formData.transmission,
         }),
+        ...(category === 'terrain' && {
+          terrain_type: formData.terrainType || null,
+          surface_m2: parseInt(formData.surface) || null,
+          zoning: formData.zoning || null,
+          title_deed: formData.titleDeed,
+        }),
+        ...(formData.latitude && formData.longitude && {
+          latitude: parseFloat(formData.latitude),
+          longitude: parseFloat(formData.longitude),
+        }),
       } as any)
       setStep(4)
     } catch (error) {
@@ -148,8 +160,9 @@ export default function NewListingPage() {
             <p className="text-gray-600 mb-8">Que souhaitez-vous publier ?</p>
             <div className="grid sm:grid-cols-2 gap-4">
               {[
-                { key: 'housing' as const, icon: Home, label: 'Immobilier', desc: 'Appartement, maison, terrain' },
+                { key: 'housing' as const, icon: Home, label: 'Immobilier', desc: 'Appartement, maison, studio' },
                 { key: 'cars' as const, icon: Car, label: 'Véhicules', desc: 'Voiture à louer ou vendre' },
+                { key: 'terrain' as const, icon: Home, label: 'Terrain', desc: 'Parcelle constructible, agricole' },
                 { key: 'jobs' as const, icon: Briefcase, label: 'Emplois', desc: "Offres d'emploi" },
                 { key: 'services' as const, icon: Wrench, label: 'Services', desc: 'Prestations de services' },
               ].map(cat => (
@@ -265,6 +278,74 @@ export default function NewListingPage() {
                   </div>
                 </div>
               )}
+
+              {category === 'terrain' && (
+                <>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Type de terrain</label>
+                      <select value={formData.terrainType} onChange={e => setFormData({...formData, terrainType: e.target.value})}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Sélectionner</option>
+                        <option value="constructible">Constructible</option>
+                        <option value="agricole">Agricole</option>
+                        <option value="commercial">Commercial</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Surface (m²)</label>
+                      <input type="number" value={formData.surface} onChange={e => setFormData({...formData, surface: e.target.value})}
+                        placeholder="500" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Zonage</label>
+                      <input type="text" value={formData.zoning} onChange={e => setFormData({...formData, zoning: e.target.value})}
+                        placeholder="Zone résidentielle" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div className="flex items-end">
+                      <label className="flex items-center gap-3 p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 w-full">
+                        <input type="checkbox" checked={formData.titleDeed}
+                          onChange={e => setFormData({...formData, titleDeed: e.target.checked})}
+                          className="w-5 h-5 text-blue-600 rounded" />
+                        <span className="text-sm font-medium text-gray-700">📄 Titre foncier disponible</span>
+                      </label>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* GPS Location */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">📍 Position GPS</label>
+                <div className="flex gap-3">
+                  <input type="text" value={formData.latitude ? `${formData.latitude}, ${formData.longitude}` : ''}
+                    readOnly placeholder="Cliquez sur le bouton →"
+                    className="flex-1 px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-600" />
+                  <button type="button" onClick={() => {
+                    if ('geolocation' in navigator) {
+                      navigator.geolocation.getCurrentPosition(
+                        (pos) => setFormData(prev => ({
+                          ...prev,
+                          latitude: pos.coords.latitude.toString(),
+                          longitude: pos.coords.longitude.toString()
+                        })),
+                        (err) => alert('Impossible d\'obtenir la position: ' + err.message),
+                        { enableHighAccuracy: true }
+                      )
+                    } else {
+                      alert('Géolocalisation non disponible')
+                    }
+                  }}
+                    className="px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap font-medium">
+                    📍 Ma position
+                  </button>
+                </div>
+                {formData.latitude && formData.longitude && (
+                  <p className="text-xs text-green-600 mt-1">✅ Position enregistrée ({parseFloat(formData.latitude).toFixed(5)}, {parseFloat(formData.longitude).toFixed(5)})</p>
+                )}
+              </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
