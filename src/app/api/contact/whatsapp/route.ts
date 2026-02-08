@@ -14,7 +14,7 @@ function getRealIP(request: NextRequest): string {
   if (realIP) {
     return realIP
   }
-  return request.ip || 'unknown'
+  return 'unknown'
 }
 
 function checkRateLimit(ip: string): boolean {
@@ -86,7 +86,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Get phone number (prioritize whatsapp_number, fallback to user profile phone)
-    const phone = listing.whatsapp_number || listing.profiles?.phone
+    const phone = listing.whatsapp_number || (listing.profiles as any)?.[0]?.phone
     
     if (!phone) {
       return NextResponse.json(

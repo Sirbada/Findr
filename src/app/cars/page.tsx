@@ -317,7 +317,7 @@ export default function CarsPage() {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <div>
               <h2 className="text-xl font-semibold text-gray-900">
-                {content.resultsFound(filteredListings.length)}
+                {content.resultsFound(filteredAndSortedListings.length)}
               </h2>
               <p className="text-sm text-gray-500">
                 {selectedCity !== 'all' ? selectedCity : content.allCameroon}
@@ -343,7 +343,7 @@ export default function CarsPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredListings.map((listing) => (
+              {filteredAndSortedListings.map((listing) => (
                 <Link 
                   key={listing.id} 
                   href={`/cars/${listing.id}`}
@@ -458,7 +458,7 @@ export default function CarsPage() {
           )}
 
           {/* No Results */}
-          {!loading && filteredListings.length === 0 && (
+          {!loading && filteredAndSortedListings.length === 0 && (
             <div className="text-center py-12">
               <Car className="w-12 h-12 text-gray-300 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">

@@ -13,43 +13,39 @@ export function Hero() {
 
   return (
     <section className="relative overflow-hidden">
-      {/* Background with gradient overlay */}
-      <div className="absolute inset-0">
-        <img
-          src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920&q=80"
-          alt="Cameroon cityscape"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-gray-900/90 via-gray-800/85 to-gray-900/90" />
-      </div>
-
-      {/* Animated shapes */}
+      {/* Background with Cameroon-inspired gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-green-900 via-gray-900 to-red-900" />
+      
+      {/* Cameroon flag accent stripes */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-10 w-64 h-64 bg-blue-400/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-300/10 rounded-full blur-3xl animate-pulse delay-700" />
+        <div className="absolute -top-20 -left-20 w-[600px] h-[600px] bg-green-500/8 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-[120%] bg-yellow-400/6 blur-3xl rotate-12" />
+        <div className="absolute -bottom-20 -right-20 w-[500px] h-[500px] bg-red-500/8 rounded-full blur-3xl animate-pulse delay-700" />
+        {/* Star accent */}
+        <div className="absolute top-16 right-1/4 text-yellow-400/20 text-8xl">★</div>
       </div>
 
       <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
         <div className="text-center">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm mb-6">
-            <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
-            {lang === 'fr' ? 'La première plateforme immobilière au Cameroun' : 'Cameroon\'s #1 real estate platform'}
+            <span className="inline-flex gap-0.5"><span className="w-2 h-2 bg-green-400 rounded-full" /><span className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse" /><span className="w-2 h-2 bg-red-400 rounded-full" /></span>
+            {lang === 'fr' ? 'Le marketplace du Cameroun' : 'Cameroon\'s marketplace'}
           </div>
 
           {/* Main headline */}
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
             {lang === 'fr' ? (
-              <>Trouvez votre <span className="text-blue-400">prochain chez-vous</span></>
+              <>Trouvez tout au <span className="text-yellow-400">Cameroun</span></>
             ) : (
-              <>Find your <span className="text-blue-400">next home</span></>
+              <>Find everything in <span className="text-yellow-400">Cameroon</span></>
             )}
           </h1>
           
           <p className="text-xl text-gray-100 mb-10 max-w-2xl mx-auto">
             {lang === 'fr' 
-              ? 'Des milliers de logements et véhicules vous attendent à Douala, Yaoundé et partout au Cameroun'
-              : 'Thousands of properties and vehicles waiting for you in Douala, Yaoundé and across Cameroon'}
+              ? 'Logements, véhicules, emplois et services — Douala, Yaoundé et partout au Cameroun'
+              : 'Housing, vehicles, jobs and services — Douala, Yaoundé and across Cameroon'}
           </p>
 
           {/* Search Card */}

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { 
   ArrowLeft, Home, Car, Upload, X, MapPin, 
   DollarSign, Image as ImageIcon, Loader2, CheckCircle
@@ -46,6 +47,7 @@ const amenities = [
 
 export default function NewListingPage() {
   const { user } = useAuth()
+  const router = useRouter()
   const [step, setStep] = useState(1)
   const [category, setCategory] = useState<'housing' | 'cars' | 'jobs' | 'services' | null>(null)
   const [loading, setLoading] = useState(false)
@@ -150,10 +152,10 @@ export default function NewListingPage() {
       <header className="bg-white shadow-sm">
         <div className="max-w-3xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link href="/dashboard" className="flex items-center text-gray-600 hover:text-blue-600">
+            <button onClick={() => router.back()} className="flex items-center text-gray-600 hover:text-blue-600">
               <ArrowLeft className="w-5 h-5 mr-2" />
               Retour
-            </Link>
+            </button>
             <span className="text-sm text-gray-500">
               Étape {step} / 3
             </span>
