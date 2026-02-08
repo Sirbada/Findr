@@ -30,6 +30,7 @@ export default function HousingPage() {
   const [selectedType, setSelectedType] = useState('all')
   const [selectedPrice, setSelectedPrice] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
+  const [sortBy, setSortBy] = useState('newest')
 
   // Get neighborhoods for selected city
   const availableNeighborhoods = selectedCity !== 'all' 
@@ -87,6 +88,18 @@ export default function HousingPage() {
     resultsFound: (count: number) => lang === 'fr' 
       ? `${count} logement${count > 1 ? 's' : ''} trouvé${count > 1 ? 's' : ''}`
       : `${count} ${count === 1 ? 'property' : 'properties'} found`,
+    sortBy: lang === 'fr' ? 'Trier par' : 'Sort by',
+    sortOptions: lang === 'fr' ? [
+      { value: 'newest', label: 'Plus récent' },
+      { value: 'price-low', label: 'Prix croissant' },
+      { value: 'price-high', label: 'Prix décroissant' },
+      { value: 'popular', label: 'Plus populaire' },
+    ] : [
+      { value: 'newest', label: 'Newest' },
+      { value: 'price-low', label: 'Price: Low to High' },
+      { value: 'price-high', label: 'Price: High to Low' },
+      { value: 'popular', label: 'Most Popular' },
+    ],
     allCameroon: lang === 'fr' ? 'Tout le Cameroun' : 'All Cameroon',
     filters: lang === 'fr' ? 'Filtres' : 'Filters',
     featured: t.listings.featured,
@@ -112,25 +125,41 @@ export default function HousingPage() {
     fetchListings()
   }, [])
 
-  // Filter listings
-  const filteredListings = listings.filter(listing => {
-    if (selectedCity !== 'all' && listing.city !== selectedCity) return false
-    if (selectedNeighborhood !== 'all' && listing.neighborhood?.toLowerCase() !== selectedNeighborhood) return false
-    if (selectedType !== 'all' && listing.housing_type !== selectedType) return false
-    if (searchQuery && !listing.title.toLowerCase().includes(searchQuery.toLowerCase())) return false
-    
-    // Price filter
-    if (selectedPrice !== 'all') {
-      const price = listing.price
-      if (selectedPrice === '0-50000' && price > 50000) return false
-      if (selectedPrice === '50000-100000' && (price < 50000 || price > 100000)) return false
-      if (selectedPrice === '100000-200000' && (price < 100000 || price > 200000)) return false
-      if (selectedPrice === '200000-500000' && (price < 200000 || price > 500000)) return false
-      if (selectedPrice === '500000+' && price < 500000) return false
+  // Filter and sort listings
+  const filteredAndSortedListings = (() => {
+    let filtered = listings.filter(listing => {
+      if (selectedCity !== 'all' && listing.city !== selectedCity) return false
+      if (selectedNeighborhood !== 'all' && listing.neighborhood?.toLowerCase() !== selectedNeighborhood) return false
+      if (selectedType !== 'all' && listing.housing_type !== selectedType) return false
+      if (searchQuery && !listing.title.toLowerCase().includes(searchQuery.toLowerCase()) && 
+          !listing.description?.toLowerCase().includes(searchQuery.toLowerCase())) return false
+      
+      // Price filter
+      if (selectedPrice !== 'all') {
+        const price = listing.price
+        if (selectedPrice === '0-50000' && price > 50000) return false
+        if (selectedPrice === '50000-100000' && (price < 50000 || price > 100000)) return false
+        if (selectedPrice === '100000-200000' && (price < 100000 || price > 200000)) return false
+        if (selectedPrice === '200000-500000' && (price < 200000 || price > 500000)) return false
+        if (selectedPrice === '500000+' && price < 500000) return false
+      }
+      
+      return true
+    })
+
+    // Sort listings
+    switch (sortBy) {
+      case 'price-low':
+        return filtered.sort((a, b) => a.price - b.price)
+      case 'price-high':
+        return filtered.sort((a, b) => b.price - a.price)
+      case 'popular':
+        return filtered.sort((a, b) => b.views - a.views)
+      case 'newest':
+      default:
+        return filtered.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
     }
-    
-    return true
-  })
+  })()
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -273,7 +302,7 @@ export default function HousingPage() {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <div>
               <h2 className="text-xl font-semibold text-gray-900">
-                {content.resultsFound(filteredListings.length)}
+                {content.resultsFound(filteredAndSortedListings.length)}
               </h2>
               <p className="text-sm text-gray-500">
                 {selectedNeighborhood !== 'all' 
@@ -284,18 +313,34 @@ export default function HousingPage() {
               </p>
             </div>
             
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
+              {/* Sort Dropdown */}
+              <div className="relative">
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="pl-3 pr-8 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
+                >
+                  {content.sortOptions.map(option => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+              </div>
+
               {/* View Toggle */}
               <div className="flex bg-gray-100 rounded-lg p-1">
                 <button
                   onClick={() => setView('grid')}
-                  className={`p-2 rounded ${view === 'grid' ? 'bg-white shadow-sm' : ''}`}
+                  className={`p-2 rounded transition-colors ${view === 'grid' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-600 hover:text-gray-900'}`}
                 >
                   <Grid className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => setView('list')}
-                  className={`p-2 rounded ${view === 'list' ? 'bg-white shadow-sm' : ''}`}
+                  className={`p-2 rounded transition-colors ${view === 'list' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-600 hover:text-gray-900'}`}
                 >
                   <List className="w-4 h-4" />
                 </button>
@@ -320,7 +365,7 @@ export default function HousingPage() {
                 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' 
                 : 'grid-cols-1'
             }`}>
-              {filteredListings.map((listing) => (
+              {filteredAndSortedListings.map((listing) => (
                 <Link 
                   key={listing.id} 
                   href={`/housing/${listing.id}`}

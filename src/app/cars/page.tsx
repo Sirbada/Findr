@@ -26,6 +26,7 @@ export default function CarsPage() {
   const [selectedBrand, setSelectedBrand] = useState('all')
   const [selectedFuel, setSelectedFuel] = useState('all')
   const [rentalType, setRentalType] = useState<'rent' | 'buy'>('rent')
+  const [sortBy, setSortBy] = useState('newest')
 
   // Translated content
   const content = {
@@ -89,6 +90,19 @@ export default function CarsPage() {
     seats: lang === 'fr' ? 'places' : 'seats',
     noResults: lang === 'fr' ? 'Aucun véhicule trouvé' : 'No vehicles found',
     tryDifferent: lang === 'fr' ? 'Essayez de modifier vos critères de recherche' : 'Try adjusting your search criteria',
+    sortOptions: lang === 'fr' ? [
+      { value: 'newest', label: 'Plus récent' },
+      { value: 'price-low', label: 'Prix croissant' },
+      { value: 'price-high', label: 'Prix décroissant' },
+      { value: 'year-new', label: 'Plus récent (année)' },
+      { value: 'popular', label: 'Plus populaire' },
+    ] : [
+      { value: 'newest', label: 'Newest' },
+      { value: 'price-low', label: 'Price: Low to High' },
+      { value: 'price-high', label: 'Price: High to Low' },
+      { value: 'year-new', label: 'Newest Year' },
+      { value: 'popular', label: 'Most Popular' },
+    ],
   }
 
   // Get fuel type label
@@ -107,12 +121,43 @@ export default function CarsPage() {
     fetchListings()
   }, [])
 
-  // Filter listings
-  const filteredListings = listings.filter(listing => {
-    if (selectedCity !== 'all' && listing.city !== selectedCity) return false
-    if (selectedBrand !== 'all' && listing.car_brand !== selectedBrand) return false
-    return true
-  })
+  // Filter and sort listings
+  const filteredAndSortedListings = (() => {
+    let filtered = listings.filter(listing => {
+      if (selectedCity !== 'all' && listing.city !== selectedCity) return false
+      if (selectedBrand !== 'all' && listing.car_brand !== selectedBrand) return false
+      if (selectedFuel !== 'all' && listing.fuel_type !== selectedFuel) return false
+      
+      // Filter by rental type
+      if (rentalType === 'rent' && !listing.price_per_day) return false
+      if (rentalType === 'buy' && listing.price_per_day) return false
+      
+      return true
+    })
+
+    // Sort listings
+    switch (sortBy) {
+      case 'price-low':
+        return filtered.sort((a, b) => {
+          const priceA = rentalType === 'rent' ? (a.price_per_day || 0) : a.price
+          const priceB = rentalType === 'rent' ? (b.price_per_day || 0) : b.price
+          return priceA - priceB
+        })
+      case 'price-high':
+        return filtered.sort((a, b) => {
+          const priceA = rentalType === 'rent' ? (a.price_per_day || 0) : a.price
+          const priceB = rentalType === 'rent' ? (b.price_per_day || 0) : b.price
+          return priceB - priceA
+        })
+      case 'popular':
+        return filtered.sort((a, b) => b.views - a.views)
+      case 'year-new':
+        return filtered.sort((a, b) => (b.car_year || 0) - (a.car_year || 0))
+      case 'newest':
+      default:
+        return filtered.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    }
+  })()
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">

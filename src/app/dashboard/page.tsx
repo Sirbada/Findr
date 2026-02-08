@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { 
   Home, Car, Plus, Heart, MessageSquare, Settings, LogOut, 
@@ -8,37 +8,12 @@ import {
   Wallet, TrendingUp, Bell
 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { useAuth } from '@/lib/auth/context'
+import { getUserListings, deleteListing, type Listing } from '@/lib/supabase/queries'
 
-// Demo user data
-const demoUser = {
-  name: 'Jean Kamga',
-  email: 'jean.kamga@email.com',
-  phone: '+237 6 99 00 00 00',
-  avatar: null,
-  isVerified: false,
+// Demo balance data (in real app, this would come from payment system)
+const demoWallet = {
   balance: 15000, // XAF
-  listings: [
-    {
-      id: '1',
-      title: 'Appartement 3 pièces à Bonanjo',
-      category: 'housing',
-      price: 250000,
-      status: 'active',
-      views: 145,
-      image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=200',
-      createdAt: '2026-01-28',
-    },
-    {
-      id: '2',
-      title: 'Toyota Corolla 2020',
-      category: 'cars',
-      price: 25000,
-      status: 'pending',
-      views: 0,
-      image: 'https://images.unsplash.com/photo-1568844293986-8c1a5c14e3f7?w=200',
-      createdAt: '2026-01-30',
-    },
-  ],
   favorites: 5,
   messages: 3,
 }
@@ -62,8 +37,56 @@ const statusLabels = {
 }
 
 export default function DashboardPage() {
+  const { user, loading: authLoading } = useAuth()
   const [activeTab, setActiveTab] = useState<'listings' | 'favorites' | 'messages' | 'wallet'>('listings')
-  const user = demoUser
+  const [listings, setListings] = useState<Listing[]>([])
+  const [loading, setLoading] = useState(true)
+
+  // Fetch user listings
+  useEffect(() => {
+    async function fetchListings() {
+      if (!user?.id) {
+        setLoading(false)
+        return
+      }
+      
+      try {
+        const data = await getUserListings(user.id)
+        setListings(data)
+      } catch (error) {
+        console.error('Error fetching listings:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchListings()
+  }, [user?.id])
+
+  const handleDeleteListing = async (id: string) => {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer cette annonce ?')) {
+      return
+    }
+
+    try {
+      await deleteListing(id)
+      setListings(prev => prev.filter(l => l.id !== id))
+    } catch (error) {
+      console.error('Error deleting listing:', error)
+      alert('Erreur lors de la suppression. Veuillez réessayer.')
+    }
+  }
+
+  if (authLoading || !user) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-500">Chargement...</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -125,7 +148,7 @@ export default function DashboardPage() {
                   <Wallet className="w-5 h-5 text-blue-200" />
                 </div>
                 <div className="text-2xl font-bold">
-                  {user.balance.toLocaleString()} <span className="text-sm">XAF</span>
+                  {demoWallet.balance.toLocaleString()} <span className="text-sm">XAF</span>
                 </div>
                 <button className="mt-3 w-full bg-white/20 hover:bg-white/30 text-white text-sm py-2 rounded-lg transition-colors">
                   + Recharger
@@ -145,7 +168,7 @@ export default function DashboardPage() {
                   <Home className="w-5 h-5" />
                   <span>Mes annonces</span>
                   <span className="ml-auto bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full">
-                    {user.listings.length}
+                    {listings.length}
                   </span>
                 </button>
                 <button
@@ -159,7 +182,7 @@ export default function DashboardPage() {
                   <Heart className="w-5 h-5" />
                   <span>Favoris</span>
                   <span className="ml-auto bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full">
-                    {user.favorites}
+                    {demoWallet.favorites}
                   </span>
                 </button>
                 <Link
@@ -172,9 +195,9 @@ export default function DashboardPage() {
                 >
                   <MessageSquare className="w-5 h-5" />
                   <span>Messages</span>
-                  {user.messages > 0 && (
+                  {demoWallet.messages > 0 && (
                     <span className="ml-auto bg-blue-600 text-white text-xs px-2 py-0.5 rounded-full">
-                      {user.messages}
+                      {demoWallet.messages}
                     </span>
                   )}
                 </Link>
@@ -226,7 +249,7 @@ export default function DashboardPage() {
                       <div>
                         <p className="text-sm text-gray-500">Annonces actives</p>
                         <p className="text-2xl font-bold text-gray-900">
-                          {user.listings.filter(l => l.status === 'active').length}
+                          {listings.filter(l => l.status === 'active').length}
                         </p>
                       </div>
                       <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
@@ -239,7 +262,7 @@ export default function DashboardPage() {
                       <div>
                         <p className="text-sm text-gray-500">Vues totales</p>
                         <p className="text-2xl font-bold text-gray-900">
-                          {user.listings.reduce((acc, l) => acc + l.views, 0)}
+                          {listings.reduce((acc, l) => acc + l.views, 0)}
                         </p>
                       </div>
                       <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -262,7 +285,7 @@ export default function DashboardPage() {
 
                 {/* Listings */}
                 <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-                  {user.listings.length === 0 ? (
+                  {listings.length === 0 ? (
                     <div className="p-12 text-center">
                       <Home className="w-12 h-12 text-gray-300 mx-auto mb-4" />
                       <h3 className="text-lg font-medium text-gray-900 mb-2">
@@ -280,15 +303,16 @@ export default function DashboardPage() {
                     </div>
                   ) : (
                     <div className="divide-y">
-                      {user.listings.map((listing) => {
+                      {listings.map((listing) => {
                         const StatusIcon = statusIcons[listing.status as keyof typeof statusIcons]
                         return (
                           <div key={listing.id} className="p-4 flex items-center gap-4 hover:bg-gray-50">
-                            <img
-                              src={listing.image}
-                              alt={listing.title}
-                              className="w-20 h-20 object-cover rounded-lg"
-                            />
+                            <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center">
+                              {listing.category === 'housing' && <Home className="w-8 h-8 text-gray-400" />}
+                              {listing.category === 'cars' && <Car className="w-8 h-8 text-gray-400" />}
+                              {listing.category === 'jobs' && <span className="text-2xl">💼</span>}
+                              {listing.category === 'services' && <span className="text-2xl">⚙️</span>}
+                            </div>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 mb-1">
                                 <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium ${statusColors[listing.status as keyof typeof statusColors]}`}>
@@ -296,7 +320,10 @@ export default function DashboardPage() {
                                   {statusLabels[listing.status as keyof typeof statusLabels]}
                                 </span>
                                 <span className="text-xs text-gray-400">
-                                  {listing.category === 'housing' ? '🏠' : '🚗'}
+                                  {listing.category === 'housing' && '🏠'}
+                                  {listing.category === 'cars' && '🚗'}
+                                  {listing.category === 'jobs' && '💼'}
+                                  {listing.category === 'services' && '⚙️'}
                                 </span>
                               </div>
                               <h3 className="font-medium text-gray-900 truncate">
@@ -305,12 +332,21 @@ export default function DashboardPage() {
                               <p className="text-sm text-gray-500">
                                 {listing.price.toLocaleString()} XAF • {listing.views} vues
                               </p>
+                              <p className="text-xs text-gray-400">
+                                {listing.city} • {new Date(listing.created_at).toLocaleDateString('fr-FR')}
+                              </p>
                             </div>
                             <div className="flex items-center gap-2">
-                              <button className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg">
+                              <Link 
+                                href={`/dashboard/edit/${listing.id}`}
+                                className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg"
+                              >
                                 <Edit className="w-4 h-4" />
-                              </button>
-                              <button className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg">
+                              </Link>
+                              <button 
+                                onClick={() => handleDeleteListing(listing.id)}
+                                className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg"
+                              >
                                 <Trash2 className="w-4 h-4" />
                               </button>
                             </div>

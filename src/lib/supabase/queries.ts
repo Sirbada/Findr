@@ -114,3 +114,79 @@ export async function searchListings(query: string) {
 
   return data as Listing[]
 }
+
+export async function createListing(listingData: Partial<Listing>) {
+  const supabase = createClient()
+  
+  const { data, error } = await supabase
+    .from('listings')
+    .insert([{
+      ...listingData,
+      status: 'active', // Auto-approve for now
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    }])
+    .select()
+    .single()
+
+  if (error) {
+    console.error('Error creating listing:', error)
+    throw error
+  }
+
+  return data as Listing
+}
+
+export async function updateListing(id: string, updates: Partial<Listing>) {
+  const supabase = createClient()
+  
+  const { data, error } = await supabase
+    .from('listings')
+    .update({
+      ...updates,
+      updated_at: new Date().toISOString()
+    })
+    .eq('id', id)
+    .select()
+    .single()
+
+  if (error) {
+    console.error('Error updating listing:', error)
+    throw error
+  }
+
+  return data as Listing
+}
+
+export async function deleteListing(id: string) {
+  const supabase = createClient()
+  
+  const { error } = await supabase
+    .from('listings')
+    .delete()
+    .eq('id', id)
+
+  if (error) {
+    console.error('Error deleting listing:', error)
+    throw error
+  }
+
+  return true
+}
+
+export async function getUserListings(userId: string) {
+  const supabase = createClient()
+  
+  const { data, error } = await supabase
+    .from('listings')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.error('Error fetching user listings:', error)
+    return []
+  }
+
+  return data as Listing[]
+}

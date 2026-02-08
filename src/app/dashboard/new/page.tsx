@@ -1,12 +1,15 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { 
   ArrowLeft, Home, Car, Upload, X, MapPin, 
   DollarSign, Image as ImageIcon, Loader2, CheckCircle
 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { getNeighborhoodsByCity } from '@/lib/data/neighborhoods'
+import { useAuth } from '@/lib/auth/context'
+import { createListing } from '@/lib/supabase/queries'
 
 const housingTypes = [
   { value: 'apartment', label: 'Appartement' },
@@ -30,6 +33,11 @@ const cities = [
   'Kribi', 'Limbe', 'Buea', 'Maroua', 'Ngaoundéré'
 ]
 
+const carCategories = [
+  { value: 'services', label: 'Services' },
+  { value: 'jobs', label: 'Emplois' },
+]
+
 const amenities = [
   'Climatisation', 'Parking', 'Gardien', 'Eau chaude',
   'WiFi', 'Meublé', 'Jardin', 'Balcon', 'Groupe électrogène',
@@ -37,11 +45,13 @@ const amenities = [
 ]
 
 export default function NewListingPage() {
+  const { user } = useAuth()
   const [step, setStep] = useState(1)
-  const [category, setCategory] = useState<'housing' | 'cars' | null>(null)
+  const [category, setCategory] = useState<'housing' | 'cars' | 'jobs' | 'services' | null>(null)
   const [loading, setLoading] = useState(false)
   const [images, setImages] = useState<string[]>([])
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([])
+  const [availableNeighborhoods, setAvailableNeighborhoods] = useState<any[]>([])
 
   // Form data
   const [formData, setFormData] = useState({
@@ -50,6 +60,7 @@ export default function NewListingPage() {
     price: '',
     city: '',
     neighborhood: '',
+    whatsappNumber: user?.phone || '',
     // Housing
     housingType: '',
     rentalPeriod: 'month',
@@ -66,13 +77,63 @@ export default function NewListingPage() {
     pricePerDay: '',
   })
 
+  // Update neighborhoods when city changes
+  useEffect(() => {
+    if (formData.city) {
+      const neighborhoods = getNeighborhoodsByCity(formData.city)
+      setAvailableNeighborhoods(neighborhoods)
+      setFormData(prev => ({ ...prev, neighborhood: '' }))
+    } else {
+      setAvailableNeighborhoods([])
+    }
+  }, [formData.city])
+
   const handleSubmit = async () => {
+    if (!user?.id) {
+      alert('Vous devez être connecté pour publier une annonce')
+      return
+    }
+
     setLoading(true)
-    // TODO: Implement actual submission
-    setTimeout(() => {
-      setLoading(false)
+    try {
+      const listingData = {
+        category,
+        title: formData.title,
+        description: formData.description,
+        price: parseInt(formData.price) || 0,
+        city: formData.city,
+        neighborhood: formData.neighborhood,
+        images: [], // Photos will be handled separately
+        user_id: user.id,
+        // Housing specific
+        ...(category === 'housing' && {
+          housing_type: formData.housingType,
+          rental_period: formData.rentalPeriod,
+          rooms: parseInt(formData.rooms) || null,
+          bathrooms: parseInt(formData.bathrooms) || null,
+          surface_m2: parseInt(formData.surface) || null,
+          furnished: formData.furnished,
+          amenities: selectedAmenities,
+        }),
+        // Cars specific
+        ...(category === 'cars' && {
+          car_brand: formData.carBrand,
+          car_model: formData.carModel,
+          car_year: parseInt(formData.carYear) || null,
+          fuel_type: formData.fuelType,
+          transmission: formData.transmission,
+          price_per_day: parseInt(formData.pricePerDay) || null,
+        })
+      }
+
+      await createListing(listingData)
       setStep(4) // Success step
-    }, 2000)
+    } catch (error) {
+      console.error('Error creating listing:', error)
+      alert('Erreur lors de la création de l\'annonce. Veuillez réessayer.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const toggleAmenity = (amenity: string) => {
@@ -155,10 +216,48 @@ export default function NewListingPage() {
                   <Car className="w-7 h-7 text-blue-600" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                  Véhicule
+                  Véhicules
                 </h3>
                 <p className="text-sm text-gray-500">
                   Voiture à louer ou à vendre
+                </p>
+              </button>
+
+              <button
+                onClick={() => { setCategory('jobs'); setStep(2); }}
+                className={`p-6 rounded-2xl border-2 text-left transition-all ${
+                  category === 'jobs'
+                    ? 'border-blue-600 bg-blue-50'
+                    : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
+                }`}
+              >
+                <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+                  <span className="text-2xl text-blue-600">💼</span>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                  Emplois
+                </h3>
+                <p className="text-sm text-gray-500">
+                  Offres d'emploi et opportunités de carrière
+                </p>
+              </button>
+
+              <button
+                onClick={() => { setCategory('services'); setStep(2); }}
+                className={`p-6 rounded-2xl border-2 text-left transition-all ${
+                  category === 'services'
+                    ? 'border-blue-600 bg-blue-50'
+                    : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
+                }`}
+              >
+                <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+                  <span className="text-2xl text-blue-600">⚙️</span>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                  Services
+                </h3>
+                <p className="text-sm text-gray-500">
+                  Prestation de services et expertise
                 </p>
               </button>
             </div>
@@ -391,7 +490,7 @@ export default function NewListingPage() {
                     onChange={(e) => setFormData({...formData, city: e.target.value})}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
-                    <option value="">Sélectionner</option>
+                    <option value="">Sélectionner une ville</option>
                     {cities.map(city => (
                       <option key={city} value={city}>{city}</option>
                     ))}
@@ -399,16 +498,46 @@ export default function NewListingPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Quartier
+                    Quartier *
                   </label>
-                  <input
-                    type="text"
+                  <select
                     value={formData.neighborhood}
                     onChange={(e) => setFormData({...formData, neighborhood: e.target.value})}
-                    placeholder="Ex: Bonanjo, Bastos..."
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    disabled={!formData.city}
+                    className={`w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      !formData.city ? 'bg-gray-50 text-gray-400' : ''
+                    }`}
+                  >
+                    <option value="">
+                      {!formData.city ? 'Sélectionnez d\'abord une ville' : 'Choisir un quartier'}
+                    </option>
+                    {availableNeighborhoods.map(neighborhood => (
+                      <option key={neighborhood.value} value={neighborhood.value}>
+                        {neighborhood.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Contact */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Numéro WhatsApp *
+                </label>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">+237</span>
+                  <input
+                    type="tel"
+                    value={formData.whatsappNumber.replace('+237', '').trim()}
+                    onChange={(e) => setFormData({...formData, whatsappNumber: `+237 ${e.target.value}`})}
+                    placeholder="6 XX XX XX XX"
+                    className="w-full pl-16 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  🟢 Les acheteurs vous contacteront via WhatsApp
+                </p>
               </div>
 
               {/* Price */}
