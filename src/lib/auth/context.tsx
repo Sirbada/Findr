@@ -1,6 +1,8 @@
 'use client'
 
 import React, { createContext, useContext, useEffect, useState } from 'react'
+import { createClient } from '@/lib/supabase/client'
+import type { User as SupabaseUser } from '@supabase/supabase-js'
 
 export interface User {
   id: string
@@ -8,61 +10,83 @@ export interface User {
   phone?: string
   name?: string
   avatar_url?: string
+  isVerified?: boolean
+  balance?: number
 }
 
 interface AuthContextType {
   user: User | null
+  supabaseUser: SupabaseUser | null
   loading: boolean
-  signIn: (phone: string) => Promise<void>
+  signUp: (email: string, password: string, fullName: string) => Promise<{ error?: string }>
+  signIn: (email: string, password: string) => Promise<{ error?: string }>
   signOut: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
+function mapUser(su: SupabaseUser | null): User | null {
+  if (!su) return null
+  return {
+    id: su.id,
+    email: su.email,
+    phone: su.phone,
+    name: su.user_metadata?.full_name || su.email?.split('@')[0] || 'Utilisateur',
+    avatar_url: su.user_metadata?.avatar_url,
+    isVerified: !!su.email_confirmed_at,
+    balance: 0,
+  }
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
+  const [supabaseUser, setSupabaseUser] = useState<SupabaseUser | null>(null)
   const [loading, setLoading] = useState(true)
+  const supabase = createClient()
 
-  // Demo user for development
   useEffect(() => {
-    // Simulate loading and set a demo user
-    const timer = setTimeout(() => {
-      const demoUser = {
-        id: 'demo-user-123',
-        phone: '+237 6 99 00 00 00',
-        name: 'Jean Kamga',
-        email: 'jean.kamga@example.com'
-      }
-      setUser(demoUser)
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSupabaseUser(session?.user ?? null)
       setLoading(false)
-    }, 500)
+    })
 
-    return () => clearTimeout(timer)
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSupabaseUser(session?.user ?? null)
+      setLoading(false)
+    })
+
+    return () => subscription.unsubscribe()
   }, [])
 
-  const signIn = async (phone: string) => {
-    // Mock sign in - in production this would use Supabase auth
-    setLoading(true)
-    await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate API call
-    
-    const mockUser = {
-      id: `user-${Date.now()}`,
-      phone,
-      name: 'Utilisateur Demo'
-    }
-    setUser(mockUser)
-    setLoading(false)
+  const signUp = async (email: string, password: string, fullName: string) => {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { full_name: fullName },
+        emailRedirectTo: `${window.location.origin}/dashboard`,
+      },
+    })
+    if (error) return { error: error.message }
+    return {}
+  }
+
+  const signIn = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) return { error: error.message }
+    return {}
   }
 
   const signOut = async () => {
-    setLoading(true)
-    await new Promise(resolve => setTimeout(resolve, 500))
-    setUser(null)
-    setLoading(false)
+    await supabase.auth.signOut()
+    setSupabaseUser(null)
   }
 
+  const user = mapUser(supabaseUser)
+
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, supabaseUser, loading, signUp, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   )

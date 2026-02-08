@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { useAuth } from '@/lib/auth/context'
+import { useRouter } from 'next/navigation'
 import { getUserListings, deleteListing, type Listing } from '@/lib/supabase/queries'
 
 // Demo balance data (in real app, this would come from payment system)
@@ -37,7 +38,8 @@ const statusLabels = {
 }
 
 export default function DashboardPage() {
-  const { user, loading: authLoading } = useAuth()
+  const { user, loading: authLoading, signOut } = useAuth()
+  const router = useRouter()
   const [activeTab, setActiveTab] = useState<'listings' | 'favorites' | 'messages' | 'wallet'>('listings')
   const [listings, setListings] = useState<Listing[]>([])
   const [loading, setLoading] = useState(true)
@@ -76,6 +78,12 @@ export default function DashboardPage() {
       alert('Erreur lors de la suppression. Veuillez réessayer.')
     }
   }
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/login')
+    }
+  }, [authLoading, user, router])
 
   if (authLoading || !user) {
     return (
@@ -220,7 +228,7 @@ export default function DashboardPage() {
                   <Settings className="w-5 h-5" />
                   <span>Paramètres</span>
                 </Link>
-                <button className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50">
+                <button onClick={async () => { await signOut(); router.push('/') }} className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50">
                   <LogOut className="w-5 h-5" />
                   <span>Déconnexion</span>
                 </button>

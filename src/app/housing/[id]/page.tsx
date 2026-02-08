@@ -502,9 +502,17 @@ export default function ListingDetailPage() {
                     </Button>
                   )}
                   
-                  <Button variant="secondary" size="lg" className="w-full">
-                    {content.sendMessage}
-                  </Button>
+                  {listing.whatsapp_number && (
+                    <a
+                      href={`https://wa.me/${listing.whatsapp_number.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Bonjour, je suis intéressé(e) par votre annonce "${listing.title}" sur Findr.`)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Button variant="secondary" size="lg" className="w-full bg-green-50 hover:bg-green-100 text-green-700 border-green-200">
+                        💬 Contacter via WhatsApp
+                      </Button>
+                    </a>
+                  )}
                 </div>
 
                 {/* Safety Note */}

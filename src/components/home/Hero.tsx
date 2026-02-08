@@ -88,7 +88,7 @@ export function Hero() {
                   className="w-full pl-12 pr-4 py-4 bg-gray-50 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
                 />
               </div>
-              <Link href={activeTab === 'housing' ? '/housing' : '/cars'}>
+              <Link href={searchQuery ? `/annonces?q=${encodeURIComponent(searchQuery)}` : (activeTab === 'housing' ? '/housing' : '/cars')}>
                 <Button size="lg" className="w-full sm:w-auto px-8 py-4 text-lg">
                   <Search className="w-5 h-5 mr-2" />
                   {lang === 'fr' ? 'Rechercher' : 'Search'}

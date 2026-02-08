@@ -2,7 +2,7 @@ import { createClient } from './client'
 
 export type Listing = {
   id: string
-  category: 'housing' | 'cars' | 'jobs'
+  category: 'housing' | 'cars' | 'jobs' | 'services'
   title: string
   description: string | null
   price: number
@@ -34,6 +34,9 @@ export type Listing = {
   company_name: string | null
   salary_min: number | null
   salary_max: number | null
+  whatsapp_number: string | null
+  user_id: string
+  is_active: boolean
   created_at: string
 }
 
