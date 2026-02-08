@@ -98,12 +98,12 @@ export default function TerrainPage() {
       <Header />
 
       {/* Hero */}
-      <div className="bg-gradient-to-b from-green-50 to-white py-16 min-h-[280px] flex items-center">
+      <div className="bg-gradient-to-r from-stone-800 to-stone-900 py-16 min-h-[280px] flex items-center text-white">
         <div className="max-w-6xl mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
             Investissez dans la terre — le seul actif qui ne ment pas
           </h1>
-          <p className="text-xl font-light text-gray-600 mb-12 max-w-2xl">
+          <p className="text-xl font-light text-gray-200 mb-12 max-w-2xl">
             Terrains titrés et vérifiés — constructibles, agricoles, commerciaux
           </p>
 

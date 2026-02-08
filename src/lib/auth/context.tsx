@@ -19,6 +19,7 @@ interface AuthContextType {
   supabaseUser: SupabaseUser | null
   loading: boolean
   signUp: (email: string, password: string, fullName: string) => Promise<{ error?: string }>
+  signUpPhone: (phone: string, password: string, fullName: string) => Promise<{ error?: string }>
   signIn: (email: string, password: string) => Promise<{ error?: string }>
   signOut: () => Promise<void>
 }
@@ -65,7 +66,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       password,
       options: {
         data: { full_name: fullName },
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: `http://72.60.34.105:3002/auth/callback`,
+      },
+    })
+    if (error) return { error: error.message }
+    return {}
+  }
+
+  const signUpPhone = async (phone: string, password: string, fullName: string) => {
+    const { error } = await supabase.auth.signUp({
+      phone,
+      password,
+      options: {
+        data: { full_name: fullName },
       },
     })
     if (error) return { error: error.message }
@@ -86,7 +99,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const user = mapUser(supabaseUser)
 
   return (
-    <AuthContext.Provider value={{ user, supabaseUser, loading, signUp, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, supabaseUser, loading, signUp, signUpPhone, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   )

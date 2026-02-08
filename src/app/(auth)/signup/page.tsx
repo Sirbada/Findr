@@ -3,15 +3,18 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Mail, ArrowRight, Loader2, User, Lock } from 'lucide-react'
+import { Mail, ArrowRight, Loader2, User, Lock, Phone } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { useAuth } from '@/lib/auth/context'
 
 export default function SignupPage() {
   const router = useRouter()
-  const { signUp } = useAuth()
+  const { signUp, signUpPhone } = useAuth()
+  const [signupMethod, setSignupMethod] = useState<'email' | 'phone'>('email')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [countryCode, setCountryCode] = useState('+237')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -23,12 +26,24 @@ export default function SignupPage() {
     setLoading(true)
     setError(null)
 
-    const result = await signUp(email, password, name)
-    if (result.error) {
-      setError(result.error)
+    try {
+      let result
+      if (signupMethod === 'phone') {
+        const fullPhone = countryCode + phone
+        result = await signUpPhone(fullPhone, password, name)
+      } else {
+        result = await signUp(email, password, name)
+      }
+      
+      if (result.error) {
+        setError(result.error)
+        setLoading(false)
+      } else {
+        router.push('/verify-email')
+      }
+    } catch (err) {
+      setError('Erreur de connexion. Vérifiez votre connection internet.')
       setLoading(false)
-    } else {
-      router.push('/verify-email')
     }
   }
 
@@ -53,6 +68,34 @@ export default function SignupPage() {
             </div>
           )}
 
+          {/* Tab Toggle */}
+          <div className="flex gap-2 mb-6">
+            <button
+              type="button"
+              onClick={() => setSignupMethod('email')}
+              className={`flex-1 py-3 px-4 text-sm font-medium rounded-lg transition-all duration-200 ${
+                signupMethod === 'email'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              <Mail className="w-4 h-4 inline mr-2" />
+              Email
+            </button>
+            <button
+              type="button"
+              onClick={() => setSignupMethod('phone')}
+              className={`flex-1 py-3 px-4 text-sm font-medium rounded-lg transition-all duration-200 ${
+                signupMethod === 'phone'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              <Phone className="w-4 h-4 inline mr-2" />
+              Téléphone
+            </button>
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Nom complet</label>
@@ -69,20 +112,48 @@ export default function SignupPage() {
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Adresse email</label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="vous@exemple.com"
-                  required
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+            {signupMethod === 'email' ? (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Adresse email</label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="vous@exemple.com"
+                    required
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
               </div>
-            </div>
+            ) : (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Numéro de téléphone</label>
+                <div className="flex gap-2">
+                  <select
+                    value={countryCode}
+                    onChange={(e) => setCountryCode(e.target.value)}
+                    className="px-3 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                  >
+                    <option value="+237">🇨🇲 +237</option>
+                    <option value="+33">🇫🇷 +33</option>
+                    <option value="+1">🇺🇸 +1</option>
+                  </select>
+                  <div className="relative flex-1">
+                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="690123456"
+                      required
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
