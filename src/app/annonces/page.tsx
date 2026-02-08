@@ -128,83 +128,82 @@ export default function AnnoncesPage() {
       <Header />
 
       {/* Hero Header */}
-      <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white py-12 min-h-[250px] flex items-center">
+      <div className="bg-gradient-to-b from-purple-50 to-white py-16 min-h-[280px] flex items-center">
         <div className="max-w-6xl mx-auto px-4">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
             Trouvez le bon service, le bon emploi — aujourd'hui
           </h1>
-          <p className="text-purple-100 mb-8">
+          <p className="text-xl font-light text-gray-600 mb-12 max-w-2xl">
             Artisans, professionnels et opportunités vérifiés au Cameroun
           </p>
         </div>
       </div>
 
       {/* Search Header */}
-      <div className="bg-white border-b sticky top-16 z-40">
-        <div className="max-w-6xl mx-auto px-4 py-4">
+      <div className="bg-white border-b border-gray-100 sticky top-16 z-40">
+        <div className="max-w-6xl mx-auto px-4 py-6">
           {/* Search bar */}
-          <div className="flex gap-2 mb-4">
+          <div className="flex gap-4 mb-6">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                 placeholder="Rechercher une annonce..."
-                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full pl-12 pr-4 py-4 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-300 focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white text-lg"
               />
             </div>
-            <Button onClick={handleSearch} size="lg">
+            <Button onClick={handleSearch} size="lg" className="px-8 py-4 bg-blue-600 hover:bg-blue-700 rounded-2xl font-medium hover:scale-[1.02] transition-all duration-300">
               <Search className="w-5 h-5" />
             </Button>
           </div>
 
           {/* Category pills */}
-          <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
+          <div className="flex gap-3 overflow-x-auto pb-3 -mx-4 px-4 scrollbar-hide">
             {categoryConfig.map(cat => (
               <button
                 key={cat.value}
                 onClick={() => setSelectedCategory(cat.value)}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+                className={`flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-300 ${
                   selectedCategory === cat.value
-                    ? 'bg-blue-600 text-white'
+                    ? 'bg-blue-600 text-white shadow-sm'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
-                <span>{cat.icon}</span>
                 {cat.label}
               </button>
             ))}
           </div>
 
           {/* Filters row */}
-          <div className="flex gap-2 mt-3 flex-wrap">
+          <div className="flex gap-4 mt-4 flex-wrap">
             <select
               value={selectedCity}
               onChange={(e) => setSelectedCity(e.target.value)}
-              className="px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white"
+              className="px-4 py-3 text-sm border border-gray-200 rounded-2xl bg-gray-50 hover:bg-white transition-all duration-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-300"
             >
-              {cities.map(c => <option key={c} value={c}>{c === 'Toutes' ? '📍 Toutes les villes' : c}</option>)}
+              {cities.map(c => <option key={c} value={c}>{c === 'Toutes' ? 'Toutes les villes' : c}</option>)}
             </select>
             <select
               value={selectedPrice}
               onChange={(e) => setSelectedPrice(e.target.value)}
-              className="px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white"
+              className="px-4 py-3 text-sm border border-gray-200 rounded-2xl bg-gray-50 hover:bg-white transition-all duration-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-300"
             >
-              {priceRanges.map(r => <option key={r.value} value={r.value}>💰 {r.label}</option>)}
+              {priceRanges.map(r => <option key={r.value} value={r.value}>{r.label}</option>)}
             </select>
             <select
               value={selectedDuree}
               onChange={(e) => setSelectedDuree(e.target.value)}
-              className="px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white"
+              className="px-4 py-3 text-sm border border-gray-200 rounded-2xl bg-gray-50 hover:bg-white transition-all duration-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-300"
             >
-              {dureeOptions.map(d => <option key={d.value} value={d.value}>⏰ {d.label}</option>)}
+              {dureeOptions.map(d => <option key={d.value} value={d.value}>{d.label}</option>)}
             </select>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white ml-auto"
+              className="px-4 py-3 text-sm border border-gray-200 rounded-2xl bg-gray-50 hover:bg-white transition-all duration-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 ml-auto"
             >
               <option value="newest">Plus récent</option>
               <option value="price-low">Prix croissant</option>
@@ -252,7 +251,7 @@ export default function AnnoncesPage() {
                 return (
                   <div key={listing.id} className="group">
                     <Link href={detailHref}>
-                      <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all">
+                      <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-300 border border-gray-100">
                         {/* Image */}
                         <div className="relative h-48 overflow-hidden">
                           {listing.images?.[0] ? (

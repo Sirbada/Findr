@@ -98,50 +98,50 @@ export default function TerrainPage() {
       <Header />
 
       {/* Hero */}
-      <div className="bg-gradient-to-r from-green-600 to-emerald-700 text-white py-12 min-h-[250px] flex items-center">
+      <div className="bg-gradient-to-b from-green-50 to-white py-16 min-h-[280px] flex items-center">
         <div className="max-w-6xl mx-auto px-4">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
             Investissez dans la terre — le seul actif qui ne ment pas
           </h1>
-          <p className="text-green-100 mb-8">
+          <p className="text-xl font-light text-gray-600 mb-12 max-w-2xl">
             Terrains titrés et vérifiés — constructibles, agricoles, commerciaux
           </p>
 
-          <div className="bg-white rounded-xl p-4 shadow-lg">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1">Ville</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Ville</label>
                 <select value={selectedCity} onChange={e => setSelectedCity(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-emerald-500">
+                  className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white">
                   {cities.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1">Type de terrain</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Type de terrain</label>
                 <select value={selectedType} onChange={e => setSelectedType(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-emerald-500">
+                  className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white">
                   {terrainTypes.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1">Durée</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Durée</label>
                 <select value={selectedDuree} onChange={e => setSelectedDuree(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-emerald-500">
+                  className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white">
                   {dureeOptions.map(d => <option key={d.value} value={d.value}>{d.label}</option>)}
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1">Trier par</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Trier par</label>
                 <select value={sortBy} onChange={e => setSortBy(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-emerald-500">
+                  className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white">
                   <option value="newest">Plus récent</option>
                   <option value="price-low">Prix croissant</option>
                   <option value="price-high">Prix décroissant</option>
                 </select>
               </div>
               <div className="flex items-end">
-                <Button size="lg" className="w-full bg-emerald-600 hover:bg-emerald-700">
-                  <Search className="w-5 h-5 mr-2" /> Rechercher
+                <Button size="lg" className="w-full bg-blue-600 hover:bg-blue-700 rounded-2xl py-3 font-medium hover:scale-[1.02] transition-all duration-300">
+                  <Search className="w-5 h-5 mr-3" /> Rechercher
                 </Button>
               </div>
             </div>
@@ -179,7 +179,7 @@ export default function TerrainPage() {
                 return (
                   <div key={listing.id} className="group">
                     <Link href={`/terrain/${listing.id}`}>
-                      <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all">
+                      <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-300 border border-gray-100">
                         <div className="relative h-48 overflow-hidden">
                           {listing.images?.[0] ? (
                             <img src={listing.images[0]} alt={listing.title}

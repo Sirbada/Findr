@@ -203,46 +203,43 @@ export default function HousingPage() {
       <Header />
       
       {/* Hero Search */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-12 min-h-[250px] flex items-center">
+      <div className="bg-gradient-to-b from-slate-50 to-white py-16 min-h-[280px] flex items-center">
         <div className="max-w-6xl mx-auto px-4">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
             {content.heroTitle}
           </h1>
-          <p className="text-blue-100 mb-8">
+          <p className="text-xl font-light text-gray-600 mb-12 max-w-2xl">
             {content.heroSubtitle}
           </p>
           
           {/* Search Bar */}
-          <div className="bg-white rounded-xl p-4 shadow-lg">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
               {/* City */}
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1">{content.city}</label>
-                <div className="relative">
-                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <select
-                    value={selectedCity}
-                    onChange={(e) => setSelectedCity(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  >
-                    {content.cities.map(city => (
-                      <option key={city.value} value={city.value}>{city.label}</option>
-                    ))}
-                  </select>
-                </div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{content.city}</label>
+                <select
+                  value={selectedCity}
+                  onChange={(e) => setSelectedCity(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white"
+                >
+                  {content.cities.map(city => (
+                    <option key={city.value} value={city.value}>{city.label}</option>
+                  ))}
+                </select>
               </div>
 
               {/* Neighborhood (Quartier) */}
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1">
-                  {content.neighborhood} 📍
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {content.neighborhood}
                 </label>
                 <select
                   value={selectedNeighborhood}
                   onChange={(e) => setSelectedNeighborhood(e.target.value)}
                   disabled={selectedCity === 'all'}
-                  className={`w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    selectedCity === 'all' ? 'bg-gray-50 text-gray-400 cursor-not-allowed' : ''
+                  className={`w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 ${
+                    selectedCity === 'all' ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-50 hover:bg-white'
                   }`}
                 >
                   <option value="all">
@@ -256,11 +253,11 @@ export default function HousingPage() {
               
               {/* Type */}
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1">{content.propertyType}</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{content.propertyType}</label>
                 <select
                   value={selectedType}
                   onChange={(e) => setSelectedType(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white"
                 >
                   {content.propertyTypes.map(type => (
                     <option key={type.value} value={type.value}>{type.label}</option>
@@ -270,11 +267,11 @@ export default function HousingPage() {
               
               {/* Price */}
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1">{content.budget}</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{content.budget}</label>
                 <select
                   value={selectedPrice}
                   onChange={(e) => setSelectedPrice(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white"
                 >
                   {content.priceRanges.map(range => (
                     <option key={range.value} value={range.value}>{range.label}</option>
@@ -284,11 +281,11 @@ export default function HousingPage() {
 
               {/* Durée */}
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1">{content.duree}</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{content.duree}</label>
                 <select
                   value={selectedDuree}
                   onChange={(e) => setSelectedDuree(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white"
                 >
                   {content.dureeOptions.map(duree => (
                     <option key={duree.value} value={duree.value}>{duree.label}</option>
@@ -298,8 +295,8 @@ export default function HousingPage() {
               
               {/* Search Button */}
               <div className="flex items-end">
-                <Button size="lg" className="w-full bg-blue-600 hover:bg-blue-700">
-                  <Search className="w-5 h-5 mr-2" />
+                <Button size="lg" className="w-full bg-blue-600 hover:bg-blue-700 rounded-2xl py-3 font-medium hover:scale-[1.02] transition-all duration-300">
+                  <Search className="w-5 h-5 mr-3" />
                   {content.search}
                 </Button>
               </div>
@@ -307,44 +304,44 @@ export default function HousingPage() {
 
             {/* Active Filters Tags */}
             {(selectedCity !== 'all' || selectedNeighborhood !== 'all' || selectedType !== 'all' || selectedPrice !== 'all' || selectedDuree !== 'all') && (
-              <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t">
+              <div className="flex flex-wrap gap-3 mt-6 pt-6 border-t border-gray-100">
                 {selectedCity !== 'all' && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">
-                    📍 {selectedCity}
-                    <button onClick={() => setSelectedCity('all')} className="hover:text-blue-900">
-                      <X className="w-3 h-3" />
+                  <span className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
+                    {selectedCity}
+                    <button onClick={() => setSelectedCity('all')} className="hover:text-gray-900 transition-colors">
+                      <X className="w-4 h-4" />
                     </button>
                   </span>
                 )}
                 {selectedNeighborhood !== 'all' && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">
-                    🏘️ {availableNeighborhoods.find(n => n.value === selectedNeighborhood)?.label}
-                    <button onClick={() => setSelectedNeighborhood('all')} className="hover:text-green-900">
-                      <X className="w-3 h-3" />
+                  <span className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
+                    {availableNeighborhoods.find(n => n.value === selectedNeighborhood)?.label}
+                    <button onClick={() => setSelectedNeighborhood('all')} className="hover:text-gray-900 transition-colors">
+                      <X className="w-4 h-4" />
                     </button>
                   </span>
                 )}
                 {selectedType !== 'all' && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">
-                    🏠 {content.propertyTypes.find(t => t.value === selectedType)?.label}
-                    <button onClick={() => setSelectedType('all')} className="hover:text-blue-900">
-                      <X className="w-3 h-3" />
+                  <span className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
+                    {content.propertyTypes.find(t => t.value === selectedType)?.label}
+                    <button onClick={() => setSelectedType('all')} className="hover:text-gray-900 transition-colors">
+                      <X className="w-4 h-4" />
                     </button>
                   </span>
                 )}
                 {selectedPrice !== 'all' && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm">
-                    💰 {content.priceRanges.find(r => r.value === selectedPrice)?.label}
-                    <button onClick={() => setSelectedPrice('all')} className="hover:text-yellow-900">
-                      <X className="w-3 h-3" />
+                  <span className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
+                    {content.priceRanges.find(r => r.value === selectedPrice)?.label}
+                    <button onClick={() => setSelectedPrice('all')} className="hover:text-gray-900 transition-colors">
+                      <X className="w-4 h-4" />
                     </button>
                   </span>
                 )}
                 {selectedDuree !== 'all' && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">
-                    ⏰ {content.dureeOptions.find(d => d.value === selectedDuree)?.label}
-                    <button onClick={() => setSelectedDuree('all')} className="hover:text-purple-900">
-                      <X className="w-3 h-3" />
+                  <span className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
+                    {content.dureeOptions.find(d => d.value === selectedDuree)?.label}
+                    <button onClick={() => setSelectedDuree('all')} className="hover:text-gray-900 transition-colors">
+                      <X className="w-4 h-4" />
                     </button>
                   </span>
                 )}
@@ -430,7 +427,7 @@ export default function HousingPage() {
                   href={`/housing/${listing.id}`}
                   className={`group ${view === 'list' ? 'flex gap-4' : ''}`}
                 >
-                  <div className={`bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all ${
+                  <div className={`bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-300 border border-gray-100 ${
                     view === 'list' ? 'flex flex-1' : ''
                   }`}>
                     {/* Image */}

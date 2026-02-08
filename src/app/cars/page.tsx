@@ -200,52 +200,52 @@ export default function CarsPage() {
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
       
-      {/* Hero Search - Sixt/Mobile.de Style */}
-      <div className="bg-gradient-to-r from-black to-orange-600 text-white py-12 min-h-[250px] flex items-center">
+      {/* Hero Search */}
+      <div className="bg-gradient-to-b from-gray-50 to-white py-16 min-h-[280px] flex items-center">
         <div className="max-w-6xl mx-auto px-4">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
             {content.heroTitle}
           </h1>
-          <p className="text-blue-100 mb-8">
+          <p className="text-xl font-light text-gray-600 mb-12 max-w-2xl">
             {content.heroSubtitle}
           </p>
           
-          {/* Rent/Buy Toggle - Sixt Style */}
-          <div className="flex gap-2 mb-6">
+          {/* Rent/Buy Toggle */}
+          <div className="flex gap-3 mb-8">
             <button
               onClick={() => setRentalType('rent')}
-              className={`px-6 py-2 rounded-full font-medium transition-colors ${
+              className={`px-8 py-3 rounded-full font-medium transition-all duration-300 ${
                 rentalType === 'rent'
-                  ? 'bg-white text-blue-600'
-                  : 'bg-white/20 text-white hover:bg-white/30'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              🚗 {content.rent}
+              {content.rent}
             </button>
             <button
               onClick={() => setRentalType('buy')}
-              className={`px-6 py-2 rounded-full font-medium transition-colors ${
+              className={`px-8 py-3 rounded-full font-medium transition-all duration-300 ${
                 rentalType === 'buy'
-                  ? 'bg-white text-blue-600'
-                  : 'bg-white/20 text-white hover:bg-white/30'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              🏷️ {content.buy}
+              {content.buy}
             </button>
           </div>
           
-          {/* Search Bar - Mobile.de Style */}
-          <div className="bg-white rounded-xl p-4 shadow-lg">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+          {/* Search Bar */}
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
               {/* Location */}
-              <div className="flex-1">
-                <label className="block text-xs font-medium text-gray-500 mb-1">
-                  📍 {content.pickupLocation}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {content.pickupLocation}
                 </label>
                 <select
                   value={selectedCity}
                   onChange={(e) => setSelectedCity(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white"
                 >
                   {content.cities.map(city => (
                     <option key={city.value} value={city.value}>{city.label}</option>
@@ -256,24 +256,24 @@ export default function CarsPage() {
               {rentalType === 'rent' && (
                 <>
                   {/* Date From */}
-                  <div className="flex-1">
-                    <label className="block text-xs font-medium text-gray-500 mb-1">
-                      📅 {content.startDate}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {content.startDate}
                     </label>
                     <input
                       type="date"
-                      className="w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white"
                     />
                   </div>
                   
                   {/* Date To */}
-                  <div className="flex-1">
-                    <label className="block text-xs font-medium text-gray-500 mb-1">
-                      📅 {content.endDate}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {content.endDate}
                     </label>
                     <input
                       type="date"
-                      className="w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white"
                     />
                   </div>
                 </>
@@ -282,14 +282,14 @@ export default function CarsPage() {
               {rentalType === 'buy' && (
                 <>
                   {/* Brand */}
-                  <div className="flex-1">
-                    <label className="block text-xs font-medium text-gray-500 mb-1">
-                      🚘 {content.brand}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {content.brand}
                     </label>
                     <select
                       value={selectedBrand}
                       onChange={(e) => setSelectedBrand(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white"
                     >
                       {content.carBrands.map(brand => (
                         <option key={brand.value} value={brand.value}>{brand.label}</option>
@@ -299,13 +299,13 @@ export default function CarsPage() {
                   
                   {/* Fuel */}
                   <div>
-                    <label className="block text-xs font-medium text-gray-500 mb-1">
-                      ⛽ {content.fuel}
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {content.fuel}
                     </label>
                     <select
                       value={selectedFuel}
                       onChange={(e) => setSelectedFuel(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white"
                     >
                       {content.fuelTypes.map(fuel => (
                         <option key={fuel.value} value={fuel.value}>{fuel.label}</option>
@@ -315,11 +315,11 @@ export default function CarsPage() {
 
                   {/* Durée */}
                   <div>
-                    <label className="block text-xs font-medium text-gray-500 mb-1">{content.duree}</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{content.duree}</label>
                     <select
                       value={selectedDuree}
                       onChange={(e) => setSelectedDuree(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white"
                     >
                       {content.dureeOptions.map(duree => (
                         <option key={duree.value} value={duree.value}>{duree.label}</option>
@@ -331,8 +331,8 @@ export default function CarsPage() {
               
               {/* Search Button */}
               <div className="flex items-end">
-                <Button size="lg" className="w-full bg-orange-600 hover:bg-orange-700">
-                  <Search className="w-5 h-5 mr-2" />
+                <Button size="lg" className="w-full bg-blue-600 hover:bg-blue-700 rounded-2xl py-3 font-medium hover:scale-[1.02] transition-all duration-300">
+                  <Search className="w-5 h-5 mr-3" />
                   {content.search}
                 </Button>
               </div>
@@ -341,25 +341,7 @@ export default function CarsPage() {
         </div>
       </div>
 
-      {/* Quick Categories - Sixt Style */}
-      <div className="bg-white border-b py-4">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex gap-4 overflow-x-auto pb-2">
-            {content.categories.map((cat, idx) => (
-              <button
-                key={idx}
-                className="flex-shrink-0 flex items-center gap-3 px-4 py-2 bg-gray-50 hover:bg-blue-50 rounded-lg transition-colors"
-              >
-                <span className="text-2xl">{cat.icon}</span>
-                <div className="text-left">
-                  <p className="font-medium text-gray-900">{cat.label}</p>
-                  <p className="text-xs text-gray-500">{cat.desc}</p>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
+      {/* Quick Categories removed for Apple clean style */}
 
       {/* Results */}
       <main className="flex-1 py-8">
@@ -400,7 +382,7 @@ export default function CarsPage() {
                   href={`/cars/${listing.id}`}
                   className="group"
                 >
-                  <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all">
+                  <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-300 border border-gray-100">
                     {/* Image */}
                     <div className="relative h-48 overflow-hidden">
                       {listing.images?.[0] ? (
