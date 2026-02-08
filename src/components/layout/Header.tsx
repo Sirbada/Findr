@@ -34,6 +34,9 @@ export function Header() {
               <Link href="/cars" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">
                 🚗 {t.nav.cars}
               </Link>
+              <Link href="/annonces" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">
+                📋 {t.nav.ads}
+              </Link>
             </div>
           </div>
 
@@ -83,6 +86,9 @@ export function Header() {
               </Link>
               <Link href="/cars" className="block text-gray-600 hover:text-blue-600 font-medium">
                 {t.nav.cars}
+              </Link>
+              <Link href="/annonces" className="block text-gray-600 hover:text-blue-600 font-medium">
+                {t.nav.ads}
               </Link>
               <hr className="my-3" />
               <button
