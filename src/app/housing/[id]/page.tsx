@@ -8,10 +8,12 @@ import {
   CheckCircle, Calendar, Phone, MessageSquare, User,
   Wifi, Car, Shield, Zap, Droplets, Wind, ChevronLeft, ChevronRight
 } from 'lucide-react'
+import { z } from 'zod'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { Button } from '@/components/ui/Button'
-import { getListing, Listing } from '@/lib/supabase/queries'
+import { DatePicker } from '@/components/ui/DatePicker'
+import { getProperty, Property } from '@/lib/supabase/queries'
 import { useTranslation } from '@/lib/i18n/context'
 import { WhatsAppButton, WhatsAppFloatingButton } from '@/components/ui/WhatsAppButton'
 import { ListingShare, FacebookShareButton, WhatsAppShareButton } from '@/components/ui/SocialShare'
@@ -32,15 +34,65 @@ const amenityIcons: { [key: string]: any } = {
 export default function HousingDetailPage() {
   const params = useParams()
   const { t, lang } = useTranslation()
-  const [listing, setListing] = useState<Listing | null>(null)
+  const [listing, setListing] = useState<Property | null>(null)
   const [loading, setLoading] = useState(true)
   const [currentImage, setCurrentImage] = useState(0)
   const [showPhone, setShowPhone] = useState(false)
+  const [startDate, setStartDate] = useState('')
+  const [endDate, setEndDate] = useState('')
+  const [bookingStatus, setBookingStatus] = useState('')
+  const [bookingLoading, setBookingLoading] = useState(false)
+  const [bookingConflicts, setBookingConflicts] = useState<Array<{ start_date: string; end_date: string }>>([])
+  const [bookingStep, setBookingStep] = useState<'idle' | 'requested' | 'confirm' | 'done'>('idle')
+
+  const bookingSchema = z.object({
+    startDate: z.string().min(1),
+    endDate: z.string().min(1),
+  })
+
+  const nightsBetween = (start: string, end: string) => {
+    const s = new Date(start)
+    const e = new Date(end)
+    const diff = Math.max(0, e.getTime() - s.getTime())
+    return Math.max(1, Math.ceil(diff / (1000 * 60 * 60 * 24)))
+  }
+
+  const handleBooking = async () => {
+    setBookingStatus('')
+    const parsed = bookingSchema.safeParse({ startDate, endDate })
+    if (!parsed.success || !listing) {
+      setBookingStatus('Veuillez sélectionner des dates valides.')
+      return
+    }
+    setBookingLoading(true)
+    setBookingStep('requested')
+    const res = await fetch('/api/bookings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        property_id: listing.id,
+        start_date: startDate,
+        end_date: endDate,
+      }),
+    })
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({}))
+      setBookingStatus(error.error || 'Erreur de réservation. Réessayez.')
+      setBookingConflicts(error.conflicts || [])
+      setBookingStep('idle')
+      setBookingLoading(false)
+      return
+    }
+    setBookingStatus('Réservation créée. Confirmez le paiement sur votre téléphone.')
+    setBookingConflicts([])
+    setBookingStep('confirm')
+    setBookingLoading(false)
+  }
 
   useEffect(() => {
     async function fetchListing() {
       if (params.id) {
-        const data = await getListing(params.id as string)
+        const data = await getProperty(params.id as string)
         setListing(data)
       }
       setLoading(false)
@@ -86,11 +138,11 @@ export default function HousingDetailPage() {
     if (!type) return ''
     const types: { [key: string]: string } = {
       apartment: t.housingTypes.apartment,
-      house: t.housingTypes.house,
-      studio: t.housingTypes.studio,
-      room: t.housingTypes.room,
-      land: t.housingTypes.land,
       villa: t.housingTypes.villa,
+      studio: t.housingTypes.studio,
+      hotel_room: lang === 'fr' ? 'Hôtel' : 'Hotel',
+      guest_house: lang === 'fr' ? "Maison d'hote" : 'Guest house',
+      compound: lang === 'fr' ? 'Compound' : 'Compound',
     }
     return types[type] || type
   }
@@ -112,14 +164,14 @@ export default function HousingDetailPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-[color:var(--background)]">
       <Header />
       
       <main className="flex-1">
         {/* Breadcrumb */}
         <div className="bg-white border-b">
           <div className="max-w-6xl mx-auto px-4 py-3">
-            <Link href="/housing" className="flex items-center text-sm text-gray-600 hover:text-blue-600">
+            <Link href="/housing" className="flex items-center text-sm text-gray-600 hover:text-[color:var(--green-700)]">
               <ArrowLeft className="w-4 h-4 mr-2" />
               {t.listings.backToResults}
             </Link>
@@ -196,8 +248,8 @@ export default function HousingDetailPage() {
                           {t.listings.verified}
                         </span>
                       )}
-                      <span className="bg-blue-100 text-blue-700 text-xs font-medium px-2 py-1 rounded">
-                        {getHousingType(listing.housing_type)}
+                      <span className="bg-[color:var(--green-50)] text-[color:var(--green-700)] text-xs font-medium px-2 py-1 rounded">
+                        {getHousingType(listing.property_type)}
                       </span>
                     </div>
                     <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
@@ -210,7 +262,7 @@ export default function HousingDetailPage() {
                         id: params.id as string,
                         title: listing.title,
                         description: listing.description,
-                        price: listing.price,
+                        price: listing.price_per_night,
                         city: listing.city,
                         images: listing.images
                       }}
@@ -230,20 +282,20 @@ export default function HousingDetailPage() {
               </div>
 
               {/* Key Features */}
-              {(listing.rooms || listing.bathrooms || listing.surface_m2) && (
-                <div className="grid grid-cols-3 gap-4 p-4 bg-white rounded-xl shadow-sm">
-                  {listing.rooms && (
+              {(listing.bedrooms || listing.bathrooms || listing.surface_m2) && (
+                <div className="grid grid-cols-3 gap-4 p-4 bg-white rounded-3xl shadow-[var(--shadow-soft-sm)]">
+                  {listing.bedrooms && (
                     <div className="text-center">
-                      <Bed className="w-6 h-6 mx-auto mb-2 text-blue-600" />
-                      <p className="text-2xl font-bold text-gray-900">{listing.rooms}</p>
+                      <Bed className="w-6 h-6 mx-auto mb-2 text-[color:var(--green-600)]" />
+                      <p className="text-2xl font-bold text-gray-900">{listing.bedrooms}</p>
                       <p className="text-sm text-gray-500">
-                        {listing.rooms > 1 ? t.detail.bedroomsPlural : t.detail.bedrooms}
+                        {listing.bedrooms > 1 ? t.detail.bedroomsPlural : t.detail.bedrooms}
                       </p>
                     </div>
                   )}
                   {listing.bathrooms && (
                     <div className="text-center">
-                      <Bath className="w-6 h-6 mx-auto mb-2 text-blue-600" />
+                      <Bath className="w-6 h-6 mx-auto mb-2 text-[color:var(--green-600)]" />
                       <p className="text-2xl font-bold text-gray-900">{listing.bathrooms}</p>
                       <p className="text-sm text-gray-500">
                         {listing.bathrooms > 1 ? t.detail.bathroomsPlural : t.detail.bathrooms}
@@ -252,7 +304,7 @@ export default function HousingDetailPage() {
                   )}
                   {listing.surface_m2 && (
                     <div className="text-center">
-                      <Square className="w-6 h-6 mx-auto mb-2 text-blue-600" />
+                      <Square className="w-6 h-6 mx-auto mb-2 text-[color:var(--green-600)]" />
                       <p className="text-2xl font-bold text-gray-900">{listing.surface_m2}</p>
                       <p className="text-sm text-gray-500">m²</p>
                     </div>
@@ -277,8 +329,8 @@ export default function HousingDetailPage() {
                       const Icon = amenityIcons[amenity.toLowerCase()] || CheckCircle
                       return (
                         <div key={idx} className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
-                            <Icon className="w-5 h-5 text-blue-600" />
+                          <div className="w-10 h-10 bg-[color:var(--green-50)] rounded-xl flex items-center justify-center">
+                            <Icon className="w-5 h-5 text-[color:var(--green-600)]" />
                           </div>
                           <span className="text-gray-700">{getAmenityName(amenity)}</span>
                         </div>
@@ -291,22 +343,58 @@ export default function HousingDetailPage() {
 
             {/* Sidebar - Contact Card */}
             <div className="lg:col-span-1">
-              <div className="sticky top-24 bg-white rounded-xl shadow-lg p-6">
+              <div className="sticky top-24 bg-white rounded-3xl shadow-[var(--shadow-soft)] p-6">
                 {/* Price */}
                 <div className="mb-6">
-                  <span className="text-3xl font-bold text-blue-600">
-                    {formatPrice(listing.price)} XAF
+                  <span className="text-3xl font-bold text-[color:var(--green-700)]">
+                    {formatPrice(listing.price_per_night)} XAF
                   </span>
-                  {listing.rental_period !== 'sale' && (
-                    <span className="text-gray-500"> {t.listings.perMonth}</span>
-                  )}
+                  <span className="text-gray-500"> {t.listings.perNight}</span>
                   {listing.furnished && (
-                    <span className="block text-sm text-green-600 mt-1">✓ {t.detail.furnished}</span>
+                    <span className="block text-sm text-[color:var(--green-700)] mt-1">? {t.detail.furnished}</span>
                   )}
+                </div>
+
+                {/* Booking Dates */}
+                <div className="space-y-3 mb-4">
+                  <DatePicker
+                    label={lang === 'fr' ? 'Arrivée' : 'Check-in'}
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                  />
+                  <DatePicker
+                    label={lang === 'fr' ? 'Départ' : 'Check-out'}
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                  />
+                </div>
+
+                <div className="mb-4 rounded-2xl bg-[color:var(--green-50)] px-4 py-3 text-xs text-[color:var(--green-700)]">
+                  <div className="flex items-center justify-between">
+                    <span className={bookingStep === 'requested' ? 'font-semibold' : ''}>1. Demande</span>
+                    <span className={bookingStep === 'confirm' ? 'font-semibold' : ''}>2. Confirmer (USSD)</span>
+                    <span className={bookingStep === 'done' ? 'font-semibold' : ''}>3. Terminé</span>
+                  </div>
                 </div>
 
                 {/* Contact Buttons - WhatsApp Priority */}
                 <div className="space-y-3">
+                  <Button size="lg" onClick={handleBooking} disabled={bookingLoading} className="w-full">
+                    {bookingLoading ? '...' : lang === 'fr' ? 'Réserver maintenant' : 'Book now'}
+                  </Button>
+                  {bookingStatus && (
+                    <p className="text-xs text-[color:var(--green-700)]">{bookingStatus}</p>
+                  )}
+                  {bookingConflicts.length > 0 && (
+                    <div className="text-xs text-red-600">
+                      Dates indisponibles :
+                      {bookingConflicts.map((c, idx) => (
+                        <div key={idx}>
+                          {c.start_date} → {c.end_date}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                   <WhatsAppButton
                     phone="+237 6 99 00 00 00"
                     listingTitle={listing.title}
@@ -318,8 +406,8 @@ export default function HousingDetailPage() {
                 {/* Owner Info */}
                 <div className="mt-6 pt-6 border-t">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                      <User className="w-6 h-6 text-blue-600" />
+                    <div className="w-12 h-12 bg-[color:var(--green-50)] rounded-full flex items-center justify-center">
+                      <User className="w-6 h-6 text-[color:var(--green-600)]" />
                     </div>
                     <div>
                       <p className="font-medium text-gray-900">{t.detail.owner}</p>
@@ -351,3 +439,6 @@ export default function HousingDetailPage() {
     </div>
   )
 }
+
+
+

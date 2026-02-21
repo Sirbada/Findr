@@ -7,8 +7,10 @@ import {
   Search, MoreVertical, Check, X, Ban, Eye, Trash2, 
   ChevronDown, Filter, Download, Bell, LogOut,
   TrendingUp, AlertTriangle, Clock, CheckCircle,
-  DollarSign, PieChart, BarChart3, Calendar, ArrowUpRight, ArrowDownRight
+  DollarSign, PieChart, BarChart3, Calendar, ArrowUpRight, ArrowDownRight, UserCog
 } from 'lucide-react'
+import { z } from 'zod'
+import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/Button'
 import { 
   generateDemoTransactions, 
@@ -87,39 +89,97 @@ const recentUsers = [
   { id: '4', name: 'Paul Nkeng', email: 'paul@email.com', status: 'pending', listings: 1, joined: '2026-01-31' },
 ]
 
+const adminRoles = [
+  { id: 'sa1', name: 'Bada', email: 'bada@findr.cm', role: 'super_admin', scope: 'global' },
+  { id: 'a1', name: 'Marie Fotso', email: 'marie@email.com', role: 'admin', scope: 'global' },
+]
+
 // Generate demo transactions for revenue tracking
 const demoTransactions = generateDemoTransactions(75)
 
-type Tab = 'overview' | 'listings' | 'users' | 'reports' | 'revenue' | 'settings'
+type Tab = 'overview' | 'listings' | 'users' | 'reports' | 'revenue' | 'roles' | 'settings'
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<Tab>('overview')
   const [searchQuery, setSearchQuery] = useState('')
+  const [roleForm, setRoleForm] = useState({ userId: '', role: 'admin' })
+  const [roleStatus, setRoleStatus] = useState('')
+  const [trustForm, setTrustForm] = useState({ userId: '', score: 85 })
+  const [trustStatus, setTrustStatus] = useState('')
+
+  const roleSchema = z.object({
+    userId: z.string().uuid(),
+    role: z.enum(['admin', 'pro', 'user']),
+  })
+
+  const trustSchema = z.object({
+    userId: z.string().uuid(),
+    score: z.number().min(0).max(100),
+  })
+
+  const handleAssignRole = async () => {
+    setRoleStatus('')
+    const parsed = roleSchema.safeParse(roleForm)
+    if (!parsed.success) {
+      setRoleStatus('ID utilisateur invalide.')
+      return
+    }
+    const supabase = createClient()
+    const { error } = await supabase
+      .from('user_roles')
+      .upsert({ user_id: roleForm.userId, role: roleForm.role })
+    if (error) {
+      setRoleStatus('Accès refusé ou erreur réseau.')
+      return
+    }
+    setRoleStatus('Rôle mis à jour.')
+  }
+
+  const handleTrustUpdate = async () => {
+    setTrustStatus('')
+    const parsed = trustSchema.safeParse({
+      userId: trustForm.userId,
+      score: Number(trustForm.score),
+    })
+    if (!parsed.success) {
+      setTrustStatus('Entrée invalide.')
+      return
+    }
+    const supabase = createClient()
+    const { error } = await supabase
+      .from('trust_scores')
+      .upsert({ user_id: parsed.data.userId, score: parsed.data.score })
+    if (error) {
+      setTrustStatus('Accès refusé ou erreur réseau.')
+      return
+    }
+    setTrustStatus('Trust Score mis à jour.')
+  }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-[color:var(--background)]">
       {/* Top Bar */}
-      <header className="bg-white shadow-sm">
+      <header className="bg-[color:var(--glass)] backdrop-blur-md border-b border-white/40">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-[color:var(--green-600)] rounded-xl flex items-center justify-center shadow-[var(--shadow-soft-sm)]">
                 <span className="text-white font-bold">F</span>
               </div>
-              <span className="font-bold text-gray-900">Findr</span>
+              <span className="font-bold text-[color:var(--green-900)]">Findr</span>
             </Link>
-            <span className="bg-red-100 text-red-700 text-xs font-medium px-2 py-1 rounded">
+            <span className="bg-[color:var(--green-50)] text-[color:var(--green-700)] text-xs font-medium px-2 py-1 rounded-full">
               Admin Panel
             </span>
           </div>
           <div className="flex items-center gap-4">
-            <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+            <button className="relative p-2 text-[color:var(--green-700)] hover:bg-[color:var(--green-50)] rounded-lg">
               <Bell className="w-5 h-5" />
               <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
             </button>
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
-                <span className="text-emerald-600 font-semibold text-sm">A</span>
+              <div className="w-8 h-8 bg-[color:var(--green-50)] rounded-full flex items-center justify-center">
+                <span className="text-[color:var(--green-700)] font-semibold text-sm">A</span>
               </div>
               <span className="text-sm font-medium">Admin</span>
             </div>
@@ -129,7 +189,7 @@ export default function AdminPage() {
 
       <div className="flex">
         {/* Sidebar */}
-        <aside className="w-64 bg-white shadow-sm min-h-[calc(100vh-56px)] p-4">
+        <aside className="w-64 bg-[color:var(--card)] shadow-sm min-h-[calc(100vh-56px)] p-4">
           <nav className="space-y-1">
             {[
               { id: 'overview', icon: LayoutDashboard, label: 'Vue d\'ensemble' },
@@ -137,15 +197,16 @@ export default function AdminPage() {
               { id: 'listings', icon: Home, label: 'Annonces', badge: stats.pendingReview },
               { id: 'users', icon: Users, label: 'Utilisateurs' },
               { id: 'reports', icon: Flag, label: 'Signalements', badge: stats.reportedContent },
+              { id: 'roles', icon: UserCog, label: 'Rôles & Admins' },
               { id: 'settings', icon: Settings, label: 'Paramètres' },
             ].map((item) => (
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id as Tab)}
-                className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-colors ${
+                className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-colors ${
                   activeTab === item.id
-                    ? 'bg-emerald-50 text-emerald-600'
-                    : 'text-gray-600 hover:bg-gray-50'
+                    ? 'bg-[color:var(--green-50)] text-[color:var(--green-700)]'
+                    : 'text-[color:var(--green-700)] hover:bg-[color:var(--green-50)]'
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -161,7 +222,7 @@ export default function AdminPage() {
             ))}
           </nav>
 
-          <div className="mt-8 p-4 bg-gray-50 rounded-lg">
+          <div className="mt-8 p-4 bg-[color:var(--green-50)] rounded-2xl">
             <p className="text-xs text-gray-500 mb-2">Connecté en tant que</p>
             <p className="font-medium text-gray-900">Super Admin</p>
             <button className="mt-3 flex items-center gap-2 text-sm text-red-600 hover:text-red-700">
@@ -509,6 +570,107 @@ export default function AdminPage() {
                     </div>
                   ))}
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* Roles Tab */}
+          {activeTab === 'roles' && (
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 mb-6">Rôles & Admins</h1>
+
+              <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+                <h2 className="font-semibold text-gray-900 mb-2">Super Admin</h2>
+                <p className="text-sm text-gray-500 mb-4">
+                  Le Super Admin peut nommer des admins avec des droits limités. Les admins ne peuvent pas gérer les rôles.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <Button size="sm">Nommer un admin</Button>
+                  <Button size="sm" variant="outline">Inviter par email</Button>
+                </div>
+                <div className="mt-4 grid gap-3 md:grid-cols-[1.2fr_1fr_auto]">
+                  <input
+                    value={roleForm.userId}
+                    onChange={(e) => setRoleForm({ ...roleForm, userId: e.target.value })}
+                    placeholder="ID utilisateur (UUID)"
+                    className="rounded-2xl border border-[color:var(--green-100)] bg-white/80 px-4 py-2 text-sm"
+                  />
+                  <select
+                    value={roleForm.role}
+                    onChange={(e) => setRoleForm({ ...roleForm, role: e.target.value })}
+                    className="rounded-2xl border border-[color:var(--green-100)] bg-white/80 px-4 py-2 text-sm"
+                  >
+                    <option value="admin">Admin</option>
+                    <option value="pro">Pro</option>
+                    <option value="user">User</option>
+                  </select>
+                  <Button size="sm" onClick={handleAssignRole}>
+                    Appliquer
+                  </Button>
+                </div>
+                {roleStatus && (
+                  <p className="mt-3 text-xs text-[color:var(--green-700)]">{roleStatus}</p>
+                )}
+              </div>
+
+              <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+                <div className="p-4 border-b flex items-center justify-between">
+                  <h2 className="font-semibold text-gray-900">Administrateurs</h2>
+                </div>
+                <div className="divide-y">
+                  {adminRoles.map((admin) => (
+                    <div key={admin.id} className="p-4 flex items-center justify-between">
+                      <div>
+                        <p className="font-medium text-gray-900">{admin.name}</p>
+                        <p className="text-sm text-gray-500">{admin.email}</p>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className={`text-xs px-2 py-1 rounded-full ${
+                          admin.role === 'super_admin'
+                            ? 'bg-emerald-100 text-emerald-700'
+                            : 'bg-blue-100 text-blue-700'
+                        }`}>
+                          {admin.role === 'super_admin' ? 'Super Admin' : 'Admin'}
+                        </span>
+                        <Button size="sm" variant="outline">
+                          Configurer les accès
+                        </Button>
+                        {admin.role !== 'super_admin' && (
+                          <Button size="sm" className="bg-red-600 hover:bg-red-700">
+                            Retirer
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-6 bg-white rounded-xl shadow-sm p-6">
+                <h2 className="font-semibold text-gray-900 mb-2">Trust Score (Admin)</h2>
+                <p className="text-sm text-gray-500 mb-4">
+                  Ajustez le score en cas de litige, fraude ou vérification manuelle.
+                </p>
+                <div className="grid gap-3 md:grid-cols-[1.2fr_auto_auto]">
+                  <input
+                    placeholder="ID utilisateur (UUID)"
+                    value={trustForm.userId}
+                    onChange={(e) => setTrustForm({ ...trustForm, userId: e.target.value })}
+                    className="rounded-2xl border border-[color:var(--green-100)] bg-white/80 px-4 py-2 text-sm"
+                  />
+                  <input
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={trustForm.score}
+                    onChange={(e) => setTrustForm({ ...trustForm, score: Number(e.target.value) })}
+                    className="rounded-2xl border border-[color:var(--green-100)] bg-white/80 px-4 py-2 text-sm"
+                  />
+                  <Button size="sm" onClick={handleTrustUpdate}>Mettre à jour</Button>
+                </div>
+                {trustStatus && (
+                  <p className="mt-3 text-xs text-[color:var(--green-700)]">{trustStatus}</p>
+                )}
               </div>
             </div>
           )}

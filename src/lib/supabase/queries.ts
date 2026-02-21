@@ -37,6 +37,57 @@ export type Listing = {
   created_at: string
 }
 
+export type Property = {
+  id: string
+  owner_id: string | null
+  title: string
+  description: string | null
+  city: string
+  neighborhood: string | null
+  address: string | null
+  images: string[]
+  status: string
+  is_featured: boolean
+  is_verified: boolean
+  views: number
+  property_type: string
+  price_per_night: number
+  currency: string
+  bedrooms: number | null
+  bathrooms: number | null
+  surface_m2: number | null
+  max_guests: number | null
+  furnished: boolean
+  amenities: string[]
+  created_at: string
+}
+
+export type Vehicle = {
+  id: string
+  owner_id: string | null
+  title: string
+  description: string | null
+  city: string
+  neighborhood: string | null
+  address: string | null
+  images: string[]
+  status: string
+  is_featured: boolean
+  is_verified: boolean
+  views: number
+  brand: string | null
+  model: string | null
+  year: number | null
+  price_per_day: number
+  currency: string
+  fuel_type: string | null
+  transmission: string | null
+  seats: number | null
+  mileage_km: number | null
+  extras: string[]
+  created_at: string
+}
+
 export async function getListings(options?: {
   category?: string
   city?: string
@@ -113,4 +164,82 @@ export async function searchListings(query: string) {
   }
 
   return data as Listing[]
+}
+
+export async function getProperties(options?: {
+  city?: string
+  limit?: number
+  featured?: boolean
+}) {
+  const supabase = createClient()
+  let query = supabase
+    .from('properties')
+    .select('*')
+    .eq('status', 'active')
+    .order('created_at', { ascending: false })
+
+  if (options?.city) query = query.ilike('city', `%${options.city}%`)
+  if (options?.featured) query = query.eq('is_featured', true)
+  if (options?.limit) query = query.limit(options.limit)
+
+  const { data, error } = await query
+  if (error) {
+    console.error('Error fetching properties:', error)
+    return []
+  }
+  return data as Property[]
+}
+
+export async function getProperty(id: string) {
+  const supabase = createClient()
+  const { data, error } = await supabase
+    .from('properties')
+    .select('*')
+    .eq('id', id)
+    .single()
+
+  if (error) {
+    console.error('Error fetching property:', error)
+    return null
+  }
+  return data as Property
+}
+
+export async function getVehicles(options?: {
+  city?: string
+  limit?: number
+  featured?: boolean
+}) {
+  const supabase = createClient()
+  let query = supabase
+    .from('vehicles')
+    .select('*')
+    .eq('status', 'active')
+    .order('created_at', { ascending: false })
+
+  if (options?.city) query = query.ilike('city', `%${options.city}%`)
+  if (options?.featured) query = query.eq('is_featured', true)
+  if (options?.limit) query = query.limit(options.limit)
+
+  const { data, error } = await query
+  if (error) {
+    console.error('Error fetching vehicles:', error)
+    return []
+  }
+  return data as Vehicle[]
+}
+
+export async function getVehicle(id: string) {
+  const supabase = createClient()
+  const { data, error } = await supabase
+    .from('vehicles')
+    .select('*')
+    .eq('id', id)
+    .single()
+
+  if (error) {
+    console.error('Error fetching vehicle:', error)
+    return null
+  }
+  return data as Vehicle
 }

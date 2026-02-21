@@ -27,6 +27,7 @@ export const translations = {
     listings: {
       perMonth: '/mois',
       perDay: '/jour',
+      perNight: '/nuit',
       rooms: 'chambres',
       room: 'chambre',
       verified: 'Vérifié',
@@ -211,6 +212,7 @@ export const translations = {
     listings: {
       perMonth: '/month',
       perDay: '/day',
+      perNight: '/night',
       rooms: 'rooms',
       room: 'room',
       verified: 'Verified',

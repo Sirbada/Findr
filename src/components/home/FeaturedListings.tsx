@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { MapPin, Bed, CheckCircle, Car, Home } from 'lucide-react'
 import { useTranslation } from '@/lib/i18n/context'
 import { Button } from '@/components/ui/Button'
-import { getListings, Listing } from '@/lib/supabase/queries'
+import { getProperties, getVehicles, Property, Vehicle } from '@/lib/supabase/queries'
 
 function formatPrice(price: number): string {
   return new Intl.NumberFormat('fr-FR').format(price)
@@ -16,15 +16,26 @@ const categoryIcons = {
   cars: Car,
 }
 
+type FeaturedItem =
+  | ({ kind: 'property' } & Property)
+  | ({ kind: 'vehicle' } & Vehicle)
+
 export function FeaturedListings() {
   const { t, lang } = useTranslation()
-  const [listings, setListings] = useState<Listing[]>([])
+  const [listings, setListings] = useState<FeaturedItem[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function fetchListings() {
-      const data = await getListings({ limit: 8 })
-      setListings(data)
+      const [properties, vehicles] = await Promise.all([
+        getProperties({ limit: 4 }),
+        getVehicles({ limit: 4 }),
+      ])
+      const merged: FeaturedItem[] = [
+        ...properties.map((p) => ({ ...p, kind: 'property' as const })),
+        ...vehicles.map((v) => ({ ...v, kind: 'vehicle' as const })),
+      ]
+      setListings(merged)
       setLoading(false)
     }
     fetchListings()
@@ -61,9 +72,9 @@ export function FeaturedListings() {
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {listings.map((listing) => {
-            const CategoryIcon = categoryIcons[listing.category as keyof typeof categoryIcons] || Home
-            const detailUrl = listing.category === 'cars' 
-              ? `/cars/${listing.id}` 
+            const CategoryIcon = listing.kind === 'vehicle' ? Car : Home
+            const detailUrl = listing.kind === 'vehicle'
+              ? `/cars/${listing.id}`
               : `/housing/${listing.id}`
             
             return (
@@ -86,26 +97,26 @@ export function FeaturedListings() {
                     </div>
                   )}
                   {listing.is_featured && (
-                    <span className="absolute top-3 left-3 bg-emerald-600 text-white text-xs font-medium px-2 py-1 rounded">
+                    <span className="absolute top-3 left-3 bg-[color:var(--green-600)] text-white text-xs font-medium px-2 py-1 rounded">
                       {t.listings.featured}
                     </span>
                   )}
                   {listing.is_verified && (
-                    <span className="absolute top-3 right-3 bg-white/90 text-emerald-600 text-xs font-medium px-2 py-1 rounded flex items-center gap-1">
+                    <span className="absolute top-3 right-3 bg-white/90 text-[color:var(--green-600)] text-xs font-medium px-2 py-1 rounded flex items-center gap-1">
                       <CheckCircle className="w-3 h-3" />
                       {t.listings.verified}
                     </span>
                   )}
                   {/* Category badge */}
                   <span className="absolute bottom-3 left-3 bg-black/60 text-white text-xs px-2 py-1 rounded">
-                    {listing.category === 'housing' && (listing.housing_type || 'Logement')}
-                    {listing.category === 'cars' && (listing.car_brand || 'Voiture')}
+                    {listing.kind === 'property' && (listing.property_type || 'Logement')}
+                    {listing.kind === 'vehicle' && (listing.brand || 'Voiture')}
                   </span>
                 </div>
 
                 {/* Content */}
                 <div className="p-4">
-                  <h3 className="font-semibold text-gray-900 mb-2 line-clamp-1 group-hover:text-emerald-600 transition-colors">
+                  <h3 className="font-semibold text-gray-900 mb-2 line-clamp-1 group-hover:text-[color:var(--green-700)] transition-colors">
                     {listing.title}
                   </h3>
                   <div className="flex items-center text-gray-500 text-sm mb-3">
@@ -117,30 +128,28 @@ export function FeaturedListings() {
                   <div className="flex items-center justify-between">
                     {/* Left side info */}
                     <div className="flex items-center text-gray-500 text-sm">
-                      {listing.category === 'housing' && listing.rooms && (
+                      {listing.kind === 'property' && listing.bedrooms && (
                         <>
                           <Bed className="w-4 h-4 mr-1" />
-                          <span>{listing.rooms} {t.listings.rooms}</span>
+                          <span>{listing.bedrooms} {t.listings.rooms}</span>
                         </>
                       )}
-                      {listing.category === 'cars' && listing.car_year && (
-                        <span>{listing.car_year}</span>
+                      {listing.kind === 'vehicle' && listing.year && (
+                        <span>{listing.year}</span>
                       )}
                     </div>
                     {/* Price */}
-                    <div className="text-emerald-600 font-bold text-right">
-                      {listing.category === 'housing' && listing.price > 0 && (
+                    <div className="text-[color:var(--green-700)] font-bold text-right">
+                      {listing.kind === 'property' && (
                         <>
-                          {formatPrice(listing.price)}
-                          <span className="text-xs font-normal text-gray-500">
-                            {listing.rental_period === 'sale' ? ' XAF' : ' XAF/mois'}
-                          </span>
+                          {formatPrice(listing.price_per_night)}
+                          <span className="text-xs font-normal text-gray-500"> XAF{t.listings.perNight}</span>
                         </>
                       )}
-                      {listing.category === 'cars' && listing.price_per_day && (
+                      {listing.kind === 'vehicle' && (
                         <>
                           {formatPrice(listing.price_per_day)}
-                          <span className="text-xs font-normal text-gray-500"> XAF/jour</span>
+                          <span className="text-xs font-normal text-gray-500"> XAF{t.listings.perDay}</span>
                         </>
                       )}
                     </div>

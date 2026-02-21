@@ -6,46 +6,51 @@ import { Menu, X, Globe } from 'lucide-react'
 import { useTranslation } from '@/lib/i18n/context'
 import { Button } from '@/components/ui/Button'
 import { DataSaverToggle } from '@/components/ui/DataSaverToggle'
+import { GlassHeader } from '@/components/ui/GlassHeader'
 
 export function Header() {
   const { t, lang, setLang } = useTranslation()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50">
+    <GlassHeader className="z-50">
       <nav className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-[color:var(--green-600)] rounded-xl flex items-center justify-center shadow-[var(--shadow-soft-sm)]">
                 <span className="text-white font-bold text-xl">F</span>
               </div>
-              <span className="text-xl font-bold text-gray-900">Findr</span>
+              <span className="text-xl font-bold text-[color:var(--green-900)]">Findr</span>
             </Link>
           </div>
 
           {/* Desktop Navigation - Centered */}
           <div className="hidden md:flex items-center justify-center flex-1">
             <div className="flex items-center space-x-8">
-              <Link href="/housing" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors">
+              <Link href="/housing" className="text-[color:var(--green-700)] hover:text-[color:var(--green-900)] font-medium transition-colors">
                 🏠 {t.nav.housing}
               </Link>
-              <Link href="/cars" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors">
+              <Link href="/cars" className="text-[color:var(--green-700)] hover:text-[color:var(--green-900)] font-medium transition-colors">
                 🚗 {t.nav.cars}
+              </Link>
+              <Link href="/services" className="text-[color:var(--green-700)] hover:text-[color:var(--green-900)] font-medium transition-colors">
+                🧰 Services
+              </Link>
+              <Link href="/onboarding" className="text-[color:var(--green-700)] hover:text-[color:var(--green-900)] font-medium transition-colors">
+                ✨ Démarrer
               </Link>
             </div>
           </div>
 
           {/* Right side */}
           <div className="hidden md:flex items-center space-x-4">
-            {/* Data Saver Toggle */}
             <DataSaverToggle />
 
-            {/* Language toggle */}
             <button
               onClick={() => setLang(lang === 'fr' ? 'en' : 'fr')}
-              className="flex items-center space-x-1 text-gray-600 hover:text-emerald-600"
+              className="flex items-center space-x-1 text-[color:var(--green-700)] hover:text-[color:var(--green-900)]"
             >
               <Globe className="w-4 h-4" />
               <span className="text-sm font-medium">{lang.toUpperCase()}</span>
@@ -67,27 +72,32 @@ export function Header() {
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="text-gray-600 hover:text-gray-900"
+              className="text-[color:var(--green-700)] hover:text-[color:var(--green-900)]"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-t">
+          <div className="md:hidden py-4 border-t border-white/60">
             <div className="space-y-3">
-              <Link href="/housing" className="block text-gray-600 hover:text-emerald-600 font-medium">
+              <Link href="/housing" className="block text-[color:var(--green-700)] hover:text-[color:var(--green-900)] font-medium">
                 {t.nav.housing}
               </Link>
-              <Link href="/cars" className="block text-gray-600 hover:text-emerald-600 font-medium">
+              <Link href="/cars" className="block text-[color:var(--green-700)] hover:text-[color:var(--green-900)] font-medium">
                 {t.nav.cars}
+              </Link>
+              <Link href="/services" className="block text-[color:var(--green-700)] hover:text-[color:var(--green-900)] font-medium">
+                Services
+              </Link>
+              <Link href="/onboarding" className="block text-[color:var(--green-700)] hover:text-[color:var(--green-900)] font-medium">
+                Démarrer
               </Link>
               <hr className="my-3" />
               <button
                 onClick={() => setLang(lang === 'fr' ? 'en' : 'fr')}
-                className="flex items-center space-x-2 text-gray-600"
+                className="flex items-center space-x-2 text-[color:var(--green-700)]"
               >
                 <Globe className="w-4 h-4" />
                 <span>{lang === 'fr' ? 'English' : 'Français'}</span>
@@ -108,6 +118,6 @@ export function Header() {
           </div>
         )}
       </nav>
-    </header>
+    </GlassHeader>
   )
 }

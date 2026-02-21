@@ -9,7 +9,7 @@ import {
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { Button } from '@/components/ui/Button'
-import { getListings, Listing } from '@/lib/supabase/queries'
+import { getProperties, Property } from '@/lib/supabase/queries'
 import { useTranslation } from '@/lib/i18n/context'
 import { NEIGHBORHOODS, getNeighborhoodsByCity } from '@/lib/data/neighborhoods'
 
@@ -19,7 +19,7 @@ function formatPrice(price: number): string {
 
 export default function HousingPage() {
   const { t, lang } = useTranslation()
-  const [listings, setListings] = useState<Listing[]>([])
+  const [listings, setListings] = useState<Property[]>([])
   const [loading, setLoading] = useState(true)
   const [view, setView] = useState<'grid' | 'list'>('grid')
   const [showFilters, setShowFilters] = useState(false)
@@ -55,10 +55,11 @@ export default function HousingPage() {
     propertyTypes: [
       { value: 'all', label: lang === 'fr' ? 'Tous les types' : 'All types' },
       { value: 'apartment', label: t.housingTypes.apartment },
-      { value: 'house', label: t.housingTypes.house },
+      { value: 'villa', label: lang === 'fr' ? 'Villa' : 'Villa' },
       { value: 'studio', label: t.housingTypes.studio },
-      { value: 'room', label: t.housingTypes.room },
-      { value: 'land', label: t.housingTypes.land },
+      { value: 'hotel_room', label: lang === 'fr' ? 'Hôtel' : 'Hotel' },
+      { value: 'guest_house', label: lang === 'fr' ? "Maison d'hote" : 'Guest house' },
+      { value: 'compound', label: lang === 'fr' ? 'Compound' : 'Compound' },
     ],
     priceRanges: lang === 'fr' ? [
       { value: 'all', label: 'Tous les prix' },
@@ -105,7 +106,7 @@ export default function HousingPage() {
 
   useEffect(() => {
     async function fetchListings() {
-      const data = await getListings({ category: 'housing' })
+      const data = await getProperties()
       setListings(data)
       setLoading(false)
     }
@@ -116,12 +117,12 @@ export default function HousingPage() {
   const filteredListings = listings.filter(listing => {
     if (selectedCity !== 'all' && listing.city !== selectedCity) return false
     if (selectedNeighborhood !== 'all' && listing.neighborhood?.toLowerCase() !== selectedNeighborhood) return false
-    if (selectedType !== 'all' && listing.housing_type !== selectedType) return false
+    if (selectedType !== 'all' && listing.property_type !== selectedType) return false
     if (searchQuery && !listing.title.toLowerCase().includes(searchQuery.toLowerCase())) return false
     
     // Price filter
     if (selectedPrice !== 'all') {
-      const price = listing.price
+      const price = listing.price_per_night
       if (selectedPrice === '0-50000' && price > 50000) return false
       if (selectedPrice === '50000-100000' && (price < 50000 || price > 100000)) return false
       if (selectedPrice === '100000-200000' && (price < 100000 || price > 200000)) return false
@@ -133,21 +134,21 @@ export default function HousingPage() {
   })
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-[color:var(--background)]">
       <Header />
       
       {/* Hero Search */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-12">
+      <div className="bg-gradient-to-r from-[color:var(--green-600)] to-[color:var(--green-800)] text-white py-12">
         <div className="max-w-6xl mx-auto px-4">
           <h1 className="text-3xl md:text-4xl font-bold mb-2">
             {content.heroTitle}
           </h1>
-          <p className="text-blue-100 mb-8">
+          <p className="text-white/80 mb-8">
             {content.heroSubtitle}
           </p>
           
           {/* Search Bar */}
-          <div className="bg-white rounded-xl p-4 shadow-lg">
+          <div className="bg-white/90 rounded-3xl p-4 shadow-[var(--shadow-soft)] backdrop-blur-sm">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
               {/* City */}
               <div>
@@ -157,7 +158,7 @@ export default function HousingPage() {
                   <select
                     value={selectedCity}
                     onChange={(e) => setSelectedCity(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-[color:var(--green-400)] focus:border-transparent"
                   >
                     {content.cities.map(city => (
                       <option key={city.value} value={city.value}>{city.label}</option>
@@ -175,7 +176,7 @@ export default function HousingPage() {
                   value={selectedNeighborhood}
                   onChange={(e) => setSelectedNeighborhood(e.target.value)}
                   disabled={selectedCity === 'all'}
-                  className={`w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  className={`w-full px-4 py-2 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-[color:var(--green-400)] focus:border-transparent ${
                     selectedCity === 'all' ? 'bg-gray-50 text-gray-400 cursor-not-allowed' : ''
                   }`}
                 >
@@ -194,7 +195,7 @@ export default function HousingPage() {
                 <select
                   value={selectedType}
                   onChange={(e) => setSelectedType(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-[color:var(--green-400)] focus:border-transparent"
                 >
                   {content.propertyTypes.map(type => (
                     <option key={type.value} value={type.value}>{type.label}</option>
@@ -208,7 +209,7 @@ export default function HousingPage() {
                 <select
                   value={selectedPrice}
                   onChange={(e) => setSelectedPrice(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-[color:var(--green-400)] focus:border-transparent"
                 >
                   {content.priceRanges.map(range => (
                     <option key={range.value} value={range.value}>{range.label}</option>
@@ -218,7 +219,7 @@ export default function HousingPage() {
               
               {/* Search Button */}
               <div className="flex items-end">
-                <Button size="lg" className="w-full bg-blue-600 hover:bg-blue-700">
+                <Button size="lg" className="w-full">
                   <Search className="w-5 h-5 mr-2" />
                   {content.search}
                 </Button>
@@ -229,7 +230,7 @@ export default function HousingPage() {
             {(selectedCity !== 'all' || selectedNeighborhood !== 'all' || selectedType !== 'all' || selectedPrice !== 'all') && (
               <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t">
                 {selectedCity !== 'all' && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">
+                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-[color:var(--green-50)] text-[color:var(--green-700)] rounded-full text-sm">
                     📍 {selectedCity}
                     <button onClick={() => setSelectedCity('all')} className="hover:text-blue-900">
                       <X className="w-3 h-3" />
@@ -286,7 +287,7 @@ export default function HousingPage() {
             
             <div className="flex items-center gap-2">
               {/* View Toggle */}
-              <div className="flex bg-gray-100 rounded-lg p-1">
+                <div className="flex bg-[color:var(--green-50)] rounded-2xl p-1">
                 <button
                   onClick={() => setView('grid')}
                   className={`p-2 rounded ${view === 'grid' ? 'bg-white shadow-sm' : ''}`}
@@ -326,7 +327,7 @@ export default function HousingPage() {
                   href={`/housing/${listing.id}`}
                   className={`group ${view === 'list' ? 'flex gap-4' : ''}`}
                 >
-                  <div className={`bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all ${
+                  <div className={`bg-white rounded-3xl overflow-hidden shadow-[var(--shadow-soft-sm)] hover:shadow-[var(--shadow-soft)] transition-all ${
                     view === 'list' ? 'flex flex-1' : ''
                   }`}>
                     {/* Image */}
@@ -356,7 +357,7 @@ export default function HousingPage() {
                       {/* Badges */}
                       <div className="absolute top-3 left-3 flex gap-2">
                         {listing.is_featured && (
-                          <span className="bg-blue-600 text-white text-xs font-medium px-2 py-1 rounded">
+                          <span className="bg-[color:var(--green-600)] text-white text-xs font-medium px-2 py-1 rounded">
                             {content.featured}
                           </span>
                         )}
@@ -370,14 +371,14 @@ export default function HousingPage() {
                       
                       {/* Type Badge */}
                       <span className="absolute bottom-3 left-3 bg-black/60 text-white text-xs px-2 py-1 rounded">
-                        {getHousingType(listing.housing_type)}
+                        {getHousingType(listing.property_type)}
                       </span>
                     </div>
                     
                     {/* Content */}
                     <div className="p-4 flex-1">
                       <div className="flex items-start justify-between gap-2 mb-2">
-                        <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-1">
+                        <h3 className="font-semibold text-gray-900 group-hover:text-[color:var(--green-700)] transition-colors line-clamp-1">
                           {listing.title}
                         </h3>
                       </div>
@@ -390,12 +391,12 @@ export default function HousingPage() {
                       </div>
                       
                       {/* Features */}
-                      {(listing.rooms || listing.bathrooms || listing.surface_m2) && (
+                      {(listing.bedrooms || listing.bathrooms || listing.surface_m2) && (
                         <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
-                          {listing.rooms && (
+                          {listing.bedrooms && (
                             <span className="flex items-center gap-1">
                               <Bed className="w-4 h-4" />
-                              {listing.rooms}
+                              {listing.bedrooms}
                             </span>
                           )}
                           {listing.bathrooms && (
@@ -416,12 +417,10 @@ export default function HousingPage() {
                       {/* Price */}
                       <div className="flex items-center justify-between">
                         <div>
-                          <span className="text-xl font-bold text-blue-600">
-                            {formatPrice(listing.price)} XAF
+                          <span className="text-xl font-bold text-[color:var(--green-700)]">
+                            {formatPrice(listing.price_per_night)} XAF
                           </span>
-                          {listing.rental_period !== 'sale' && (
-                            <span className="text-gray-500 text-sm"> {t.listings.perMonth}</span>
-                          )}
+                          <span className="text-gray-500 text-sm"> {t.listings.perNight}</span>
                         </div>
                         {listing.furnished && (
                           <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
