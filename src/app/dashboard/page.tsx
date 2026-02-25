@@ -86,10 +86,10 @@ export default function DashboardPage() {
               <div className="text-center mb-6">
                 <div className="w-20 h-20 bg-[color:var(--green-50)] rounded-full flex items-center justify-center mx-auto mb-3">
                   <span className="text-[color:var(--green-700)] font-bold text-2xl">
-                    {user.name.charAt(0)}
+                    {user.email?.charAt(0).toUpperCase() || "U"}
                   </span>
                 </div>
-                <h2 className="font-semibold text-[color:var(--green-900)]">{user.name}</h2>
+                <h2 className="font-semibold text-[color:var(--green-900)]">{user.email || "User"}</h2>
                 <p className="text-sm text-[color:var(--green-600)]">{user.phone}</p>
                 {!user.isVerified && (
                   <button className="mt-2 text-xs text-[color:var(--green-700)] hover:underline">
@@ -167,7 +167,7 @@ export default function DashboardPage() {
           <main className="flex-1 space-y-6">
             <Card className="p-6 flex items-center justify-between">
               <div>
-                <h1 className="text-2xl font-semibold text-[color:var(--green-900)]">Bienvenue, {user.name}</h1>
+                <h1 className="text-2xl font-semibold text-[color:var(--green-900)]">Bienvenue, {user.email || "User"}</h1>
                 <p className="text-sm text-[color:var(--green-700)]">Gérez vos réservations, services et paiements en un seul endroit.</p>
               </div>
               <button className="relative p-2 text-[color:var(--green-700)] hover:text-[color:var(--green-900)]">

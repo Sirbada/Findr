@@ -496,9 +496,9 @@ export default function AdminPage() {
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
-                              <span className="text-emerald-600 font-semibold">{user.name.charAt(0)}</span>
+                              <span className="text-emerald-600 font-semibold">{user.email?.charAt(0).toUpperCase() || "U"}</span>
                             </div>
-                            <span className="font-medium text-gray-900">{user.name}</span>
+                            <span className="font-medium text-gray-900">{user.email || "User"}</span>
                           </div>
                         </td>
                         <td className="px-6 py-4 text-gray-600">{user.email}</td>

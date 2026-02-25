@@ -1,0 +1,232 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { Star, Quote } from 'lucide-react'
+import { useTranslation } from '@/lib/i18n/context'
+
+interface Testimonial {
+  id: number
+  name: string
+  role: string
+  city: string
+  avatar: string
+  rating: number
+  testimonial: {
+    fr: string
+    en: string
+  }
+}
+
+const testimonials: Testimonial[] = [
+  {
+    id: 1,
+    name: 'Marie Ngo',
+    role: 'Enseignante',
+    city: 'Douala',
+    avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b1fd?w=150&h=150&fit=crop&crop=face',
+    rating: 5,
+    testimonial: {
+      fr: "J'ai trouvé mon appartement à Bonanjo en 2 jours seulement ! L'interface est très simple et les annonces sont de qualité.",
+      en: "I found my apartment in Bonanjo in just 2 days! The interface is very simple and the listings are high quality."
+    }
+  },
+  {
+    id: 2,
+    name: 'Paul Mbarga',
+    role: 'Entrepreneur',
+    city: 'Yaoundé',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
+    rating: 5,
+    testimonial: {
+      fr: "Excellent pour la vente de voitures ! J'ai vendu ma Mercedes en une semaine avec de nombreux contacts qualifiés.",
+      en: "Excellent for selling cars! I sold my Mercedes in one week with many qualified contacts."
+    }
+  },
+  {
+    id: 3,
+    name: 'Fatou Sow',
+    role: 'Étudiante',
+    city: 'Douala',
+    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
+    rating: 5,
+    testimonial: {
+      fr: "Parfait pour les étudiants ! J'ai trouvé un studio meublé près de l'université à un prix abordable.",
+      en: "Perfect for students! I found a furnished studio near the university at an affordable price."
+    }
+  },
+  {
+    id: 4,
+    name: 'Jean-Claude Fotso',
+    role: 'Agent immobilier',
+    city: 'Bafoussam',
+    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
+    rating: 5,
+    testimonial: {
+      fr: "Une plateforme professionnelle qui m'aide à gérer mes clients efficacement. Les outils sont vraiment utiles.",
+      en: "A professional platform that helps me manage my clients efficiently. The tools are really useful."
+    }
+  },
+  {
+    id: 5,
+    name: 'Aminata Diallo',
+    role: 'Comptable',
+    city: 'Kribi',
+    avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face',
+    rating: 5,
+    testimonial: {
+      fr: "Interface très intuitive. J'ai trouvé un emploi à distance grâce aux annonces de qualité disponibles.",
+      en: "Very intuitive interface. I found a remote job thanks to the quality listings available."
+    }
+  },
+  {
+    id: 6,
+    name: 'Samuel Nguema',
+    role: 'Mécanicien',
+    city: 'Yaoundé',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face',
+    rating: 5,
+    testimonial: {
+      fr: "Je recommande vivement ! Ma clientèle a doublé depuis que je propose mes services sur la plateforme.",
+      en: "I highly recommend! My clientele has doubled since I started offering my services on the platform."
+    }
+  }
+]
+
+export function Testimonials() {
+  const { lang } = useTranslation()
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % testimonials.length)
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [])
+
+  if (!mounted) return null
+
+  return (
+    <section className="py-20 bg-gradient-to-br from-emerald-50 to-green-50 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="text-center mb-16 animate-slide-up">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            {lang === 'fr' ? 'Ce que disent nos utilisateurs' : 'What our users say'}
+          </h2>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            {lang === 'fr' 
+              ? 'Découvrez comment Findr transforme la façon dont les Camerounais trouvent ce dont ils ont besoin'
+              : 'Discover how Findr transforms the way Cameroonians find what they need'
+            }
+          </p>
+        </div>
+
+        {/* Main testimonial */}
+        <div className="mb-16 animate-scale-in">
+          <div className="max-w-4xl mx-auto">
+            <div className="relative bg-white rounded-3xl shadow-2xl p-8 md:p-12 border border-gray-100">
+              {/* Quote icon */}
+              <div className="absolute top-6 left-6 text-emerald-500 opacity-20">
+                <Quote size={60} />
+              </div>
+              
+              <div className="relative z-10">
+                {/* Rating */}
+                <div className="flex items-center justify-center mb-6">
+                  {[...Array(5)].map((_, i) => (
+                    <Star 
+                      key={i} 
+                      className="w-6 h-6 text-yellow-400 fill-current" 
+                    />
+                  ))}
+                </div>
+
+                {/* Testimonial text */}
+                <blockquote className="text-xl md:text-2xl text-gray-800 text-center mb-8 leading-relaxed">
+                  "{testimonials[currentIndex].testimonial[lang]}"
+                </blockquote>
+
+                {/* Author */}
+                <div className="flex items-center justify-center">
+                  <img 
+                    src={testimonials[currentIndex].avatar}
+                    alt={testimonials[currentIndex].name}
+                    className="w-16 h-16 rounded-full object-cover mr-4 border-4 border-emerald-100"
+                  />
+                  <div className="text-center">
+                    <div className="font-semibold text-lg text-gray-900">
+                      {testimonials[currentIndex].name}
+                    </div>
+                    <div className="text-gray-600">
+                      {testimonials[currentIndex].role} • {testimonials[currentIndex].city}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Testimonial grid */}
+        <div className="grid md:grid-cols-3 gap-6">
+          {testimonials.slice(0, 3).map((testimonial, index) => (
+            <div 
+              key={testimonial.id}
+              className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover-lift animate-slide-up border border-gray-100"
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
+              {/* Rating */}
+              <div className="flex items-center mb-4">
+                {[...Array(testimonial.rating)].map((_, i) => (
+                  <Star 
+                    key={i} 
+                    className="w-4 h-4 text-yellow-400 fill-current" 
+                  />
+                ))}
+              </div>
+
+              {/* Testimonial */}
+              <p className="text-gray-700 mb-4 text-sm leading-relaxed">
+                "{testimonial.testimonial[lang]}"
+              </p>
+
+              {/* Author */}
+              <div className="flex items-center">
+                <img 
+                  src={testimonial.avatar}
+                  alt={testimonial.name}
+                  className="w-12 h-12 rounded-full object-cover mr-3 border-2 border-emerald-100"
+                />
+                <div>
+                  <div className="font-semibold text-gray-900 text-sm">
+                    {testimonial.name}
+                  </div>
+                  <div className="text-gray-600 text-xs">
+                    {testimonial.role} • {testimonial.city}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Pagination dots */}
+        <div className="flex justify-center space-x-2 mt-12">
+          {testimonials.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentIndex(index)}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                index === currentIndex 
+                  ? 'bg-emerald-600 scale-125' 
+                  : 'bg-gray-300 hover:bg-gray-400'
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
