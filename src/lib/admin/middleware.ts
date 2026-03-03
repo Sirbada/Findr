@@ -2,9 +2,12 @@ import { createClient } from '@/lib/supabase/client'
 
 export async function requireAdmin() {
   const supabase = createClient()
-  
-  const { data: { user }, error } = await supabase.auth.getUser()
-  if (error || !user) {
+  const authClient: any = (supabase as any).auth
+  const userData = authClient.getUser
+    ? await authClient.getUser()
+    : await authClient.getSession()
+  const user = userData?.data?.user || userData?.data?.session?.user
+  if (!user) {
     throw new Error('Authentication required')
   }
 

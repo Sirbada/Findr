@@ -1,8 +1,14 @@
 'use client'
 
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { createSupabaseClient } from '@/lib/supabase/client'
-import type { User } from '@supabase/supabase-js'
+import { createClient } from '@/lib/supabase/client'
+
+type User = {
+  id: string
+  phone?: string | null
+  email?: string | null
+  user_metadata?: Record<string, any>
+}
 
 interface AuthContextType {
   user: User | null
@@ -21,20 +27,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false)
   const [isSuperAdmin, setIsSuperAdmin] = useState(false)
 
-  const supabase = createSupabaseClient()
-
   useEffect(() => {
-    // Get initial session
+    const supabase = createClient()
+    const authClient: any = (supabase as any).auth
+
     const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      setUser(session?.user ?? null)
-      
-      if (session?.user) {
-        // Check user roles
+      const sessionData = authClient.getSession
+        ? await authClient.getSession()
+        : await authClient.getUser()
+      const sessionUser = sessionData?.data?.session?.user || sessionData?.data?.user
+      setUser(sessionUser ?? null)
+
+      if (sessionUser) {
         const { data: roles } = await supabase
           .from('user_roles')
           .select('role')
-          .eq('user_id', session.user.id)
+          .eq('user_id', sessionUser.id)
           .single()
 
         if (roles) {
@@ -42,44 +50,49 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setIsSuperAdmin(roles.role === 'super_admin')
         }
       }
-      
+
       setLoading(false)
     }
 
     getSession()
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      setUser(session?.user ?? null)
-      
-      if (session?.user) {
-        const { data: roles } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', session.user.id)
-          .single()
+    let unsubscribe: (() => void) | undefined
+    if (authClient.onAuthStateChange) {
+      const { data } = authClient.onAuthStateChange(async (_event: any, session: any) => {
+        const sessionUser = session?.user ?? null
+        setUser(sessionUser)
 
-        if (roles) {
-          setIsAdmin(['admin', 'super_admin'].includes(roles.role))
-          setIsSuperAdmin(roles.role === 'super_admin')
+        if (sessionUser) {
+          const { data: roles } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', sessionUser.id)
+            .single()
+
+          if (roles) {
+            setIsAdmin(['admin', 'super_admin'].includes(roles.role))
+            setIsSuperAdmin(roles.role === 'super_admin')
+          }
+        } else {
+          setIsAdmin(false)
+          setIsSuperAdmin(false)
         }
-      } else {
-        setIsAdmin(false)
-        setIsSuperAdmin(false)
-      }
-    })
+      })
+      unsubscribe = data?.subscription?.unsubscribe
+    }
 
-    return () => subscription.unsubscribe()
-  }, [supabase])
+    return () => { if (unsubscribe) unsubscribe() }
+  }, [])
 
   const signIn = async () => {
-    // Implement sign in logic
-    // This is a placeholder - actual implementation depends on auth flow
-    console.log('Sign in function called')
+    // Placeholder — actual implementation uses phone OTP flow at /login
   }
 
   const signOut = async () => {
-    await supabase.auth.signOut()
+    const supabase = createClient()
+    const authClient: any = (supabase as any).auth
+    if (authClient.signOut) await authClient.signOut()
   }
 
   const value: AuthContextType = {

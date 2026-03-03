@@ -62,12 +62,16 @@ class PushNotificationManager {
         
         subscription = await registration.pushManager.subscribe({
           userVisibleOnly: true,
-          applicationServerKey: this.urlBase64ToUint8Array(vapidPublicKey)
+          applicationServerKey: this.urlBase64ToUint8Array(vapidPublicKey).buffer as ArrayBuffer
         })
       }
 
       // Save subscription to database
-      const { data: { user } } = await this.supabase.auth.getUser()
+      const authClient: any = (this.supabase as any).auth
+      const userData = authClient.getUser
+        ? await authClient.getUser()
+        : await authClient.getSession()
+      const user = userData?.data?.user || userData?.data?.session?.user
       if (!user) {
         throw new Error('User not authenticated')
       }
@@ -108,7 +112,11 @@ class PushNotificationManager {
         await subscription.unsubscribe()
         
         // Remove from database
-        const { data: { user } } = await this.supabase.auth.getUser()
+        const authClient2: any = (this.supabase as any).auth
+        const userData2 = authClient2.getUser
+          ? await authClient2.getUser()
+          : await authClient2.getSession()
+        const user = userData2?.data?.user || userData2?.data?.session?.user
         if (user) {
           await this.supabase
             .from('push_subscriptions')
@@ -141,7 +149,11 @@ class PushNotificationManager {
 
   // Get user's notification preferences
   async getPreferences() {
-    const { data: { user } } = await this.supabase.auth.getUser()
+    const authClient: any = (this.supabase as any).auth
+    const userData = authClient.getUser
+      ? await authClient.getUser()
+      : await authClient.getSession()
+    const user = userData?.data?.user || userData?.data?.session?.user
     if (!user) return null
 
     const { data, error } = await this.supabase
@@ -169,7 +181,11 @@ class PushNotificationManager {
     push_notifications?: boolean
     sms_notifications?: boolean
   }) {
-    const { data: { user } } = await this.supabase.auth.getUser()
+    const authClient: any = (this.supabase as any).auth
+    const userData = authClient.getUser
+      ? await authClient.getUser()
+      : await authClient.getSession()
+    const user = userData?.data?.user || userData?.data?.session?.user
     if (!user) throw new Error('User not authenticated')
 
     const { data, error } = await this.supabase
@@ -199,19 +215,17 @@ class PushNotificationManager {
       throw new Error('Notification permission not granted')
     }
 
-    const options: NotificationOptions = {
+    const options = {
       body: payload.body,
       icon: payload.icon || '/icons/icon-192x192.png',
       badge: payload.badge || '/icons/icon-72x72.png',
-      image: payload.image,
       data: payload.data,
-      actions: payload.actions,
       vibrate: payload.vibrate || [100, 50, 100],
       tag: payload.tag,
       renotify: payload.renotify,
       silent: payload.silent,
       timestamp: payload.timestamp || Date.now()
-    }
+    } as NotificationOptions
 
     return new Notification(payload.title, options)
   }

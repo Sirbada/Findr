@@ -149,7 +149,7 @@ export class AdminQueries {
       }
     }
 
-    const { count } = await query.select('id', { count: 'exact', head: true })
+    const { count } = await (query as any).select('id', { count: 'exact', head: true })
     const { data, error } = await query.range((page - 1) * limit, page * limit - 1)
 
     if (error) throw error
@@ -176,7 +176,7 @@ export class AdminQueries {
       query = query.eq('status', status)
     }
 
-    const { count } = await query.select('id', { count: 'exact', head: true })
+    const { count } = await (query as any).select('id', { count: 'exact', head: true })
     const { data, error } = await query.range((page - 1) * limit, page * limit - 1)
 
     if (error) throw error
@@ -209,7 +209,7 @@ export class AdminQueries {
       query = query.eq('status', status)
     }
 
-    const { count } = await query.select('id', { count: 'exact', head: true })
+    const { count } = await (query as any).select('id', { count: 'exact', head: true })
     const { data, error } = await query.range((page - 1) * limit, page * limit - 1)
 
     if (error) throw error

@@ -82,8 +82,12 @@ class AnalyticsTracker {
 
   async track(event: AnalyticsEvent) {
     try {
-      const { data: { user } } = await this.supabase.auth.getUser()
-      
+      const authClient: any = (this.supabase as any).auth
+      const userData = authClient.getUser
+        ? await authClient.getUser()
+        : await authClient.getSession()
+      const user = userData?.data?.user || userData?.data?.session?.user
+
       await this.supabase.from('analytics_events').insert({
         session_id: this.sessionId,
         user_id: user?.id || null,
