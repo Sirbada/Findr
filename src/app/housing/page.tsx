@@ -6,7 +6,7 @@ import Link from 'next/link'
 import {
   Search, MapPin, Bed, Bath, Square,
   Heart, CheckCircle, X, Grid, List, ArrowUpDown,
-  SlidersHorizontal
+  SlidersHorizontal, Sparkles
 } from 'lucide-react'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
@@ -152,15 +152,34 @@ function HousingPageInner() {
     <div className="min-h-screen flex flex-col bg-white">
       <Header />
 
-      {/* Page header — Apple style */}
-      <div className="bg-white border-b border-black/[0.06]">
+      {/* Page header — Nature green gradient */}
+      <div
+        style={{
+          background: 'linear-gradient(135deg, #ecfdf5 0%, #d1fae5 40%, #fafaf9 100%)',
+          borderBottom: '1px solid #a7f3d0',
+        }}
+      >
         <div className="max-w-[1200px] mx-auto px-6 py-8">
-          <h1
-            className="font-bold text-[#1d1d1f] mb-6"
-            style={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.03em', lineHeight: 1.1 }}
-          >
-            {lang === 'fr' ? 'Immobilier au Cameroun' : 'Housing in Cameroon'}
-          </h1>
+          <div className="flex items-center gap-3 mb-2">
+            <div
+              className="w-10 h-10 rounded-2xl flex items-center justify-center text-xl"
+              style={{ background: 'linear-gradient(135deg, #059669, #10b981)' }}
+            >
+              🏠
+            </div>
+            <div>
+              <h1
+                className="font-bold"
+                style={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.03em', lineHeight: 1.1, color: '#064e3b' }}
+              >
+                {lang === 'fr' ? 'Immobilier au Cameroun' : 'Housing in Cameroon'}
+              </h1>
+              <p className="text-[13px] font-medium" style={{ color: '#059669' }}>
+                {lang === 'fr' ? 'Appartements, villas, studios et plus' : 'Apartments, villas, studios and more'}
+              </p>
+            </div>
+          </div>
+          <div className="mt-5" />
 
           {/* Search row */}
           <div className="flex flex-col md:flex-row gap-3">
@@ -500,15 +519,15 @@ function HousingPageInner() {
                         </div>
                       )}
 
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between pt-3 border-t border-[#f0fdf4]">
                         <div>
-                          <span className="font-bold text-[#1d1d1f]" style={{ fontSize: '17px', letterSpacing: '-0.02em' }}>
+                          <span className="font-bold" style={{ fontSize: '17px', letterSpacing: '-0.02em', color: '#059669' }}>
                             {formatPrice(listing.price_per_night)}
                           </span>
-                          <span className="text-[#86868b] text-[12px] ml-1">XAF/{lang === 'fr' ? 'nuit' : 'night'}</span>
+                          <span className="text-[12px] ml-1" style={{ color: '#6b7280' }}>XAF/{lang === 'fr' ? 'nuit' : 'night'}</span>
                         </div>
                         {listing.furnished && (
-                          <span className="px-2 py-0.5 bg-[#f5f5f7] text-[#6e6e73] text-[11px] font-medium rounded-full">
+                          <span className="px-2 py-0.5 text-[11px] font-semibold rounded-full" style={{ background: '#d1fae5', color: '#065f46' }}>
                             {lang === 'fr' ? 'Meublé' : 'Furnished'}
                           </span>
                         )}

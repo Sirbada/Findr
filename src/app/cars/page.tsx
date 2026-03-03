@@ -154,15 +154,33 @@ function CarsPageInner() {
     <div className="min-h-screen flex flex-col bg-white">
       <Header />
 
-      {/* Page header */}
-      <div className="bg-white border-b border-black/[0.06]">
+      {/* Page header — Sky blue gradient */}
+      <div
+        style={{
+          background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 40%, #fafaf9 100%)',
+          borderBottom: '1px solid #bae6fd',
+        }}
+      >
         <div className="max-w-[1200px] mx-auto px-6 py-8">
-          <h1
-            className="font-bold text-[#1d1d1f] mb-6"
-            style={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.03em', lineHeight: 1.1 }}
-          >
-            {lang === 'fr' ? 'Véhicules au Cameroun' : 'Vehicles in Cameroon'}
-          </h1>
+          <div className="flex items-center gap-3 mb-5">
+            <div
+              className="w-10 h-10 rounded-2xl flex items-center justify-center text-xl"
+              style={{ background: 'linear-gradient(135deg, #0ea5e9, #38bdf8)' }}
+            >
+              🚗
+            </div>
+            <div>
+              <h1
+                className="font-bold"
+                style={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.03em', lineHeight: 1.1, color: '#0c4a6e' }}
+              >
+                {lang === 'fr' ? 'Véhicules au Cameroun' : 'Vehicles in Cameroon'}
+              </h1>
+              <p className="text-[13px] font-medium" style={{ color: '#0ea5e9' }}>
+                {lang === 'fr' ? 'Location et vente de voitures vérifiées' : 'Verified car rentals and sales'}
+              </p>
+            </div>
+          </div>
 
           {/* Rent / Buy toggle */}
           <div className="flex items-center gap-1 mb-5 bg-[#f5f5f7] rounded-xl p-1 w-fit">
@@ -517,14 +535,17 @@ function CarsPageInner() {
                       </div>
 
                       {/* Price */}
-                      <div className="flex items-center justify-between pt-3 border-t border-black/[0.04]">
+                      <div className="flex items-center justify-between pt-3 border-t border-[#e0f2fe]">
                         <div>
-                          <span className="font-bold text-[#1d1d1f]" style={{ fontSize: '17px', letterSpacing: '-0.02em' }}>
+                          <span className="font-bold" style={{ fontSize: '17px', letterSpacing: '-0.02em', color: '#0ea5e9' }}>
                             {formatPrice(listing.price_per_day)}
                           </span>
-                          <span className="text-[#86868b] text-[12px] ml-1">XAF/{lang === 'fr' ? 'jour' : 'day'}</span>
+                          <span className="text-[12px] ml-1" style={{ color: '#6b7280' }}>XAF/{lang === 'fr' ? 'jour' : 'day'}</span>
                         </div>
-                        <span className="px-3 py-1.5 bg-[#059669] text-white text-[12px] font-medium rounded-full hover:bg-[#047857] transition-colors">
+                        <span
+                          className="px-3 py-1.5 text-white text-[12px] font-semibold rounded-full transition-all"
+                          style={{ background: 'linear-gradient(135deg, #0ea5e9, #38bdf8)' }}
+                        >
                           {lang === 'fr' ? 'Voir' : 'View'}
                         </span>
                       </div>
