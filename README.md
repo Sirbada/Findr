@@ -55,6 +55,20 @@ Optimized for mobile‑first usage, unstable networks, and USSD‑first payments
 - Full icon set (72px → 512px)
 - OG images for all verticals
 
+### Landing Page (WOW)
+- **HeroEnhanced** — animated gradient, glass morphism, category tabs, popular cities
+- **StatsCounter** — animated counters (10k+ listings, 5k+ users, 2.5k+ vehicles, 50+ cities)
+- **CategoriesEnhanced** — 4 main categories with hover effects and demo fallbacks
+- **HowItWorks** — 3-step process with animated icons
+- **Testimonials** — rotating Cameroonian testimonials with star ratings
+- **TrustedBy** — partner logos (Orange, MTN, Ecobank, BICEC, Total)
+
+### SEO
+- Per-category metadata (title, description, keywords, OG image)
+- JSON-LD structured data (RealEstateListing, JobPosting, Product, Service)
+- Sitemap at `/sitemap.xml`, robots at `/robots.txt`
+- Breadcrumb structured data on all category pages
+
 ### Other
 - Trust Score (admin-managed)
 - Pro dashboard with stats, listings, bookings
@@ -64,6 +78,9 @@ Optimized for mobile‑first usage, unstable networks, and USSD‑first payments
 - Data-saver mode
 - FR/EN translations
 - View count tracking via `increment_views` RPC
+- Error boundary component
+- Toast notification system
+- Onboarding flow for new users
 
 ---
 
@@ -175,11 +192,13 @@ Both validate HMAC-SHA256 signature using:
 
 | Route | Description |
 |-------|-------------|
-| `/` | Home |
+| `/` | Home (HeroEnhanced + WOW landing sections) |
 | `/housing` | Property listings with advanced search |
 | `/housing/[id]` | Property detail + booking |
 | `/cars` | Vehicle listings with advanced search |
 | `/cars/[id]` | Vehicle detail + booking |
+| `/terrain` | Land listings with SEO metadata |
+| `/emplois` | Job listings with SEO metadata |
 | `/services` | Service professionals |
 | `/services/[id]` | Service detail |
 | `/dashboard` | User dashboard (auth required) |
