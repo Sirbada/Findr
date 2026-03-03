@@ -1,191 +1,152 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Search, MapPin, Home, Car, Briefcase, Wrench, ArrowRight } from 'lucide-react'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { Search, MapPin } from 'lucide-react'
 import { useTranslation } from '@/lib/i18n/context'
-import { Button } from '@/components/ui/Button'
-import Link from 'next/link'
+
+const CITIES = ['Douala', 'Yaoundé', 'Kribi', 'Bafoussam', 'Limbe', 'Bamenda']
+
+const CATEGORIES = [
+  { id: 'housing', href: '/housing', icon: '🏠', labelFr: 'Immobilier', labelEn: 'Housing' },
+  { id: 'cars', href: '/cars', icon: '🚗', labelFr: 'Véhicules', labelEn: 'Vehicles' },
+  { id: 'terrain', href: '/terrain', icon: '🌿', labelFr: 'Terrain', labelEn: 'Land' },
+  { id: 'emplois', href: '/emplois', icon: '💼', labelFr: 'Emplois', labelEn: 'Jobs' },
+  { id: 'services', href: '/services', icon: '🔧', labelFr: 'Services', labelEn: 'Services' },
+]
 
 export function HeroEnhanced() {
-  const { t, lang } = useTranslation()
-  const [activeTab, setActiveTab] = useState<'housing' | 'cars' | 'jobs' | 'services'>('housing')
-  const [searchQuery, setSearchQuery] = useState('')
-  const [mounted, setMounted] = useState(false)
+  const { lang } = useTranslation()
+  const router = useRouter()
+  const [query, setQuery] = useState('')
+  const [activeCategory, setActiveCategory] = useState('housing')
 
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  const categories = [
-    {
-      key: 'housing' as const,
-      icon: Home,
-      label: lang === 'fr' ? 'Immobilier' : 'Real Estate',
-      description: lang === 'fr' ? 'Appartements, maisons, terrains' : 'Apartments, houses, land',
-      color: 'from-emerald-500 to-emerald-600',
-      bgColor: 'bg-emerald-50'
-    },
-    {
-      key: 'cars' as const,
-      icon: Car,
-      label: lang === 'fr' ? 'Véhicules' : 'Vehicles',
-      description: lang === 'fr' ? 'Voitures, motos, camions' : 'Cars, motorcycles, trucks',
-      color: 'from-blue-500 to-blue-600',
-      bgColor: 'bg-blue-50'
-    },
-    {
-      key: 'jobs' as const,
-      icon: Briefcase,
-      label: lang === 'fr' ? 'Emplois' : 'Jobs',
-      description: lang === 'fr' ? 'Opportunités de carrière' : 'Career opportunities',
-      color: 'from-purple-500 to-purple-600',
-      bgColor: 'bg-purple-50'
-    },
-    {
-      key: 'services' as const,
-      icon: Wrench,
-      label: 'Services',
-      description: lang === 'fr' ? 'Plomberie, électricité, etc.' : 'Plumbing, electrical, etc.',
-      color: 'from-orange-500 to-orange-600',
-      bgColor: 'bg-orange-50'
+  const handleSearch = () => {
+    const cat = CATEGORIES.find(c => c.id === activeCategory)
+    if (cat) {
+      router.push(query ? `${cat.href}?q=${encodeURIComponent(query)}` : cat.href)
     }
-  ]
+  }
 
-  const activeCategory = categories.find(c => c.key === activeTab) || categories[0]
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') handleSearch()
+  }
 
   return (
-    <section className="relative overflow-hidden min-h-screen flex items-center">
-      {/* Animated gradient background */}
-      <div className="absolute inset-0 gradient-bg opacity-90" />
-      
-      {/* Floating elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-20 h-20 bg-white/10 rounded-full animate-float" />
-        <div className="absolute top-40 right-20 w-16 h-16 bg-white/10 rounded-full animate-float" style={{ animationDelay: '1s' }} />
-        <div className="absolute bottom-40 left-20 w-12 h-12 bg-white/10 rounded-full animate-float" style={{ animationDelay: '2s' }} />
-        <div className="absolute bottom-20 right-40 w-24 h-24 bg-white/10 rounded-full animate-float" style={{ animationDelay: '0.5s' }} />
-      </div>
+    <section className="relative bg-white overflow-hidden">
+      {/* Subtle gradient background — Apple-style */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse 80% 60% at 50% -10%, rgba(5,150,105,0.06) 0%, transparent 70%)',
+        }}
+      />
 
-      <div className={`relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 ${mounted ? 'animate-fade-in' : 'opacity-0'}`}>
-        <div className="text-center">
-          {/* Badge */}
-          <div className="inline-flex items-center glass text-white px-6 py-3 rounded-full text-sm font-medium mb-8 animate-slide-up">
-            <div className="w-2 h-2 bg-emerald-400 rounded-full mr-3 animate-pulse" />
-            {lang === 'fr' ? '🇨🇲 Le marketplace #1 du Cameroun' : '🇨🇲 Cameroon\'s #1 marketplace'}
-          </div>
+      <div className="relative max-w-[1200px] mx-auto px-6 pt-20 pb-16 text-center">
+        {/* Eyebrow */}
+        <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#059669]/8 rounded-full mb-6">
+          <span className="w-1.5 h-1.5 bg-[#059669] rounded-full" />
+          <span className="text-[12px] font-medium text-[#059669] tracking-[0.02em]">
+            {lang === 'fr' ? 'Cameroun · Douala · Yaoundé' : 'Cameroon · Douala · Yaoundé'}
+          </span>
+        </div>
 
-          {/* Main headline */}
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight animate-slide-up" style={{ animationDelay: '0.2s' }}>
-            {lang === 'fr' ? (
-              <>
-                Trouvez <span className="text-emerald-300">tout</span> au 
-                <br />
-                <span className="bg-gradient-to-r from-emerald-300 to-emerald-100 bg-clip-text text-transparent">
-                  Cameroun
-                </span>
-              </>
-            ) : (
-              <>
-                Find <span className="text-emerald-300">everything</span> in
-                <br />
-                <span className="bg-gradient-to-r from-emerald-300 to-emerald-100 bg-clip-text text-transparent">
-                  Cameroon
-                </span>
-              </>
-            )}
-          </h1>
-          
-          <p className="text-xl md:text-2xl text-emerald-50 mb-12 max-w-3xl mx-auto animate-slide-up" style={{ animationDelay: '0.4s' }}>
-            {lang === 'fr' 
-              ? 'La plateforme tout-en-un pour l\'immobilier, véhicules, emplois et services à Douala, Yaoundé et partout au Cameroun'
-              : 'The all-in-one platform for real estate, vehicles, jobs and services in Douala, Yaoundé and across Cameroon'}
-          </p>
+        {/* Headline — Apple-scale */}
+        <h1
+          className="font-bold text-[#1d1d1f] mb-5"
+          style={{
+            fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
+            letterSpacing: '-0.04em',
+            lineHeight: 1.05,
+          }}
+        >
+          {lang === 'fr' ? (
+            <>Trouvez <span className="text-[#059669]">tout</span> au Cameroun</>
+          ) : (
+            <>Find <span className="text-[#059669]">everything</span> in Cameroon</>
+          )}
+        </h1>
 
-          {/* Enhanced Search Card */}
-          <div className={`glass backdrop-blur-xl rounded-3xl p-6 max-w-4xl mx-auto mb-12 animate-scale-in`} style={{ animationDelay: '0.6s' }}>
-            {/* Category tabs */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-              {categories.map((category) => {
-                const IconComponent = category.icon
-                return (
-                  <button
-                    key={category.key}
-                    onClick={() => setActiveTab(category.key)}
-                    className={`group relative p-4 rounded-2xl transition-all duration-300 ${
-                      activeTab === category.key
-                        ? 'bg-white text-emerald-600 shadow-lg transform scale-105'
-                        : 'text-white hover:bg-white/20'
-                    }`}
-                  >
-                    <div className="flex flex-col items-center space-y-2">
-                      <div className={`p-2 rounded-xl ${activeTab === category.key ? category.bgColor : 'bg-white/10'}`}>
-                        <IconComponent className="w-6 h-6" />
-                      </div>
-                      <div className="text-center">
-                        <div className="font-medium text-sm">{category.label}</div>
-                        <div className={`text-xs ${activeTab === category.key ? 'text-gray-600' : 'text-white/70'}`}>
-                          {category.description}
-                        </div>
-                      </div>
-                    </div>
-                    {activeTab === category.key && (
-                      <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/20 to-emerald-600/20 rounded-2xl animate-pulse" />
-                    )}
-                  </button>
-                )
-              })}
-            </div>
+        {/* Subheadline */}
+        <p
+          className="text-[#6e6e73] mb-10 max-w-[560px] mx-auto"
+          style={{ fontSize: '19px', letterSpacing: '-0.022em', lineHeight: 1.47 }}
+        >
+          {lang === 'fr'
+            ? 'Logements, véhicules, terrains, emplois et services — tout en un seul endroit.'
+            : 'Housing, vehicles, land, jobs and services — all in one place.'}
+        </p>
 
-            {/* Search inputs */}
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="flex-1 relative">
-                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-emerald-600" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder={lang === 'fr' ? 'Rechercher à Douala, Yaoundé, Kribi...' : 'Search in Douala, Yaoundé, Kribi...'}
-                  className="w-full pl-14 pr-6 py-5 bg-white/90 backdrop-blur-sm rounded-2xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/30 focus:bg-white transition-all text-lg font-medium"
-                />
-              </div>
-              <Link href={searchQuery 
-                ? `/annonces?q=${encodeURIComponent(searchQuery)}&category=${activeTab}` 
-                : `/${activeTab}`
-              }>
-                <Button 
-                  size="lg" 
-                  className={`w-full md:w-auto px-10 py-5 text-lg font-semibold rounded-2xl bg-gradient-to-r ${activeCategory.color} hover:shadow-xl transform transition-all duration-300 hover:scale-105 group`}
-                >
-                  <Search className="w-6 h-6 mr-3 group-hover:rotate-12 transition-transform" />
-                  {lang === 'fr' ? 'Rechercher' : 'Search'}
-                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </Link>
-            </div>
+        {/* Category tabs */}
+        <div className="flex items-center justify-center gap-1 mb-6 flex-wrap">
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setActiveCategory(cat.id)}
+              className={`flex items-center gap-1.5 px-4 py-2 text-[14px] font-medium rounded-full transition-all duration-200 ${
+                activeCategory === cat.id
+                  ? 'bg-[#1d1d1f] text-white shadow-sm'
+                  : 'bg-[#f5f5f7] text-[#1d1d1f]/70 hover:bg-[#e8e8ed] hover:text-[#1d1d1f]'
+              }`}
+            >
+              <span>{cat.icon}</span>
+              <span>{lang === 'fr' ? cat.labelFr : cat.labelEn}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Search bar — Apple-style pill */}
+        <div className="max-w-[640px] mx-auto">
+          <div
+            className="flex items-center gap-3 bg-white rounded-2xl px-5 py-4"
+            style={{
+              boxShadow: '0 2px 20px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.06)',
+            }}
+          >
+            <Search className="w-5 h-5 text-[#86868b] flex-shrink-0" />
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder={
+                lang === 'fr'
+                  ? 'Rechercher à Douala, Yaoundé, Kribi...'
+                  : 'Search in Douala, Yaoundé, Kribi...'
+              }
+              className="flex-1 bg-transparent text-[#1d1d1f] text-[15px] placeholder-[#86868b] outline-none"
+              style={{ letterSpacing: '-0.01em' }}
+            />
+            <button
+              onClick={handleSearch}
+              className="flex items-center gap-2 px-5 py-2.5 bg-[#059669] text-white text-[14px] font-medium rounded-xl hover:bg-[#047857] transition-all duration-200 flex-shrink-0"
+              style={{ letterSpacing: '-0.01em' }}
+            >
+              <Search className="w-4 h-4" />
+              {lang === 'fr' ? 'Rechercher' : 'Search'}
+            </button>
           </div>
 
           {/* Popular cities */}
-          <div className={`flex flex-wrap items-center justify-center gap-3 animate-slide-up`} style={{ animationDelay: '0.8s' }}>
-            <span className="text-emerald-100 text-sm font-medium">
-              {lang === 'fr' ? 'Villes populaires:' : 'Popular cities:'}
+          <div className="flex items-center justify-center gap-2 mt-4 flex-wrap">
+            <span className="text-[12px] text-[#86868b]">
+              {lang === 'fr' ? 'Villes populaires :' : 'Popular cities:'}
             </span>
-            {['Douala', 'Yaoundé', 'Kribi', 'Bafoussam', 'Bamenda'].map((city, index) => (
-              <Link
+            {CITIES.map((city) => (
+              <button
                 key={city}
-                href={`/${activeTab}?city=${city}`}
-                className="group flex items-center space-x-2 glass text-white hover:bg-white/30 px-4 py-2 rounded-full text-sm font-medium transition-all hover-lift"
-                style={{ animationDelay: `${0.9 + index * 0.1}s` }}
+                onClick={() => {
+                  const cat = CATEGORIES.find(c => c.id === activeCategory)
+                  if (cat) router.push(`${cat.href}?city=${encodeURIComponent(city)}`)
+                }}
+                className="text-[12px] text-[#059669] hover:text-[#047857] font-medium transition-colors"
               >
-                <span>{city}</span>
-                <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-              </Link>
+                {city}
+              </button>
             ))}
           </div>
         </div>
       </div>
-
-      {/* Bottom fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent" />
     </section>
   )
 }

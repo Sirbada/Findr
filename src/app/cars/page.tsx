@@ -3,13 +3,12 @@
 import { Suspense, useState, useEffect, useCallback } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { 
-  Search, Calendar, MapPin, Fuel, Settings2, Users, 
-  Heart, CheckCircle, Car, Filter, X, ArrowUpDown, SlidersHorizontal
+import {
+  Search, MapPin, Fuel, Settings2, Users,
+  Heart, CheckCircle, Car, X, ArrowUpDown, SlidersHorizontal
 } from 'lucide-react'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
-import { Button } from '@/components/ui/Button'
 import { getVehicles, Vehicle } from '@/lib/supabase/queries'
 import { useTranslation } from '@/lib/i18n/context'
 
@@ -27,20 +26,18 @@ function CarsPageInner() {
   const [listings, setListings] = useState<Vehicle[]>([])
   const [loading, setLoading] = useState(true)
   const [showFilters, setShowFilters] = useState(false)
-  
-  // Filters — initialized from URL params
+  const [rentalType, setRentalType] = useState<'rent' | 'buy'>((searchParams.get('mode') as 'rent' | 'buy') || 'rent')
+
   const [selectedCity, setSelectedCity] = useState(searchParams.get('city') || 'all')
   const [selectedBrand, setSelectedBrand] = useState(searchParams.get('brand') || 'all')
   const [selectedFuel, setSelectedFuel] = useState(searchParams.get('fuel') || 'all')
   const [selectedTransmission, setSelectedTransmission] = useState(searchParams.get('transmission') || 'all')
-  const [rentalType, setRentalType] = useState<'rent' | 'buy'>((searchParams.get('mode') as 'rent' | 'buy') || 'rent')
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '')
   const [minPrice, setMinPrice] = useState(searchParams.get('minPrice') || '')
   const [maxPrice, setMaxPrice] = useState(searchParams.get('maxPrice') || '')
   const [sortBy, setSortBy] = useState<SortOption>((searchParams.get('sort') as SortOption) || 'newest')
   const [minSeats, setMinSeats] = useState(searchParams.get('minSeats') || 'all')
 
-  // Sync filters to URL
   const syncToUrl = useCallback(() => {
     const params = new URLSearchParams()
     if (selectedCity !== 'all') params.set('city', selectedCity)
@@ -57,116 +54,61 @@ function CarsPageInner() {
     router.replace(qs ? `?${qs}` : '/cars', { scroll: false })
   }, [selectedCity, selectedBrand, selectedFuel, selectedTransmission, rentalType, searchQuery, minPrice, maxPrice, sortBy, minSeats, router])
 
-  useEffect(() => {
-    syncToUrl()
-  }, [syncToUrl])
+  useEffect(() => { syncToUrl() }, [syncToUrl])
 
-  // Translated content
-  const content = {
-    cities: [
-      { value: 'all', label: lang === 'fr' ? 'Toutes les villes' : 'All cities' },
-      { value: 'Douala', label: 'Douala' },
-      { value: 'Yaoundé', label: 'Yaoundé' },
-      { value: 'Kribi', label: 'Kribi' },
-      { value: 'Bafoussam', label: 'Bafoussam' },
-      { value: 'Limbe', label: 'Limbe' },
-    ],
-    carBrands: [
-      { value: 'all', label: lang === 'fr' ? 'Toutes les marques' : 'All brands' },
-      { value: 'Toyota', label: 'Toyota' },
-      { value: 'Mercedes', label: 'Mercedes' },
-      { value: 'BMW', label: 'BMW' },
-      { value: 'Honda', label: 'Honda' },
-      { value: 'Nissan', label: 'Nissan' },
-      { value: 'Hyundai', label: 'Hyundai' },
-      { value: 'Kia', label: 'Kia' },
-    ],
-    fuelTypes: [
-      { value: 'all', label: lang === 'fr' ? 'Tous' : 'All' },
-      { value: 'petrol', label: t.fuelTypes.essence },
-      { value: 'diesel', label: t.fuelTypes.diesel },
-      { value: 'electric', label: t.fuelTypes.electric },
-      { value: 'hybrid', label: t.fuelTypes.hybrid },
-    ],
-    transmissionTypes: [
-      { value: 'all', label: lang === 'fr' ? 'Toutes' : 'All' },
-      { value: 'automatic', label: lang === 'fr' ? 'Automatique' : 'Automatic' },
-      { value: 'manual', label: lang === 'fr' ? 'Manuel' : 'Manual' },
-    ],
-    seatOptions: [
-      { value: 'all', label: lang === 'fr' ? 'Tous' : 'Any' },
-      { value: '2', label: '2+' },
-      { value: '4', label: '4+' },
-      { value: '5', label: '5+' },
-      { value: '7', label: '7+' },
-    ],
-    sortOptions: [
-      { value: 'newest', label: lang === 'fr' ? 'Plus récents' : 'Newest first' },
-      { value: 'price_asc', label: lang === 'fr' ? 'Prix croissant' : 'Price: low to high' },
-      { value: 'price_desc', label: lang === 'fr' ? 'Prix décroissant' : 'Price: high to low' },
-      { value: 'popular', label: lang === 'fr' ? 'Plus populaires' : 'Most popular' },
-    ],
-    heroTitle: lang === 'fr' ? 'Location & Vente de véhicules' : 'Vehicle Rental & Sales',
-    heroSubtitle: lang === 'fr' ? 'Trouvez la voiture parfaite au Cameroun' : 'Find the perfect car in Cameroon',
-    rent: lang === 'fr' ? 'Louer' : 'Rent',
-    buy: lang === 'fr' ? 'Acheter' : 'Buy',
-    pickupLocation: lang === 'fr' ? 'Lieu de prise en charge' : 'Pickup location',
-    startDate: lang === 'fr' ? 'Date de début' : 'Start date',
-    endDate: lang === 'fr' ? 'Date de fin' : 'End date',
-    brand: lang === 'fr' ? 'Marque' : 'Brand',
-    fuel: lang === 'fr' ? 'Carburant' : 'Fuel',
-    transmission: lang === 'fr' ? 'Transmission' : 'Transmission',
-    seats: lang === 'fr' ? 'places' : 'seats',
-    seatsLabel: lang === 'fr' ? 'Places' : 'Seats',
-    search: t.hero.search,
-    searchPlaceholder: lang === 'fr' ? 'Rechercher un véhicule...' : 'Search for a vehicle...',
-    minPriceLabel: lang === 'fr' ? 'Prix min (XAF/jour)' : 'Min price (XAF/day)',
-    maxPriceLabel: lang === 'fr' ? 'Prix max (XAF/jour)' : 'Max price (XAF/day)',
-    advancedFilters: lang === 'fr' ? 'Filtres avancés' : 'Advanced filters',
-    hideFilters: lang === 'fr' ? 'Masquer les filtres' : 'Hide filters',
-    clearAll: lang === 'fr' ? 'Tout effacer' : 'Clear all',
-    categories: lang === 'fr' ? [
-      { icon: '🚗', label: 'Économique', desc: 'Dès 15 000 XAF/jour' },
-      { icon: '🚙', label: 'SUV', desc: 'Dès 35 000 XAF/jour' },
-      { icon: '🚐', label: 'Minibus', desc: 'Dès 50 000 XAF/jour' },
-      { icon: '✨', label: 'Premium', desc: 'Dès 75 000 XAF/jour' },
-      { icon: '👨‍✈️', label: 'Avec chauffeur', desc: 'Service VIP' },
-    ] : [
-      { icon: '🚗', label: 'Economy', desc: 'From 15,000 XAF/day' },
-      { icon: '🚙', label: 'SUV', desc: 'From 35,000 XAF/day' },
-      { icon: '🚐', label: 'Minibus', desc: 'From 50,000 XAF/day' },
-      { icon: '✨', label: 'Premium', desc: 'From 75,000 XAF/day' },
-      { icon: '👨‍✈️', label: 'With driver', desc: 'VIP Service' },
-    ],
-    resultsFound: (count: number) => lang === 'fr' 
-      ? `${count} véhicule${count > 1 ? 's' : ''} disponible${count > 1 ? 's' : ''}`
-      : `${count} ${count === 1 ? 'vehicle' : 'vehicles'} available`,
-    allCameroon: lang === 'fr' ? 'Tout le Cameroun' : 'All Cameroon',
-    pro: 'Pro',
-    view: lang === 'fr' ? 'Voir' : 'View',
-    auto: 'Auto',
-    manual: lang === 'fr' ? 'Manuel' : 'Manual',
-    noResults: lang === 'fr' ? 'Aucun véhicule trouvé' : 'No vehicles found',
-    tryDifferent: lang === 'fr' ? 'Essayez de modifier vos critères de recherche' : 'Try adjusting your search criteria',
-  }
+  const cities = [
+    { value: 'all', label: lang === 'fr' ? 'Toutes les villes' : 'All cities' },
+    { value: 'Douala', label: 'Douala' },
+    { value: 'Yaoundé', label: 'Yaoundé' },
+    { value: 'Kribi', label: 'Kribi' },
+    { value: 'Bafoussam', label: 'Bafoussam' },
+    { value: 'Limbe', label: 'Limbe' },
+  ]
 
-  // Get fuel type label
-  const getFuelType = (fuel: string | null) => {
-    if (!fuel) return ''
-    const fuelItem = content.fuelTypes.find(f => f.value === fuel)
-    return fuelItem?.label || fuel
-  }
+  const brands = [
+    { value: 'all', label: lang === 'fr' ? 'Toutes les marques' : 'All brands' },
+    { value: 'Toyota', label: 'Toyota' },
+    { value: 'Mercedes', label: 'Mercedes' },
+    { value: 'BMW', label: 'BMW' },
+    { value: 'Honda', label: 'Honda' },
+    { value: 'Nissan', label: 'Nissan' },
+    { value: 'Hyundai', label: 'Hyundai' },
+    { value: 'Kia', label: 'Kia' },
+  ]
+
+  const fuelTypes = [
+    { value: 'all', label: lang === 'fr' ? 'Tous' : 'All' },
+    { value: 'petrol', label: lang === 'fr' ? 'Essence' : 'Petrol' },
+    { value: 'diesel', label: 'Diesel' },
+    { value: 'electric', label: lang === 'fr' ? 'Électrique' : 'Electric' },
+    { value: 'hybrid', label: lang === 'fr' ? 'Hybride' : 'Hybrid' },
+  ]
+
+  const transmissions = [
+    { value: 'all', label: lang === 'fr' ? 'Toutes' : 'All' },
+    { value: 'automatic', label: lang === 'fr' ? 'Automatique' : 'Automatic' },
+    { value: 'manual', label: lang === 'fr' ? 'Manuel' : 'Manual' },
+  ]
+
+  const sortOptions = [
+    { value: 'newest', label: lang === 'fr' ? 'Plus récents' : 'Newest' },
+    { value: 'price_asc', label: lang === 'fr' ? 'Prix croissant' : 'Price ↑' },
+    { value: 'price_desc', label: lang === 'fr' ? 'Prix décroissant' : 'Price ↓' },
+    { value: 'popular', label: lang === 'fr' ? 'Populaires' : 'Popular' },
+  ]
+
+  const seatOptions = [
+    { value: 'all', label: lang === 'fr' ? 'Tous' : 'Any' },
+    { value: '2', label: '2+' },
+    { value: '4', label: '4+' },
+    { value: '5', label: '5+' },
+    { value: '7', label: '7+' },
+  ]
 
   useEffect(() => {
-    async function fetchListings() {
-      const data = await getVehicles()
-      setListings(data)
-      setLoading(false)
-    }
-    fetchListings()
+    getVehicles().then(data => { setListings(data); setLoading(false) })
   }, [])
 
-  // Filter listings
   const filteredListings = listings
     .filter(listing => {
       if (selectedCity !== 'all' && listing.city !== selectedCity) return false
@@ -174,7 +116,7 @@ function CarsPageInner() {
       if (selectedFuel !== 'all' && listing.fuel_type !== selectedFuel) return false
       if (selectedTransmission !== 'all' && listing.transmission !== selectedTransmission) return false
       if (minSeats !== 'all' && (listing.seats === null || listing.seats < parseInt(minSeats))) return false
-      if (searchQuery && 
+      if (searchQuery &&
           !listing.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
           !listing.brand?.toLowerCase().includes(searchQuery.toLowerCase()) &&
           !listing.model?.toLowerCase().includes(searchQuery.toLowerCase()) &&
@@ -189,538 +131,407 @@ function CarsPageInner() {
         case 'price_asc': return a.price_per_day - b.price_per_day
         case 'price_desc': return b.price_per_day - a.price_per_day
         case 'popular': return b.views - a.views
-        case 'newest':
         default: return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       }
     })
 
-  const hasActiveFilters = selectedCity !== 'all' || selectedBrand !== 'all' || 
+  const hasActiveFilters = selectedCity !== 'all' || selectedBrand !== 'all' ||
     selectedFuel !== 'all' || selectedTransmission !== 'all' || searchQuery ||
     minPrice || maxPrice || minSeats !== 'all'
 
-  const clearAllFilters = () => {
-    setSelectedCity('all')
-    setSelectedBrand('all')
-    setSelectedFuel('all')
-    setSelectedTransmission('all')
-    setSearchQuery('')
-    setMinPrice('')
-    setMaxPrice('')
-    setSortBy('newest')
-    setMinSeats('all')
+  const clearAll = () => {
+    setSelectedCity('all'); setSelectedBrand('all'); setSelectedFuel('all')
+    setSelectedTransmission('all'); setSearchQuery(''); setMinPrice('')
+    setMaxPrice(''); setSortBy('newest'); setMinSeats('all')
+  }
+
+  const getFuelLabel = (fuel: string | null) => {
+    if (!fuel) return ''
+    return fuelTypes.find(f => f.value === fuel)?.label || fuel
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[color:var(--background)]">
+    <div className="min-h-screen flex flex-col bg-white">
       <Header />
-      
-      {/* Hero Search - Sixt/Mobile.de Style */}
-      <div className="bg-gradient-to-r from-[color:var(--green-600)] to-[color:var(--green-800)] text-white py-12">
-        <div className="max-w-6xl mx-auto px-4">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">
-            {content.heroTitle}
+
+      {/* Page header */}
+      <div className="bg-white border-b border-black/[0.06]">
+        <div className="max-w-[1200px] mx-auto px-6 py-8">
+          <h1
+            className="font-bold text-[#1d1d1f] mb-6"
+            style={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.03em', lineHeight: 1.1 }}
+          >
+            {lang === 'fr' ? 'Véhicules au Cameroun' : 'Vehicles in Cameroon'}
           </h1>
-          <p className="text-white/80 mb-8">
-            {content.heroSubtitle}
-          </p>
-          
-          {/* Rent/Buy Toggle - Sixt Style */}
-          <div className="flex gap-2 mb-6">
+
+          {/* Rent / Buy toggle */}
+          <div className="flex items-center gap-1 mb-5 bg-[#f5f5f7] rounded-xl p-1 w-fit">
             <button
               onClick={() => setRentalType('rent')}
-              className={`px-6 py-2 rounded-full font-medium transition-colors ${
+              className={`px-5 py-2 text-[14px] font-medium rounded-lg transition-all ${
                 rentalType === 'rent'
-                  ? 'bg-white text-[color:var(--green-700)]'
-                  : 'bg-white/20 text-white hover:bg-white/30'
+                  ? 'bg-white text-[#1d1d1f] shadow-sm'
+                  : 'text-[#6e6e73] hover:text-[#1d1d1f]'
               }`}
+              style={{ letterSpacing: '-0.01em' }}
             >
-              🚗 {content.rent}
+              🚗 {lang === 'fr' ? 'Louer' : 'Rent'}
             </button>
             <button
               onClick={() => setRentalType('buy')}
-              className={`px-6 py-2 rounded-full font-medium transition-colors ${
+              className={`px-5 py-2 text-[14px] font-medium rounded-lg transition-all ${
                 rentalType === 'buy'
-                  ? 'bg-white text-[color:var(--green-700)]'
-                  : 'bg-white/20 text-white hover:bg-white/30'
+                  ? 'bg-white text-[#1d1d1f] shadow-sm'
+                  : 'text-[#6e6e73] hover:text-[#1d1d1f]'
               }`}
+              style={{ letterSpacing: '-0.01em' }}
             >
-              🏷️ {content.buy}
+              🏷️ {lang === 'fr' ? 'Acheter' : 'Buy'}
             </button>
           </div>
-          
-          {/* Search Bar */}
-          <div className="bg-white rounded-xl p-4 shadow-lg">
-            {/* Main row */}
-            <div className="flex flex-col md:flex-row gap-4">
-              {/* Search Query */}
-              <div className="flex-1">
-                <label className="block text-xs font-medium text-gray-500 mb-1">
-                  🔍 {content.search}
-                </label>
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder={content.searchPlaceholder}
-                    className="w-full pl-10 pr-8 py-2 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-[color:var(--green-400)] focus:border-transparent"
-                  />
-                  {searchQuery && (
-                    <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2">
-                      <X className="w-4 h-4 text-gray-400 hover:text-gray-600" />
-                    </button>
-                  )}
-                </div>
-              </div>
 
-              {/* Location */}
-              <div className="flex-1">
-                <label className="block text-xs font-medium text-gray-500 mb-1">
-                  📍 {content.pickupLocation}
-                </label>
-                <select
-                  value={selectedCity}
-                  onChange={(e) => setSelectedCity(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-[color:var(--green-400)] focus:border-transparent"
-                >
-                  {content.cities.map(city => (
-                    <option key={city.value} value={city.value}>{city.label}</option>
-                  ))}
-                </select>
-              </div>
-              
-              {rentalType === 'rent' && (
-                <>
-                  {/* Date From */}
-                  <div className="flex-1">
-                    <label className="block text-xs font-medium text-gray-500 mb-1">
-                      📅 {content.startDate}
-                    </label>
-                    <input
-                      type="date"
-                      className="w-full px-4 py-2 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-[color:var(--green-400)] focus:border-transparent"
-                    />
-                  </div>
-                  
-                  {/* Date To */}
-                  <div className="flex-1">
-                    <label className="block text-xs font-medium text-gray-500 mb-1">
-                      📅 {content.endDate}
-                    </label>
-                    <input
-                      type="date"
-                      className="w-full px-4 py-2 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-[color:var(--green-400)] focus:border-transparent"
-                    />
-                  </div>
-                </>
-              )}
-              
-              {rentalType === 'buy' && (
-                <>
-                  {/* Brand */}
-                  <div className="flex-1">
-                    <label className="block text-xs font-medium text-gray-500 mb-1">
-                      🚘 {content.brand}
-                    </label>
-                    <select
-                      value={selectedBrand}
-                      onChange={(e) => setSelectedBrand(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-[color:var(--green-400)] focus:border-transparent"
-                    >
-                      {content.carBrands.map(brand => (
-                        <option key={brand.value} value={brand.value}>{brand.label}</option>
-                      ))}
-                    </select>
-                  </div>
-                  
-                  {/* Fuel */}
-                  <div className="flex-1">
-                    <label className="block text-xs font-medium text-gray-500 mb-1">
-                      ⛽ {content.fuel}
-                    </label>
-                    <select
-                      value={selectedFuel}
-                      onChange={(e) => setSelectedFuel(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-[color:var(--green-400)] focus:border-transparent"
-                    >
-                      {content.fuelTypes.map(fuel => (
-                        <option key={fuel.value} value={fuel.value}>{fuel.label}</option>
-                      ))}
-                    </select>
-                  </div>
-                </>
-              )}
-
-              {/* Advanced Filters Toggle */}
-              <div className="flex items-end">
-                <button
-                  onClick={() => setShowFilters(!showFilters)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-2xl border transition-colors font-medium text-sm whitespace-nowrap ${
-                    showFilters
-                      ? 'bg-[color:var(--green-600)] text-white border-[color:var(--green-600)]'
-                      : 'border-gray-200 text-gray-700 hover:bg-gray-50'
-                  }`}
-                >
-                  <SlidersHorizontal className="w-4 h-4" />
-                  {showFilters ? content.hideFilters : content.advancedFilters}
+          {/* Search row */}
+          <div className="flex flex-col md:flex-row gap-3">
+            {/* Search */}
+            <div className="flex-1 relative">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#86868b]" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={lang === 'fr' ? 'Rechercher un véhicule...' : 'Search for a vehicle...'}
+                className="w-full pl-10 pr-4 py-2.5 bg-[#f5f5f7] text-[#1d1d1f] text-[14px] rounded-xl border border-transparent focus:border-[#059669] focus:bg-white focus:ring-2 focus:ring-[#059669]/15 outline-none transition-all"
+                style={{ letterSpacing: '-0.01em' }}
+              />
+              {searchQuery && (
+                <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2">
+                  <X className="w-3.5 h-3.5 text-[#86868b]" />
                 </button>
-              </div>
+              )}
             </div>
 
-            {/* Advanced Filters Panel */}
-            {showFilters && (
-              <div className="mt-4 pt-4 border-t grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {/* Brand (for rent mode) */}
-                {rentalType === 'rent' && (
-                  <div>
-                    <label className="block text-xs font-medium text-gray-500 mb-1">
-                      🚘 {content.brand}
-                    </label>
-                    <select
-                      value={selectedBrand}
-                      onChange={(e) => setSelectedBrand(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-[color:var(--green-400)] focus:border-transparent"
-                    >
-                      {content.carBrands.map(brand => (
-                        <option key={brand.value} value={brand.value}>{brand.label}</option>
-                      ))}
-                    </select>
-                  </div>
-                )}
+            {/* City */}
+            <select
+              value={selectedCity}
+              onChange={(e) => setSelectedCity(e.target.value)}
+              className="px-4 py-2.5 bg-[#f5f5f7] text-[#1d1d1f] text-[14px] rounded-xl border border-transparent focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/15 outline-none appearance-none cursor-pointer min-w-[160px]"
+              style={{ letterSpacing: '-0.01em' }}
+            >
+              {cities.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
+            </select>
 
-                {/* Fuel (for rent mode) */}
-                {rentalType === 'rent' && (
-                  <div>
-                    <label className="block text-xs font-medium text-gray-500 mb-1">
-                      ⛽ {content.fuel}
-                    </label>
-                    <select
-                      value={selectedFuel}
-                      onChange={(e) => setSelectedFuel(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-[color:var(--green-400)] focus:border-transparent"
-                    >
-                      {content.fuelTypes.map(fuel => (
-                        <option key={fuel.value} value={fuel.value}>{fuel.label}</option>
-                      ))}
-                    </select>
-                  </div>
-                )}
+            {/* Brand */}
+            <select
+              value={selectedBrand}
+              onChange={(e) => setSelectedBrand(e.target.value)}
+              className="px-4 py-2.5 bg-[#f5f5f7] text-[#1d1d1f] text-[14px] rounded-xl border border-transparent focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/15 outline-none appearance-none cursor-pointer min-w-[160px]"
+              style={{ letterSpacing: '-0.01em' }}
+            >
+              {brands.map(b => <option key={b.value} value={b.value}>{b.label}</option>)}
+            </select>
 
-                {/* Transmission */}
-                <div>
-                  <label className="block text-xs font-medium text-gray-500 mb-1">
-                    ⚙️ {content.transmission}
-                  </label>
-                  <div className="flex gap-1">
-                    {content.transmissionTypes.map(opt => (
-                      <button
-                        key={opt.value}
-                        onClick={() => setSelectedTransmission(opt.value)}
-                        className={`flex-1 py-2 text-xs rounded-xl border transition-colors ${
-                          selectedTransmission === opt.value
-                            ? 'bg-[color:var(--green-600)] text-white border-[color:var(--green-600)]'
-                            : 'border-gray-200 text-gray-700 hover:bg-gray-50'
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+            {/* Filters toggle */}
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className={`flex items-center gap-2 px-4 py-2.5 text-[14px] font-medium rounded-xl border transition-all ${
+                showFilters
+                  ? 'bg-[#1d1d1f] text-white border-[#1d1d1f]'
+                  : 'bg-[#f5f5f7] text-[#1d1d1f] border-transparent hover:bg-[#e8e8ed]'
+              }`}
+              style={{ letterSpacing: '-0.01em' }}
+            >
+              <SlidersHorizontal className="w-4 h-4" />
+              {lang === 'fr' ? 'Filtres' : 'Filters'}
+              {hasActiveFilters && <span className="w-1.5 h-1.5 bg-[#059669] rounded-full" />}
+            </button>
+          </div>
 
-                {/* Seats */}
-                <div>
-                  <label className="block text-xs font-medium text-gray-500 mb-1">
-                    👥 {content.seatsLabel}
-                  </label>
-                  <div className="flex gap-1">
-                    {content.seatOptions.map(opt => (
-                      <button
-                        key={opt.value}
-                        onClick={() => setMinSeats(opt.value)}
-                        className={`flex-1 py-2 text-xs rounded-xl border transition-colors ${
-                          minSeats === opt.value
-                            ? 'bg-[color:var(--green-600)] text-white border-[color:var(--green-600)]'
-                            : 'border-gray-200 text-gray-700 hover:bg-gray-50'
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Min Price */}
-                <div>
-                  <label className="block text-xs font-medium text-gray-500 mb-1">{content.minPriceLabel}</label>
-                  <input
-                    type="number"
-                    value={minPrice}
-                    onChange={(e) => setMinPrice(e.target.value)}
-                    placeholder="0"
-                    min="0"
-                    className="w-full px-4 py-2 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-[color:var(--green-400)] focus:border-transparent"
-                  />
-                </div>
-
-                {/* Max Price */}
-                <div>
-                  <label className="block text-xs font-medium text-gray-500 mb-1">{content.maxPriceLabel}</label>
-                  <input
-                    type="number"
-                    value={maxPrice}
-                    onChange={(e) => setMaxPrice(e.target.value)}
-                    placeholder="∞"
-                    min="0"
-                    className="w-full px-4 py-2 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-[color:var(--green-400)] focus:border-transparent"
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* Active Filter Tags */}
-            {hasActiveFilters && (
-              <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t items-center">
-                {searchQuery && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">
-                    🔍 {searchQuery}
-                    <button onClick={() => setSearchQuery('')}><X className="w-3 h-3" /></button>
-                  </span>
-                )}
-                {selectedCity !== 'all' && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-[color:var(--green-50)] text-[color:var(--green-700)] rounded-full text-sm">
-                    📍 {selectedCity}
-                    <button onClick={() => setSelectedCity('all')}><X className="w-3 h-3" /></button>
-                  </span>
-                )}
-                {selectedBrand !== 'all' && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">
-                    🚘 {selectedBrand}
-                    <button onClick={() => setSelectedBrand('all')}><X className="w-3 h-3" /></button>
-                  </span>
-                )}
-                {selectedFuel !== 'all' && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm">
-                    ⛽ {content.fuelTypes.find(f => f.value === selectedFuel)?.label}
-                    <button onClick={() => setSelectedFuel('all')}><X className="w-3 h-3" /></button>
-                  </span>
-                )}
-                {selectedTransmission !== 'all' && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
-                    ⚙️ {content.transmissionTypes.find(t => t.value === selectedTransmission)?.label}
-                    <button onClick={() => setSelectedTransmission('all')}><X className="w-3 h-3" /></button>
-                  </span>
-                )}
-                {minSeats !== 'all' && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm">
-                    👥 {minSeats}+ {content.seats}
-                    <button onClick={() => setMinSeats('all')}><X className="w-3 h-3" /></button>
-                  </span>
-                )}
-                {(minPrice || maxPrice) && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm">
-                    💰 {minPrice ? formatPrice(parseInt(minPrice)) : '0'} – {maxPrice ? `${formatPrice(parseInt(maxPrice))} XAF` : '∞'}
-                    <button onClick={() => { setMinPrice(''); setMaxPrice('') }}><X className="w-3 h-3" /></button>
-                  </span>
-                )}
-                <button
-                  onClick={clearAllFilters}
-                  className="ml-auto text-xs text-gray-500 hover:text-gray-700 underline"
+          {/* Advanced filters */}
+          {showFilters && (
+            <div className="mt-4 pt-4 border-t border-black/[0.06] grid grid-cols-2 md:grid-cols-4 gap-4">
+              {/* Fuel */}
+              <div>
+                <label className="block text-[11px] font-medium text-[#86868b] uppercase tracking-[0.04em] mb-2">
+                  {lang === 'fr' ? 'Carburant' : 'Fuel'}
+                </label>
+                <select
+                  value={selectedFuel}
+                  onChange={(e) => setSelectedFuel(e.target.value)}
+                  className="w-full px-3 py-2 bg-[#f5f5f7] text-[#1d1d1f] text-[13px] rounded-lg border border-transparent focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/15 outline-none"
                 >
-                  {content.clearAll}
-                </button>
+                  {fuelTypes.map(f => <option key={f.value} value={f.value}>{f.label}</option>)}
+                </select>
               </div>
-            )}
-          </div>
-        </div>
-      </div>
 
-      {/* Quick Categories - Sixt Style */}
-      <div className="bg-white border-b py-4">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex gap-4 overflow-x-auto pb-2">
-            {content.categories.map((cat, idx) => (
-              <button
-                key={idx}
-                className="flex-shrink-0 flex items-center gap-3 px-4 py-2 bg-[color:var(--green-50)] hover:bg-[color:var(--green-100)] rounded-2xl transition-colors"
-              >
-                <span className="text-2xl">{cat.icon}</span>
-                <div className="text-left">
-                  <p className="font-medium text-gray-900">{cat.label}</p>
-                  <p className="text-xs text-gray-500">{cat.desc}</p>
+              {/* Transmission */}
+              <div>
+                <label className="block text-[11px] font-medium text-[#86868b] uppercase tracking-[0.04em] mb-2">
+                  {lang === 'fr' ? 'Transmission' : 'Transmission'}
+                </label>
+                <div className="flex gap-1">
+                  {transmissions.map(opt => (
+                    <button
+                      key={opt.value}
+                      onClick={() => setSelectedTransmission(opt.value)}
+                      className={`flex-1 py-2 text-[12px] font-medium rounded-lg transition-all ${
+                        selectedTransmission === opt.value
+                          ? 'bg-[#1d1d1f] text-white'
+                          : 'bg-[#f5f5f7] text-[#1d1d1f] hover:bg-[#e8e8ed]'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
                 </div>
+              </div>
+
+              {/* Min price */}
+              <div>
+                <label className="block text-[11px] font-medium text-[#86868b] uppercase tracking-[0.04em] mb-2">
+                  {lang === 'fr' ? 'Prix min (XAF/j)' : 'Min price (XAF/d)'}
+                </label>
+                <input
+                  type="number"
+                  value={minPrice}
+                  onChange={(e) => setMinPrice(e.target.value)}
+                  placeholder="0"
+                  className="w-full px-3 py-2 bg-[#f5f5f7] text-[#1d1d1f] text-[13px] rounded-lg border border-transparent focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/15 outline-none"
+                />
+              </div>
+
+              {/* Seats */}
+              <div>
+                <label className="block text-[11px] font-medium text-[#86868b] uppercase tracking-[0.04em] mb-2">
+                  {lang === 'fr' ? 'Places min' : 'Min seats'}
+                </label>
+                <div className="flex gap-1">
+                  {seatOptions.map(opt => (
+                    <button
+                      key={opt.value}
+                      onClick={() => setMinSeats(opt.value)}
+                      className={`flex-1 py-2 text-[11px] font-medium rounded-lg transition-all ${
+                        minSeats === opt.value
+                          ? 'bg-[#1d1d1f] text-white'
+                          : 'bg-[#f5f5f7] text-[#1d1d1f] hover:bg-[#e8e8ed]'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Active filter chips */}
+          {hasActiveFilters && (
+            <div className="flex flex-wrap gap-2 mt-4 items-center">
+              {searchQuery && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#f5f5f7] text-[#1d1d1f] text-[12px] font-medium rounded-full">
+                  🔍 {searchQuery}
+                  <button onClick={() => setSearchQuery('')}><X className="w-3 h-3 text-[#86868b]" /></button>
+                </span>
+              )}
+              {selectedCity !== 'all' && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#f5f5f7] text-[#1d1d1f] text-[12px] font-medium rounded-full">
+                  📍 {selectedCity}
+                  <button onClick={() => setSelectedCity('all')}><X className="w-3 h-3 text-[#86868b]" /></button>
+                </span>
+              )}
+              {selectedBrand !== 'all' && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#f5f5f7] text-[#1d1d1f] text-[12px] font-medium rounded-full">
+                  🚘 {selectedBrand}
+                  <button onClick={() => setSelectedBrand('all')}><X className="w-3 h-3 text-[#86868b]" /></button>
+                </span>
+              )}
+              {selectedFuel !== 'all' && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#f5f5f7] text-[#1d1d1f] text-[12px] font-medium rounded-full">
+                  ⛽ {fuelTypes.find(f => f.value === selectedFuel)?.label}
+                  <button onClick={() => setSelectedFuel('all')}><X className="w-3 h-3 text-[#86868b]" /></button>
+                </span>
+              )}
+              {selectedTransmission !== 'all' && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#f5f5f7] text-[#1d1d1f] text-[12px] font-medium rounded-full">
+                  ⚙️ {transmissions.find(t => t.value === selectedTransmission)?.label}
+                  <button onClick={() => setSelectedTransmission('all')}><X className="w-3 h-3 text-[#86868b]" /></button>
+                </span>
+              )}
+              {(minPrice || maxPrice) && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#f5f5f7] text-[#1d1d1f] text-[12px] font-medium rounded-full">
+                  💰 {minPrice ? formatPrice(parseInt(minPrice)) : '0'} – {maxPrice ? `${formatPrice(parseInt(maxPrice))} XAF` : '∞'}
+                  <button onClick={() => { setMinPrice(''); setMaxPrice('') }}><X className="w-3 h-3 text-[#86868b]" /></button>
+                </span>
+              )}
+              <button onClick={clearAll} className="text-[12px] text-[#059669] hover:text-[#047857] font-medium ml-auto">
+                {lang === 'fr' ? 'Tout effacer' : 'Clear all'}
               </button>
-            ))}
-          </div>
+            </div>
+          )}
         </div>
       </div>
 
       {/* Results */}
-      <main className="flex-1 py-8">
-        <div className="max-w-6xl mx-auto px-4">
-          {/* Results Header */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+      <main className="flex-1 bg-[#f5f5f7]">
+        <div className="max-w-[1200px] mx-auto px-6 py-8">
+          {/* Results bar */}
+          <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-xl font-semibold text-gray-900">
-                {content.resultsFound(filteredListings.length)}
-              </h2>
-              <p className="text-sm text-gray-500">
-                {selectedCity !== 'all' ? selectedCity : content.allCameroon}
+              <p className="text-[15px] font-semibold text-[#1d1d1f]" style={{ letterSpacing: '-0.02em' }}>
+                {loading ? '...' : `${filteredListings.length} ${lang === 'fr' ? (filteredListings.length > 1 ? 'véhicules' : 'véhicule') : (filteredListings.length === 1 ? 'vehicle' : 'vehicles')}`}
+              </p>
+              <p className="text-[13px] text-[#86868b]">
+                {selectedCity !== 'all' ? selectedCity : lang === 'fr' ? 'Tout le Cameroun' : 'All Cameroon'}
               </p>
             </div>
-            
-            {/* Sort */}
             <div className="flex items-center gap-2">
-              <ArrowUpDown className="w-4 h-4 text-gray-500" />
+              <ArrowUpDown className="w-3.5 h-3.5 text-[#86868b]" />
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as SortOption)}
-                className="text-sm border border-gray-200 rounded-xl px-3 py-1.5 text-gray-700 focus:ring-2 focus:ring-[color:var(--green-400)] focus:border-transparent"
+                className="text-[13px] text-[#1d1d1f] bg-transparent border-none outline-none cursor-pointer font-medium"
+                style={{ letterSpacing: '-0.01em' }}
               >
-                {content.sortOptions.map(opt => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
-                ))}
+                {sortOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
               </select>
             </div>
           </div>
 
-          {/* Listings Grid - Mobile.de Style */}
+          {/* Grid */}
           {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {[1,2,3,4,5,6].map(i => (
-                <div key={i} className="animate-pulse">
-                  <div className="bg-gray-200 rounded-xl h-48 mb-3"></div>
-                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                <div key={i} className="bg-white rounded-2xl overflow-hidden">
+                  <div className="skeleton h-52" />
+                  <div className="p-4 space-y-2">
+                    <div className="skeleton h-4 w-3/4" />
+                    <div className="skeleton h-3 w-1/2" />
+                    <div className="skeleton h-5 w-1/3 mt-3" />
+                  </div>
                 </div>
               ))}
             </div>
+          ) : filteredListings.length === 0 ? (
+            <div className="text-center py-20">
+              <div className="w-16 h-16 bg-[#f5f5f7] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Car className="w-7 h-7 text-[#86868b]" />
+              </div>
+              <h3 className="text-[17px] font-semibold text-[#1d1d1f] mb-2" style={{ letterSpacing: '-0.02em' }}>
+                {lang === 'fr' ? 'Aucun véhicule trouvé' : 'No vehicles found'}
+              </h3>
+              <p className="text-[14px] text-[#86868b] mb-4">
+                {lang === 'fr' ? 'Essayez de modifier vos critères de recherche' : 'Try adjusting your search criteria'}
+              </p>
+              {hasActiveFilters && (
+                <button onClick={clearAll} className="text-[14px] text-[#059669] font-medium hover:text-[#047857]">
+                  {lang === 'fr' ? 'Effacer les filtres' : 'Clear filters'}
+                </button>
+              )}
+            </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredListings.map((listing) => (
-                <Link 
-                  key={listing.id} 
-                  href={`/cars/${listing.id}`}
-                  className="group"
-                >
-                  <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all">
+                <Link key={listing.id} href={`/cars/${listing.id}`} className="group">
+                  <div
+                    className="bg-white rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
+                    style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04)' }}
+                  >
                     {/* Image */}
-                    <div className="relative h-48 overflow-hidden">
+                    <div className="relative h-52 overflow-hidden">
                       {listing.images?.[0] ? (
                         <img
                           src={listing.images[0]}
                           alt={listing.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                       ) : (
-                        <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                          <Car className="w-12 h-12 text-gray-300" />
+                        <div className="w-full h-full bg-[#f5f5f7] flex items-center justify-center">
+                          <Car className="w-10 h-10 text-[#c7c7cc]" />
                         </div>
                       )}
-                      
-                      {/* Favorite Button */}
-                      <button 
-                        className="absolute top-3 right-3 p-2 bg-white/80 rounded-full hover:bg-white transition-colors"
-                        onClick={(e) => { e.preventDefault(); }}
+
+                      {/* Favorite */}
+                      <button
+                        className="absolute top-3 right-3 w-8 h-8 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-all shadow-sm"
+                        onClick={(e) => e.preventDefault()}
                       >
-                        <Heart className="w-4 h-4 text-gray-600" />
+                        <Heart className="w-3.5 h-3.5 text-[#1d1d1f]" />
                       </button>
-                      
-                      {/* Badges */}
-                      <div className="absolute top-3 left-3 flex gap-2">
-                        {listing.is_verified && (
-                          <span className="bg-green-600 text-white text-xs font-medium px-2 py-1 rounded flex items-center gap-1">
+
+                      {/* Verified badge */}
+                      {listing.is_verified && (
+                        <div className="absolute top-3 left-3">
+                          <span className="flex items-center gap-1 px-2 py-0.5 bg-white/90 backdrop-blur-sm text-[#059669] text-[11px] font-semibold rounded-full">
                             <CheckCircle className="w-3 h-3" />
-                            {content.pro}
+                            Pro
                           </span>
-                        )}
-                      </div>
+                        </div>
+                      )}
                     </div>
-                    
+
                     {/* Content */}
                     <div className="p-4">
-                      {/* Brand & Model */}
+                      {/* Brand + year */}
                       <div className="flex items-center gap-2 mb-1">
                         {listing.brand && (
-                          <span className="text-xs font-medium text-[color:var(--green-700)] bg-[color:var(--green-50)] px-2 py-0.5 rounded">
+                          <span className="px-2 py-0.5 bg-[#f5f5f7] text-[#059669] text-[11px] font-semibold rounded-full">
                             {listing.brand}
                           </span>
                         )}
                         {listing.year && (
-                          <span className="text-xs text-gray-500">{listing.year}</span>
+                          <span className="text-[12px] text-[#86868b]">{listing.year}</span>
                         )}
                       </div>
-                      
-                      <h3 className="font-semibold text-gray-900 group-hover:text-[color:var(--green-700)] transition-colors mb-2">
+
+                      <h3
+                        className="font-semibold text-[#1d1d1f] mb-1 group-hover:text-[#059669] transition-colors"
+                        style={{ fontSize: '15px', letterSpacing: '-0.02em' }}
+                      >
                         {listing.title}
                       </h3>
-                      
-                      {/* Location */}
-                      <div className="flex items-center text-gray-500 text-sm mb-3">
-                        <MapPin className="w-4 h-4 mr-1" />
+
+                      <div className="flex items-center gap-1 text-[#86868b] text-[13px] mb-3">
+                        <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
                         <span>{listing.city}</span>
                       </div>
-                      
-                      {/* Features - Mobile.de Style */}
-                      <div className="flex flex-wrap gap-3 text-xs text-gray-600 mb-4">
+
+                      {/* Specs */}
+                      <div className="flex flex-wrap gap-3 text-[12px] text-[#6e6e73] mb-4">
                         {listing.fuel_type && (
                           <span className="flex items-center gap-1">
-                            <Fuel className="w-3 h-3" />
-                            {getFuelType(listing.fuel_type)}
+                            <Fuel className="w-3.5 h-3.5" />
+                            {getFuelLabel(listing.fuel_type)}
                           </span>
                         )}
                         {listing.transmission && (
                           <span className="flex items-center gap-1">
-                            <Settings2 className="w-3 h-3" />
-                            {listing.transmission === 'automatic' ? content.auto : content.manual}
+                            <Settings2 className="w-3.5 h-3.5" />
+                            {listing.transmission === 'automatic' ? (lang === 'fr' ? 'Auto' : 'Auto') : (lang === 'fr' ? 'Manuel' : 'Manual')}
                           </span>
                         )}
                         {listing.seats && (
                           <span className="flex items-center gap-1">
-                            <Users className="w-3 h-3" />
-                            {listing.seats} {content.seats}
+                            <Users className="w-3.5 h-3.5" />
+                            {listing.seats} {lang === 'fr' ? 'places' : 'seats'}
                           </span>
                         )}
                       </div>
-                      
+
                       {/* Price */}
-                      <div className="flex items-center justify-between pt-3 border-t">
+                      <div className="flex items-center justify-between pt-3 border-t border-black/[0.04]">
                         <div>
-                          <span className="text-2xl font-bold text-[color:var(--green-700)]">
+                          <span className="font-bold text-[#1d1d1f]" style={{ fontSize: '17px', letterSpacing: '-0.02em' }}>
                             {formatPrice(listing.price_per_day)}
                           </span>
-                          <span className="text-gray-500 text-sm"> XAF{t.listings.perDay}</span>
+                          <span className="text-[#86868b] text-[12px] ml-1">XAF/{lang === 'fr' ? 'jour' : 'day'}</span>
                         </div>
-                        <Button size="sm" variant="outline" className="text-[color:var(--green-700)] border-[color:var(--green-400)] hover:bg-[color:var(--green-50)]">
-                          {content.view}
-                        </Button>
+                        <span className="px-3 py-1.5 bg-[#059669] text-white text-[12px] font-medium rounded-full hover:bg-[#047857] transition-colors">
+                          {lang === 'fr' ? 'Voir' : 'View'}
+                        </span>
                       </div>
                     </div>
                   </div>
                 </Link>
               ))}
-            </div>
-          )}
-
-          {/* No Results */}
-          {!loading && filteredListings.length === 0 && (
-            <div className="text-center py-12">
-              <Car className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                {content.noResults}
-              </h3>
-              <p className="text-gray-500 mb-4">
-                {content.tryDifferent}
-              </p>
-              {hasActiveFilters && (
-                <button
-                  onClick={clearAllFilters}
-                  className="text-[color:var(--green-700)] hover:text-[color:var(--green-900)] font-medium underline"
-                >
-                  {content.clearAll}
-                </button>
-              )}
             </div>
           )}
         </div>
@@ -734,8 +545,8 @@ function CarsPageInner() {
 export default function CarsPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-gray-400">Chargement...</div>
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="w-8 h-8 border-2 border-[#059669] border-t-transparent rounded-full animate-spin" />
       </div>
     }>
       <CarsPageInner />
