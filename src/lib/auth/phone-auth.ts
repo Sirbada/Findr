@@ -125,13 +125,13 @@ class MockSMSService {
       expires: Date.now() + 5 * 60 * 1000
     })
     
-    // Log for demo purposes (remove in production!)
-    console.log(`[DEMO] SMS to ${phone}: Your Findr verification code is ${otp}`)
-    
-    // In demo mode, we'll show the OTP in an alert for testing
+    // Store OTP in sessionStorage for demo mode only
     if (typeof window !== 'undefined') {
-      // Store in sessionStorage for demo
       sessionStorage.setItem(`findr_demo_otp_${phone}`, otp)
+      if (process.env.NODE_ENV === 'development') {
+        // eslint-disable-next-line no-console
+        console.log(`[DEV] SMS to ${phone}: Your Findr verification code is ${otp}`)
+      }
     }
     
     return { success: true }

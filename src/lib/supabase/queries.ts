@@ -142,7 +142,8 @@ export async function getListing(id: string) {
     return null
   }
 
-  // TODO: Increment view count when function is created
+  // Increment view count (fire-and-forget)
+  supabase.rpc('increment_views', { row_id: id, table_name: 'listings' }).then(() => {})
 
   return data as Listing
 }
@@ -202,6 +203,10 @@ export async function getProperty(id: string) {
     console.error('Error fetching property:', error)
     return null
   }
+
+  // Increment view count (fire-and-forget)
+  supabase.rpc('increment_views', { row_id: id, table_name: 'properties' }).then(() => {})
+
   return data as Property
 }
 
@@ -241,5 +246,9 @@ export async function getVehicle(id: string) {
     console.error('Error fetching vehicle:', error)
     return null
   }
+
+  // Increment view count (fire-and-forget)
+  supabase.rpc('increment_views', { row_id: id, table_name: 'vehicles' }).then(() => {})
+
   return data as Vehicle
 }

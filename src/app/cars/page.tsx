@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { Suspense, useState, useEffect, useCallback } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { 
   Search, Calendar, MapPin, Fuel, Settings2, Users, 
-  Heart, CheckCircle, Car, ChevronDown, Filter
+  Heart, CheckCircle, Car, Filter, X, ArrowUpDown, SlidersHorizontal
 } from 'lucide-react'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
@@ -16,16 +17,49 @@ function formatPrice(price: number): string {
   return new Intl.NumberFormat('fr-FR').format(price)
 }
 
-export default function CarsPage() {
+type SortOption = 'newest' | 'price_asc' | 'price_desc' | 'popular'
+
+function CarsPageInner() {
   const { t, lang } = useTranslation()
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
   const [listings, setListings] = useState<Vehicle[]>([])
   const [loading, setLoading] = useState(true)
+  const [showFilters, setShowFilters] = useState(false)
   
-  // Filters
-  const [selectedCity, setSelectedCity] = useState('all')
-  const [selectedBrand, setSelectedBrand] = useState('all')
-  const [selectedFuel, setSelectedFuel] = useState('all')
-  const [rentalType, setRentalType] = useState<'rent' | 'buy'>('rent')
+  // Filters — initialized from URL params
+  const [selectedCity, setSelectedCity] = useState(searchParams.get('city') || 'all')
+  const [selectedBrand, setSelectedBrand] = useState(searchParams.get('brand') || 'all')
+  const [selectedFuel, setSelectedFuel] = useState(searchParams.get('fuel') || 'all')
+  const [selectedTransmission, setSelectedTransmission] = useState(searchParams.get('transmission') || 'all')
+  const [rentalType, setRentalType] = useState<'rent' | 'buy'>((searchParams.get('mode') as 'rent' | 'buy') || 'rent')
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '')
+  const [minPrice, setMinPrice] = useState(searchParams.get('minPrice') || '')
+  const [maxPrice, setMaxPrice] = useState(searchParams.get('maxPrice') || '')
+  const [sortBy, setSortBy] = useState<SortOption>((searchParams.get('sort') as SortOption) || 'newest')
+  const [minSeats, setMinSeats] = useState(searchParams.get('minSeats') || 'all')
+
+  // Sync filters to URL
+  const syncToUrl = useCallback(() => {
+    const params = new URLSearchParams()
+    if (selectedCity !== 'all') params.set('city', selectedCity)
+    if (selectedBrand !== 'all') params.set('brand', selectedBrand)
+    if (selectedFuel !== 'all') params.set('fuel', selectedFuel)
+    if (selectedTransmission !== 'all') params.set('transmission', selectedTransmission)
+    if (rentalType !== 'rent') params.set('mode', rentalType)
+    if (searchQuery) params.set('q', searchQuery)
+    if (minPrice) params.set('minPrice', minPrice)
+    if (maxPrice) params.set('maxPrice', maxPrice)
+    if (sortBy !== 'newest') params.set('sort', sortBy)
+    if (minSeats !== 'all') params.set('minSeats', minSeats)
+    const qs = params.toString()
+    router.replace(qs ? `?${qs}` : '/cars', { scroll: false })
+  }, [selectedCity, selectedBrand, selectedFuel, selectedTransmission, rentalType, searchQuery, minPrice, maxPrice, sortBy, minSeats, router])
+
+  useEffect(() => {
+    syncToUrl()
+  }, [syncToUrl])
 
   // Translated content
   const content = {
@@ -54,6 +88,24 @@ export default function CarsPage() {
       { value: 'electric', label: t.fuelTypes.electric },
       { value: 'hybrid', label: t.fuelTypes.hybrid },
     ],
+    transmissionTypes: [
+      { value: 'all', label: lang === 'fr' ? 'Toutes' : 'All' },
+      { value: 'automatic', label: lang === 'fr' ? 'Automatique' : 'Automatic' },
+      { value: 'manual', label: lang === 'fr' ? 'Manuel' : 'Manual' },
+    ],
+    seatOptions: [
+      { value: 'all', label: lang === 'fr' ? 'Tous' : 'Any' },
+      { value: '2', label: '2+' },
+      { value: '4', label: '4+' },
+      { value: '5', label: '5+' },
+      { value: '7', label: '7+' },
+    ],
+    sortOptions: [
+      { value: 'newest', label: lang === 'fr' ? 'Plus récents' : 'Newest first' },
+      { value: 'price_asc', label: lang === 'fr' ? 'Prix croissant' : 'Price: low to high' },
+      { value: 'price_desc', label: lang === 'fr' ? 'Prix décroissant' : 'Price: high to low' },
+      { value: 'popular', label: lang === 'fr' ? 'Plus populaires' : 'Most popular' },
+    ],
     heroTitle: lang === 'fr' ? 'Location & Vente de véhicules' : 'Vehicle Rental & Sales',
     heroSubtitle: lang === 'fr' ? 'Trouvez la voiture parfaite au Cameroun' : 'Find the perfect car in Cameroon',
     rent: lang === 'fr' ? 'Louer' : 'Rent',
@@ -63,7 +115,16 @@ export default function CarsPage() {
     endDate: lang === 'fr' ? 'Date de fin' : 'End date',
     brand: lang === 'fr' ? 'Marque' : 'Brand',
     fuel: lang === 'fr' ? 'Carburant' : 'Fuel',
+    transmission: lang === 'fr' ? 'Transmission' : 'Transmission',
+    seats: lang === 'fr' ? 'places' : 'seats',
+    seatsLabel: lang === 'fr' ? 'Places' : 'Seats',
     search: t.hero.search,
+    searchPlaceholder: lang === 'fr' ? 'Rechercher un véhicule...' : 'Search for a vehicle...',
+    minPriceLabel: lang === 'fr' ? 'Prix min (XAF/jour)' : 'Min price (XAF/day)',
+    maxPriceLabel: lang === 'fr' ? 'Prix max (XAF/jour)' : 'Max price (XAF/day)',
+    advancedFilters: lang === 'fr' ? 'Filtres avancés' : 'Advanced filters',
+    hideFilters: lang === 'fr' ? 'Masquer les filtres' : 'Hide filters',
+    clearAll: lang === 'fr' ? 'Tout effacer' : 'Clear all',
     categories: lang === 'fr' ? [
       { icon: '🚗', label: 'Économique', desc: 'Dès 15 000 XAF/jour' },
       { icon: '🚙', label: 'SUV', desc: 'Dès 35 000 XAF/jour' },
@@ -81,12 +142,10 @@ export default function CarsPage() {
       ? `${count} véhicule${count > 1 ? 's' : ''} disponible${count > 1 ? 's' : ''}`
       : `${count} ${count === 1 ? 'vehicle' : 'vehicles'} available`,
     allCameroon: lang === 'fr' ? 'Tout le Cameroun' : 'All Cameroon',
-    moreFilters: lang === 'fr' ? 'Plus de filtres' : 'More filters',
     pro: 'Pro',
     view: lang === 'fr' ? 'Voir' : 'View',
     auto: 'Auto',
     manual: lang === 'fr' ? 'Manuel' : 'Manual',
-    seats: lang === 'fr' ? 'places' : 'seats',
     noResults: lang === 'fr' ? 'Aucun véhicule trouvé' : 'No vehicles found',
     tryDifferent: lang === 'fr' ? 'Essayez de modifier vos critères de recherche' : 'Try adjusting your search criteria',
   }
@@ -108,11 +167,48 @@ export default function CarsPage() {
   }, [])
 
   // Filter listings
-  const filteredListings = listings.filter(listing => {
-    if (selectedCity !== 'all' && listing.city !== selectedCity) return false
-    if (selectedBrand !== 'all' && listing.brand !== selectedBrand) return false
-    return true
-  })
+  const filteredListings = listings
+    .filter(listing => {
+      if (selectedCity !== 'all' && listing.city !== selectedCity) return false
+      if (selectedBrand !== 'all' && listing.brand !== selectedBrand) return false
+      if (selectedFuel !== 'all' && listing.fuel_type !== selectedFuel) return false
+      if (selectedTransmission !== 'all' && listing.transmission !== selectedTransmission) return false
+      if (minSeats !== 'all' && (listing.seats === null || listing.seats < parseInt(minSeats))) return false
+      if (searchQuery && 
+          !listing.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
+          !listing.brand?.toLowerCase().includes(searchQuery.toLowerCase()) &&
+          !listing.model?.toLowerCase().includes(searchQuery.toLowerCase()) &&
+          !listing.city.toLowerCase().includes(searchQuery.toLowerCase())) return false
+      const price = listing.price_per_day
+      if (minPrice && price < parseInt(minPrice)) return false
+      if (maxPrice && price > parseInt(maxPrice)) return false
+      return true
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case 'price_asc': return a.price_per_day - b.price_per_day
+        case 'price_desc': return b.price_per_day - a.price_per_day
+        case 'popular': return b.views - a.views
+        case 'newest':
+        default: return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      }
+    })
+
+  const hasActiveFilters = selectedCity !== 'all' || selectedBrand !== 'all' || 
+    selectedFuel !== 'all' || selectedTransmission !== 'all' || searchQuery ||
+    minPrice || maxPrice || minSeats !== 'all'
+
+  const clearAllFilters = () => {
+    setSelectedCity('all')
+    setSelectedBrand('all')
+    setSelectedFuel('all')
+    setSelectedTransmission('all')
+    setSearchQuery('')
+    setMinPrice('')
+    setMaxPrice('')
+    setSortBy('newest')
+    setMinSeats('all')
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-[color:var(--background)]">
@@ -152,9 +248,32 @@ export default function CarsPage() {
             </button>
           </div>
           
-          {/* Search Bar - Mobile.de Style */}
+          {/* Search Bar */}
           <div className="bg-white rounded-xl p-4 shadow-lg">
+            {/* Main row */}
             <div className="flex flex-col md:flex-row gap-4">
+              {/* Search Query */}
+              <div className="flex-1">
+                <label className="block text-xs font-medium text-gray-500 mb-1">
+                  🔍 {content.search}
+                </label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder={content.searchPlaceholder}
+                    className="w-full pl-10 pr-8 py-2 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-[color:var(--green-400)] focus:border-transparent"
+                  />
+                  {searchQuery && (
+                    <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <X className="w-4 h-4 text-gray-400 hover:text-gray-600" />
+                    </button>
+                  )}
+                </div>
+              </div>
+
               {/* Location */}
               <div className="flex-1">
                 <label className="block text-xs font-medium text-gray-500 mb-1">
@@ -232,15 +351,187 @@ export default function CarsPage() {
                   </div>
                 </>
               )}
-              
-              {/* Search Button */}
+
+              {/* Advanced Filters Toggle */}
               <div className="flex items-end">
-                <Button size="lg" className="w-full md:w-auto">
-                  <Search className="w-5 h-5 mr-2" />
-                  {content.search}
-                </Button>
+                <button
+                  onClick={() => setShowFilters(!showFilters)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-2xl border transition-colors font-medium text-sm whitespace-nowrap ${
+                    showFilters
+                      ? 'bg-[color:var(--green-600)] text-white border-[color:var(--green-600)]'
+                      : 'border-gray-200 text-gray-700 hover:bg-gray-50'
+                  }`}
+                >
+                  <SlidersHorizontal className="w-4 h-4" />
+                  {showFilters ? content.hideFilters : content.advancedFilters}
+                </button>
               </div>
             </div>
+
+            {/* Advanced Filters Panel */}
+            {showFilters && (
+              <div className="mt-4 pt-4 border-t grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* Brand (for rent mode) */}
+                {rentalType === 'rent' && (
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">
+                      🚘 {content.brand}
+                    </label>
+                    <select
+                      value={selectedBrand}
+                      onChange={(e) => setSelectedBrand(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-[color:var(--green-400)] focus:border-transparent"
+                    >
+                      {content.carBrands.map(brand => (
+                        <option key={brand.value} value={brand.value}>{brand.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
+                {/* Fuel (for rent mode) */}
+                {rentalType === 'rent' && (
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">
+                      ⛽ {content.fuel}
+                    </label>
+                    <select
+                      value={selectedFuel}
+                      onChange={(e) => setSelectedFuel(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-[color:var(--green-400)] focus:border-transparent"
+                    >
+                      {content.fuelTypes.map(fuel => (
+                        <option key={fuel.value} value={fuel.value}>{fuel.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
+                {/* Transmission */}
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 mb-1">
+                    ⚙️ {content.transmission}
+                  </label>
+                  <div className="flex gap-1">
+                    {content.transmissionTypes.map(opt => (
+                      <button
+                        key={opt.value}
+                        onClick={() => setSelectedTransmission(opt.value)}
+                        className={`flex-1 py-2 text-xs rounded-xl border transition-colors ${
+                          selectedTransmission === opt.value
+                            ? 'bg-[color:var(--green-600)] text-white border-[color:var(--green-600)]'
+                            : 'border-gray-200 text-gray-700 hover:bg-gray-50'
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Seats */}
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 mb-1">
+                    👥 {content.seatsLabel}
+                  </label>
+                  <div className="flex gap-1">
+                    {content.seatOptions.map(opt => (
+                      <button
+                        key={opt.value}
+                        onClick={() => setMinSeats(opt.value)}
+                        className={`flex-1 py-2 text-xs rounded-xl border transition-colors ${
+                          minSeats === opt.value
+                            ? 'bg-[color:var(--green-600)] text-white border-[color:var(--green-600)]'
+                            : 'border-gray-200 text-gray-700 hover:bg-gray-50'
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Min Price */}
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 mb-1">{content.minPriceLabel}</label>
+                  <input
+                    type="number"
+                    value={minPrice}
+                    onChange={(e) => setMinPrice(e.target.value)}
+                    placeholder="0"
+                    min="0"
+                    className="w-full px-4 py-2 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-[color:var(--green-400)] focus:border-transparent"
+                  />
+                </div>
+
+                {/* Max Price */}
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 mb-1">{content.maxPriceLabel}</label>
+                  <input
+                    type="number"
+                    value={maxPrice}
+                    onChange={(e) => setMaxPrice(e.target.value)}
+                    placeholder="∞"
+                    min="0"
+                    className="w-full px-4 py-2 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-[color:var(--green-400)] focus:border-transparent"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Active Filter Tags */}
+            {hasActiveFilters && (
+              <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t items-center">
+                {searchQuery && (
+                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">
+                    🔍 {searchQuery}
+                    <button onClick={() => setSearchQuery('')}><X className="w-3 h-3" /></button>
+                  </span>
+                )}
+                {selectedCity !== 'all' && (
+                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-[color:var(--green-50)] text-[color:var(--green-700)] rounded-full text-sm">
+                    📍 {selectedCity}
+                    <button onClick={() => setSelectedCity('all')}><X className="w-3 h-3" /></button>
+                  </span>
+                )}
+                {selectedBrand !== 'all' && (
+                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">
+                    🚘 {selectedBrand}
+                    <button onClick={() => setSelectedBrand('all')}><X className="w-3 h-3" /></button>
+                  </span>
+                )}
+                {selectedFuel !== 'all' && (
+                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm">
+                    ⛽ {content.fuelTypes.find(f => f.value === selectedFuel)?.label}
+                    <button onClick={() => setSelectedFuel('all')}><X className="w-3 h-3" /></button>
+                  </span>
+                )}
+                {selectedTransmission !== 'all' && (
+                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
+                    ⚙️ {content.transmissionTypes.find(t => t.value === selectedTransmission)?.label}
+                    <button onClick={() => setSelectedTransmission('all')}><X className="w-3 h-3" /></button>
+                  </span>
+                )}
+                {minSeats !== 'all' && (
+                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm">
+                    👥 {minSeats}+ {content.seats}
+                    <button onClick={() => setMinSeats('all')}><X className="w-3 h-3" /></button>
+                  </span>
+                )}
+                {(minPrice || maxPrice) && (
+                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm">
+                    💰 {minPrice ? formatPrice(parseInt(minPrice)) : '0'} – {maxPrice ? `${formatPrice(parseInt(maxPrice))} XAF` : '∞'}
+                    <button onClick={() => { setMinPrice(''); setMaxPrice('') }}><X className="w-3 h-3" /></button>
+                  </span>
+                )}
+                <button
+                  onClick={clearAllFilters}
+                  className="ml-auto text-xs text-gray-500 hover:text-gray-700 underline"
+                >
+                  {content.clearAll}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -279,10 +570,19 @@ export default function CarsPage() {
               </p>
             </div>
             
-            <Button variant="outline" size="sm">
-              <Filter className="w-4 h-4 mr-2" />
-              {content.moreFilters}
-            </Button>
+            {/* Sort */}
+            <div className="flex items-center gap-2">
+              <ArrowUpDown className="w-4 h-4 text-gray-500" />
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as SortOption)}
+                className="text-sm border border-gray-200 rounded-xl px-3 py-1.5 text-gray-700 focus:ring-2 focus:ring-[color:var(--green-400)] focus:border-transparent"
+              >
+                {content.sortOptions.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+            </div>
           </div>
 
           {/* Listings Grid - Mobile.de Style */}
@@ -386,12 +686,12 @@ export default function CarsPage() {
                       
                       {/* Price */}
                       <div className="flex items-center justify-between pt-3 border-t">
-                      <div>
-                        <span className="text-2xl font-bold text-[color:var(--green-700)]">
-                          {formatPrice(listing.price_per_day)}
-                        </span>
-                        <span className="text-gray-500 text-sm"> XAF{t.listings.perDay}</span>
-                      </div>
+                        <div>
+                          <span className="text-2xl font-bold text-[color:var(--green-700)]">
+                            {formatPrice(listing.price_per_day)}
+                          </span>
+                          <span className="text-gray-500 text-sm"> XAF{t.listings.perDay}</span>
+                        </div>
                         <Button size="sm" variant="outline" className="text-[color:var(--green-700)] border-[color:var(--green-400)] hover:bg-[color:var(--green-50)]">
                           {content.view}
                         </Button>
@@ -410,9 +710,17 @@ export default function CarsPage() {
               <h3 className="text-lg font-medium text-gray-900 mb-2">
                 {content.noResults}
               </h3>
-              <p className="text-gray-500">
+              <p className="text-gray-500 mb-4">
                 {content.tryDifferent}
               </p>
+              {hasActiveFilters && (
+                <button
+                  onClick={clearAllFilters}
+                  className="text-[color:var(--green-700)] hover:text-[color:var(--green-900)] font-medium underline"
+                >
+                  {content.clearAll}
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -420,5 +728,17 @@ export default function CarsPage() {
 
       <Footer />
     </div>
+  )
+}
+
+export default function CarsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-pulse text-gray-400">Chargement...</div>
+      </div>
+    }>
+      <CarsPageInner />
+    </Suspense>
   )
 }

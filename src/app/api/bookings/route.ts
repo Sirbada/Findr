@@ -46,19 +46,19 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const availabilityQuery = supabase
+  let availabilityQuery = supabase
     .from('availability')
-    .select('id')
+    .select('start_date,end_date')
     .lte('start_date', end_date)
     .gte('end_date', start_date)
 
   if (property_id) {
-    availabilityQuery.eq('property_id', property_id)
+    availabilityQuery = availabilityQuery.eq('property_id', property_id)
   } else {
-    availabilityQuery.eq('vehicle_id', vehicle_id as string)
+    availabilityQuery = availabilityQuery.eq('vehicle_id', vehicle_id as string)
   }
 
-  const { data: overlaps } = await availabilityQuery.select('start_date,end_date')
+  const { data: overlaps } = await availabilityQuery
   if (overlaps && overlaps.length > 0) {
     return NextResponse.json({ 
       error: 'Dates unavailable', 

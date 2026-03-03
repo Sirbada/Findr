@@ -138,19 +138,12 @@ class MockPayPalService {
       recipientName: request.recipientName
     })
 
-    console.log(`[DEMO] PayPal order created: ${orderId}`)
-    console.log(`[DEMO] Amount: ${request.amount} XAF = ${amountEUR} EUR`)
-    if (request.recipientName) {
-      console.log(`[DEMO] For: ${request.recipientName} (${request.recipientPhone})`)
-    }
-
     // In demo mode, auto-approve after a delay
     setTimeout(() => {
       const order = this.orders.get(orderId)
       if (order && order.status === 'CREATED') {
         order.status = 'APPROVED'
         this.orders.set(orderId, order)
-        console.log(`[DEMO] PayPal order ${orderId} approved`)
       }
     }, 3000)
 
