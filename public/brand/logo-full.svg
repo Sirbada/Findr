@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <defs>
+    <!-- Primary gradient: emerald to lighter teal -->
+    <linearGradient id="primaryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#059669;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#14B8A6;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Accent gradient: warm coral accent -->
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF6B6B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF8E53;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Subtle shadow for depth -->
+    <filter id="softShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000000" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+  
+  <!-- Logo Mark: Stylized V + Search concept -->
+  <g transform="translate(10, 10)">
+    <!-- Main V shape with search magnifier integration -->
+    <path d="M 20 15 L 35 45 Q 37 47 40 45 L 55 15 Q 57 13 60 15 L 60 18 Q 60 20 58 22 L 42 52 Q 40 55 37 55 Q 34 55 32 52 L 16 22 Q 14 20 14 18 L 14 15 Q 14 13 16 13 Q 18 13 20 15 Z" 
+          fill="url(#primaryGradient)" 
+          filter="url(#softShadow)"/>
+    
+    <!-- Search magnifier circle integrated into the V -->
+    <circle cx="50" cy="25" r="8" 
+            fill="none" 
+            stroke="url(#accentGradient)" 
+            stroke-width="3" 
+            stroke-linecap="round"/>
+    
+    <!-- Magnifier handle -->
+    <path d="M 56 31 L 62 37" 
+          stroke="url(#accentGradient)" 
+          stroke-width="3" 
+          stroke-linecap="round"/>
+    
+    <!-- Small find/location dots for context -->
+    <circle cx="25" cy="35" r="2" fill="url(#accentGradient)" opacity="0.6"/>
+    <circle cx="45" cy="40" r="1.5" fill="url(#accentGradient)" opacity="0.4"/>
+  </g>
+  
+  <!-- Typography: VoltFind -->
+  <g transform="translate(85, 20)">
+    <!-- "Volt" in primary color -->
+    <text x="0" y="25" 
+          font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" 
+          font-size="28" 
+          font-weight="700" 
+          fill="url(#primaryGradient)"
+          letter-spacing="-0.5px">Volt</text>
+    
+    <!-- "Find" in accent color -->
+    <text x="70" y="25" 
+          font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" 
+          font-size="28" 
+          font-weight="400" 
+          fill="url(#accentGradient)"
+          letter-spacing="-0.5px">Find</text>
+    
+    <!-- Subtle tagline -->
+    <text x="0" y="45" 
+          font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" 
+          font-size="10" 
+          font-weight="400" 
+          fill="#6B7280"
+          letter-spacing="0.5px"
+          opacity="0.7">DISCOVER • CONNECT • THRIVE</text>
+  </g>
+</svg>

@@ -34,6 +34,11 @@ export type Listing = {
   company_name: string | null
   salary_min: number | null
   salary_max: number | null
+  // Terrain
+  terrain_type: string | null
+  title_deed: boolean | null
+  latitude: number | null
+  longitude: number | null
   created_at: string
 }
 
