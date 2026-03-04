@@ -3,53 +3,7 @@
 import { useState } from 'react'
 import { Mail, Phone, MapPin, Facebook, Instagram, Twitter, Linkedin, ArrowRight, Heart } from 'lucide-react'
 import Link from 'next/link'
-
-const footerSections = [
-  {
-    title: 'Marketplace',
-    links: [
-      { name: 'Publier une annonce', href: '/post' },
-      { name: 'Rechercher', href: '/search' },
-      { name: 'Immobilier', href: '/category/immobilier' },
-      { name: 'Véhicules', href: '/category/vehicules' },
-      { name: 'Emplois', href: '/category/emplois' },
-      { name: 'Services', href: '/category/services' }
-    ]
-  },
-  {
-    title: 'Support',
-    links: [
-      { name: 'Centre d\'aide', href: '/help' },
-      { name: 'Contact', href: '/contact' },
-      { name: 'Signaler un problème', href: '/report' },
-      { name: 'Guide de sécurité', href: '/safety' },
-      { name: 'FAQ', href: '/faq' },
-      { name: 'Status', href: '/status' }
-    ]
-  },
-  {
-    title: 'Entreprise',
-    links: [
-      { name: 'À propos', href: '/about' },
-      { name: 'Carrières', href: '/careers' },
-      { name: 'Presse', href: '/press' },
-      { name: 'Partenaires', href: '/partners' },
-      { name: 'API', href: '/api' },
-      { name: 'Blog', href: '/blog' }
-    ]
-  },
-  {
-    title: 'Légal',
-    links: [
-      { name: 'Conditions d\'utilisation', href: '/terms' },
-      { name: 'Politique de confidentialité', href: '/privacy' },
-      { name: 'Cookies', href: '/cookies' },
-      { name: 'Mentions légales', href: '/legal' },
-      { name: 'RGPD', href: '/gdpr' },
-      { name: 'Modération', href: '/moderation' }
-    ]
-  }
-]
+import { useTranslation } from '@/lib/i18n/context'
 
 const cities = [
   'Douala', 'Yaoundé', 'Bafoussam', 'Bamenda', 'Garoua', 
@@ -57,15 +11,62 @@ const cities = [
 ]
 
 export default function Footer() {
+  const { t } = useTranslation()
   const [email, setEmail] = useState('')
   const [subscribed, setSubscribed] = useState(false)
+
+  const footerSections = [
+    {
+      title: t.footerExt.sectionMarketplace,
+      links: [
+        { name: t.footerExt.linkPostAd, href: '/post' },
+        { name: t.footerExt.linkSearch, href: '/search' },
+        { name: t.categories.housing, href: '/category/immobilier' },
+        { name: t.categories.cars, href: '/category/vehicules' },
+        { name: t.emplois.name, href: '/category/emplois' },
+        { name: t.categoryGrid.servicesName, href: '/category/services' }
+      ]
+    },
+    {
+      title: t.footerExt.sectionSupport,
+      links: [
+        { name: t.footerExt.linkHelpCenter, href: '/help' },
+        { name: t.footerExt.linkContact, href: '/contact' },
+        { name: t.footerExt.linkReport, href: '/report' },
+        { name: t.footerExt.linkSafety, href: '/safety' },
+        { name: t.footerExt.linkFaq, href: '/faq' },
+        { name: t.footerExt.linkStatus, href: '/status' }
+      ]
+    },
+    {
+      title: t.footerExt.sectionCompany,
+      links: [
+        { name: t.footerExt.linkAbout, href: '/about' },
+        { name: t.footerExt.linkCareers, href: '/careers' },
+        { name: t.footerExt.linkPress, href: '/press' },
+        { name: t.footerExt.linkPartners, href: '/partners' },
+        { name: t.footerExt.linkApi, href: '/api' },
+        { name: t.footerExt.linkBlog, href: '/blog' }
+      ]
+    },
+    {
+      title: t.footerExt.sectionLegal,
+      links: [
+        { name: t.footerExt.linkTerms, href: '/terms' },
+        { name: t.footerExt.linkPrivacy, href: '/privacy' },
+        { name: t.footerExt.linkCookies, href: '/cookies' },
+        { name: t.footerExt.linkMentions, href: '/legal' },
+        { name: t.footerExt.linkGdpr, href: '/gdpr' },
+        { name: t.footerExt.linkModeration, href: '/moderation' }
+      ]
+    }
+  ]
 
   const handleNewsletterSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (email && email.includes('@')) {
       setSubscribed(true)
       setEmail('')
-      // Here you would typically send to your newsletter service
       setTimeout(() => setSubscribed(false), 3000)
     }
   }
@@ -78,10 +79,10 @@ export default function Footer() {
         <div className="container mx-auto px-4 py-12">
           <div className="max-w-4xl mx-auto text-center">
             <h3 className="text-2xl md:text-3xl font-bold mb-4">
-              📬 Reste informé des meilleures offres
+              {t.footerExt.newsletterTitle}
             </h3>
             <p className="text-xl text-blue-100 mb-8">
-              Reçois chaque semaine une sélection des nouvelles annonces dans tes catégories préférées.
+              {t.footerExt.newsletterSubtitle}
             </p>
             
             <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-4 max-w-2xl mx-auto">
@@ -89,7 +90,7 @@ export default function Footer() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Ton adresse email..."
+                placeholder={t.footerExt.newsletterPlaceholder}
                 className="flex-1 px-6 py-4 rounded-xl text-gray-900 border border-blue-300 focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent text-lg"
                 required
               />
@@ -100,10 +101,10 @@ export default function Footer() {
                 style={{ backgroundColor: subscribed ? undefined : '#F59E0B' }}
               >
                 {subscribed ? (
-                  <>✓ Inscrit !</>
+                  <>{t.footerExt.subscribed}</>
                 ) : (
                   <>
-                    S'inscrire
+                    {t.footerExt.subscribeBtn}
                     <ArrowRight className="w-5 h-5" />
                   </>
                 )}
@@ -111,7 +112,7 @@ export default function Footer() {
             </form>
             
             <p className="text-sm text-blue-200 mt-4">
-              🔒 Tes données sont protégées. Désabonnement en 1 clic.
+              {t.footerExt.privacyNote}
             </p>
           </div>
         </div>
@@ -128,13 +129,12 @@ export default function Footer() {
                 Findr
               </div>
               <div className="text-blue-400 text-sm">
-                Tout commence ici.
+                {t.footerExt.tagline}
               </div>
             </Link>
             
             <p className="text-gray-300 mb-6 leading-relaxed">
-              La marketplace intelligente qui unit particuliers et professionnels 
-              dans un écosystème de confiance. Simple, rapide, efficace.
+              {t.footerExt.description}
             </p>
 
             {/* Contact Info */}
@@ -204,7 +204,7 @@ export default function Footer() {
         {/* Cities Section */}
         <div className="mt-12 pt-8 border-t border-gray-800">
           <h4 className="font-semibold text-white mb-6 text-center">
-            🌍 Findr est disponible dans ces villes
+            {t.footerExt.citiesTitle}
           </h4>
           <div className="flex flex-wrap justify-center gap-4">
             {cities.map((city, index) => (
@@ -226,29 +226,29 @@ export default function Footer() {
               <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mb-2">
                 <span className="text-xl">🏆</span>
               </div>
-              <div className="text-sm text-gray-400">Startup de l'année</div>
-              <div className="text-xs text-gray-500">TechCrunch Africa 2026</div>
+              <div className="text-sm text-gray-400">{t.footerExt.startupAward}</div>
+              <div className="text-xs text-gray-500">{t.footerExt.startupAwardSub}</div>
             </div>
             <div className="flex flex-col items-center">
               <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center mb-2">
                 <span className="text-xl">🔒</span>
               </div>
-              <div className="text-sm text-gray-400">Certifié SSL</div>
-              <div className="text-xs text-gray-500">Sécurité A+</div>
+              <div className="text-sm text-gray-400">{t.footerExt.sslCert}</div>
+              <div className="text-xs text-gray-500">{t.footerExt.sslCertSub}</div>
             </div>
             <div className="flex flex-col items-center">
               <div className="w-12 h-12 rounded-full flex items-center justify-center mb-2" style={{ backgroundColor: '#F59E0B' }}>
                 <span className="text-xl">🚀</span>
               </div>
-              <div className="text-sm text-gray-400">Innovation</div>
-              <div className="text-xs text-gray-500">Tech de pointe</div>
+              <div className="text-sm text-gray-400">{t.footerExt.innovation}</div>
+              <div className="text-xs text-gray-500">{t.footerExt.innovationSub}</div>
             </div>
             <div className="flex flex-col items-center">
               <div className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center mb-2">
                 <span className="text-xl">⚡</span>
               </div>
-              <div className="text-sm text-gray-400">99.9% Uptime</div>
-              <div className="text-xs text-gray-500">Toujours disponible</div>
+              <div className="text-sm text-gray-400">{t.footerExt.uptime}</div>
+              <div className="text-xs text-gray-500">{t.footerExt.uptimeSub}</div>
             </div>
           </div>
         </div>
@@ -256,22 +256,21 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
           <div className="text-gray-400 text-sm mb-4 md:mb-0">
-            © 2026 Findr - Une création de{' '}
+            {t.footer.copyright}{' '}
             <Link href="https://badainc.com" className="text-blue-400 hover:text-blue-300">
               Bada Inc.
             </Link>
-            {' '}Tous droits réservés.
           </div>
           
           <div className="flex items-center gap-6 text-sm">
             <Link href="/terms" className="text-gray-400 hover:text-white">
-              CGU
+              {t.footerExt.linkTerms}
             </Link>
             <Link href="/privacy" className="text-gray-400 hover:text-white">
-              Confidentialité
+              {t.footer.privacy}
             </Link>
             <Link href="/cookies" className="text-gray-400 hover:text-white">
-              Cookies
+              {t.footerExt.linkCookies}
             </Link>
             <div className="text-gray-500">
               v2.1.0
@@ -282,8 +281,7 @@ export default function Footer() {
         {/* Made with Love */}
         <div className="text-center mt-8">
           <p className="text-gray-500 text-sm flex items-center justify-center gap-2">
-            Fait avec <Heart className="w-4 h-4 text-red-500 fill-current" /> par une équipe passionnée
-            {' '}pour simplifier le commerce 🌍
+            {t.footerExt.madeWith} <Heart className="w-4 h-4 text-red-500 fill-current" /> {t.footerExt.byTeam}
           </p>
         </div>
       </div>

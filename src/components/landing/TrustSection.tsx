@@ -1,77 +1,105 @@
 'use client'
 
 import { Shield, Users, Star, Smartphone, CheckCircle, Eye, Clock, Award } from 'lucide-react'
-
-const trustStats = [
-  {
-    icon: Users,
-    number: '12,000+',
-    label: 'Utilisateurs actifs',
-    description: 'Croissance de 40% par mois',
-    color: 'text-blue-600',
-    bgColor: 'bg-blue-50'
-  },
-  {
-    icon: CheckCircle,
-    number: '8,500+',
-    label: 'Annonces publiées',
-    description: 'Plus de 150 nouvelles par jour',
-    color: 'text-green-600',
-    bgColor: 'bg-green-50'
-  },
-  {
-    icon: Star,
-    number: '4.8/5',
-    label: 'Note moyenne',
-    description: 'Basée sur 2,340 évaluations',
-    color: 'text-yellow-600',
-    bgColor: 'bg-yellow-50'
-  },
-  {
-    icon: Shield,
-    number: '99.2%',
-    label: 'Transactions réussies',
-    description: 'Sans problème ou litige',
-    color: 'text-purple-600',
-    bgColor: 'bg-purple-50'
-  }
-]
-
-const trustFeatures = [
-  {
-    icon: Shield,
-    title: 'Profils vérifiés',
-    description: 'Vérification par SMS, email et pièce d\'identité pour les vendeurs professionnels.',
-    badge: 'Sécurité'
-  },
-  {
-    icon: Eye,
-    title: 'Modération 24/7',
-    description: 'Toutes les annonces sont vérifiées par notre équipe avant publication.',
-    badge: 'Qualité'
-  },
-  {
-    icon: Smartphone,
-    title: 'Paiements sécurisés',
-    description: 'Orange Money, MTN MoMo et virements bancaires protégés.',
-    badge: 'Fintech'
-  },
-  {
-    icon: Clock,
-    title: 'Support rapide',
-    description: 'Équipe support francophone disponible du lundi au samedi.',
-    badge: 'Service'
-  }
-]
-
-const paymentMethods = [
-  { name: 'Orange Money', logo: '🟠', verified: true },
-  { name: 'MTN Mobile Money', logo: '🟡', verified: true },
-  { name: 'Virement bancaire', logo: '🏦', verified: true },
-  { name: 'Cash (en personne)', logo: '💵', verified: true }
-]
+import { useTranslation } from '@/lib/i18n/context'
 
 export default function TrustSection() {
+  const { t } = useTranslation()
+
+  const trustStats = [
+    {
+      icon: Users,
+      number: '12,000+',
+      label: t.trust.activeUsers,
+      description: t.trust.usersGrowth,
+      color: 'text-blue-600',
+      bgColor: 'bg-blue-50'
+    },
+    {
+      icon: CheckCircle,
+      number: '8,500+',
+      label: t.trust.listingsPublished,
+      description: t.trust.listingsDaily,
+      color: 'text-green-600',
+      bgColor: 'bg-green-50'
+    },
+    {
+      icon: Star,
+      number: '4.8/5',
+      label: t.trust.averageRating,
+      description: t.trust.ratingBased,
+      color: 'text-yellow-600',
+      bgColor: 'bg-yellow-50'
+    },
+    {
+      icon: Shield,
+      number: '99.2%',
+      label: t.trust.successRate,
+      description: t.trust.noIssues,
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-50'
+    }
+  ]
+
+  const trustFeatures = [
+    {
+      icon: Shield,
+      title: t.trust.verifiedProfiles,
+      description: t.trust.verifiedProfilesDesc,
+      badge: t.trust.securityBadge
+    },
+    {
+      icon: Eye,
+      title: t.trust.moderation,
+      description: t.trust.moderationDesc,
+      badge: t.trust.qualityBadge
+    },
+    {
+      icon: Smartphone,
+      title: t.trust.securePayments,
+      description: t.trust.securePaymentsDesc,
+      badge: t.trust.fintechBadge
+    },
+    {
+      icon: Clock,
+      title: t.trust.fastSupport,
+      description: t.trust.fastSupportDesc,
+      badge: t.trust.serviceBadge
+    }
+  ]
+
+  const paymentMethods = [
+    { name: t.payments.orangeMoney, logo: '🟠', verified: true },
+    { name: t.payments.mtnMomo, logo: '🟡', verified: true },
+    { name: 'Virement bancaire', logo: '🏦', verified: true },
+    { name: 'Cash (en personne)', logo: '💵', verified: true }
+  ]
+
+  // Testimonials stay as-is (mock data, language-neutral names)
+  const testimonials = [
+    {
+      name: 'Marie Kouam',
+      role: 'Vendeuse d\'immobilier',
+      comment: 'J\'ai vendu ma villa en 5 jours grâce à Findr. Interface simple et acheteurs sérieux.',
+      rating: 5,
+      location: 'Douala'
+    },
+    {
+      name: 'Jean Fotso',
+      role: 'Acheteur de voitures',
+      comment: 'Système de vérification au top. J\'ai acheté ma Toyota sans stress, vendeur honnête.',
+      rating: 5,
+      location: 'Yaoundé'
+    },
+    {
+      name: 'Aminata Diallo',
+      role: 'Freelance tech',
+      comment: 'Parfait pour vendre du matériel informatique. Paiements Orange Money très pratiques.',
+      rating: 5,
+      location: 'Bafoussam'
+    }
+  ]
+
   return (
     <section className="py-16 bg-white">
       <div className="container mx-auto px-4">
@@ -80,13 +108,13 @@ export default function TrustSection() {
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-full font-medium mb-6">
             <Shield className="w-5 h-5" />
-            Plateforme de confiance
+            {t.trust.badge}
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Pourquoi nous faire confiance ?
+            {t.trust.title}
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Findr protège chaque transaction avec des technologies de pointe et une équipe dédiée à votre sécurité.
+            {t.trust.subtitle}
           </p>
         </div>
 
@@ -149,7 +177,7 @@ export default function TrustSection() {
         {/* Payment Methods */}
         <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-2xl p-8 mb-16">
           <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-            💳 Moyens de paiement sécurisés
+            {t.trust.paymentTitle}
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {paymentMethods.map((method, index) => (
@@ -161,7 +189,7 @@ export default function TrustSection() {
                 {method.verified && (
                   <div className="text-xs text-green-600 flex items-center justify-center gap-1">
                     <CheckCircle className="w-3 h-3" />
-                    Vérifié
+                    {t.trust.verifiedBadge}
                   </div>
                 )}
               </div>
@@ -169,7 +197,7 @@ export default function TrustSection() {
           </div>
           <div className="text-center mt-6">
             <p className="text-gray-700 text-sm">
-              🔒 Toutes les transactions sont protégées par un cryptage SSL 256 bits
+              {t.trust.sslText}
             </p>
           </div>
         </div>
@@ -177,7 +205,7 @@ export default function TrustSection() {
         {/* Verification Badges */}
         <div className="bg-white border border-gray-200 rounded-2xl p-8 mb-16">
           <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-            🏆 Système de badges de confiance
+            {t.trust.badgesTitle}
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
             
@@ -186,13 +214,13 @@ export default function TrustSection() {
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
                 <Smartphone className="w-8 h-8 text-green-600" />
               </div>
-              <h4 className="font-semibold text-gray-900 mb-2">Téléphone vérifié</h4>
+              <h4 className="font-semibold text-gray-900 mb-2">{t.trust.phoneVerified}</h4>
               <p className="text-sm text-gray-600">
-                Numéro de téléphone confirmé par SMS
+                {t.trust.phoneVerifiedDesc}
               </p>
               <div className="mt-2">
                 <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
-                  ✓ Vérifié
+                  {t.trust.verifiedBadge}
                 </span>
               </div>
             </div>
@@ -202,13 +230,13 @@ export default function TrustSection() {
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
                 <Shield className="w-8 h-8 text-blue-600" />
               </div>
-              <h4 className="font-semibold text-gray-900 mb-2">Identité vérifiée</h4>
+              <h4 className="font-semibold text-gray-900 mb-2">{t.trust.idVerified}</h4>
               <p className="text-sm text-gray-600">
-                CNI ou passeport confirmé
+                {t.trust.idVerifiedDesc}
               </p>
               <div className="mt-2">
                 <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
-                  🆔 Premium
+                  {t.trust.premiumBadge}
                 </span>
               </div>
             </div>
@@ -218,13 +246,13 @@ export default function TrustSection() {
               <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3">
                 <Award className="w-8 h-8 text-yellow-600" />
               </div>
-              <h4 className="font-semibold text-gray-900 mb-2">Vendeur Top</h4>
+              <h4 className="font-semibold text-gray-900 mb-2">{t.trust.topSeller}</h4>
               <p className="text-sm text-gray-600">
-                Plus de 50 ventes avec 4.8+ étoiles
+                {t.trust.topSellerDesc}
               </p>
               <div className="mt-2">
                 <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-medium">
-                  ⭐ Elite
+                  {t.trust.eliteBadge}
                 </span>
               </div>
             </div>
@@ -234,32 +262,10 @@ export default function TrustSection() {
         {/* Testimonials */}
         <div className="text-center mb-16">
           <h3 className="text-2xl font-bold text-gray-900 mb-8">
-            💬 Ce que disent nos utilisateurs
+            {t.trust.testimonialsTitle}
           </h3>
           <div className="grid md:grid-cols-3 gap-6">
-            {[
-              {
-                name: 'Marie Kouam',
-                role: 'Vendeuse d\'immobilier',
-                comment: 'J\'ai vendu ma villa en 5 jours grâce à Findr. Interface simple et acheteurs sérieux.',
-                rating: 5,
-                location: 'Douala'
-              },
-              {
-                name: 'Jean Fotso',
-                role: 'Acheteur de voitures',
-                comment: 'Système de vérification au top. J\'ai acheté ma Toyota sans stress, vendeur honnête.',
-                rating: 5,
-                location: 'Yaoundé'
-              },
-              {
-                name: 'Aminata Diallo',
-                role: 'Freelance tech',
-                comment: 'Parfait pour vendre du matériel informatique. Paiements Orange Money très pratiques.',
-                rating: 5,
-                location: 'Bafoussam'
-              }
-            ].map((testimonial, index) => (
+            {testimonials.map((testimonial, index) => (
               <div key={index} className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
                 <div className="flex justify-center mb-3">
                   {[...Array(testimonial.rating)].map((_, i) => (
@@ -267,7 +273,7 @@ export default function TrustSection() {
                   ))}
                 </div>
                 <p className="text-gray-700 italic mb-4 leading-relaxed">
-                  "{testimonial.comment}"
+                  &ldquo;{testimonial.comment}&rdquo;
                 </p>
                 <div className="text-center">
                   <div className="font-semibold text-gray-900">{testimonial.name}</div>
@@ -282,13 +288,13 @@ export default function TrustSection() {
         <div className="text-center">
           <div className="bg-gradient-to-r from-green-600 to-blue-600 rounded-2xl p-8 text-white">
             <h3 className="text-2xl md:text-3xl font-bold mb-4">
-              Rejoins la communauté de confiance
+              {t.trust.ctaTitle}
             </h3>
             <p className="text-xl text-green-100 mb-6 max-w-2xl mx-auto">
-              Plus de 12,000 utilisateurs nous font déjà confiance pour leurs transactions. Et toi ?
+              {t.trust.ctaSubtitle}
             </p>
             <button className="bg-white text-green-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-100 transition-colors shadow-lg hover:shadow-xl">
-              Créer mon compte gratuit 🚀
+              {t.trust.ctaButton}
             </button>
           </div>
         </div>

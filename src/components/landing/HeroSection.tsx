@@ -3,18 +3,20 @@
 import { useState } from 'react'
 import { Search, MapPin, Home, Car, Briefcase, Wrench, TreePine } from 'lucide-react'
 import Link from 'next/link'
-
-const categories = [
-  { id: 'immobilier', name: 'Immobilier', icon: Home, color: 'text-blue-600', count: '2,340' },
-  { id: 'vehicules', name: 'Véhicules', icon: Car, color: 'text-green-600', count: '1,856' },
-  { id: 'emplois', name: 'Emplois', icon: Briefcase, color: 'text-purple-600', count: '967' },
-  { id: 'services', name: 'Services', icon: Wrench, color: 'text-blue-600', count: '1,234' },
-  { id: 'terrain', name: 'Terrain', icon: TreePine, color: 'text-emerald-600', count: '456' }
-]
+import { useTranslation } from '@/lib/i18n/context'
 
 export default function HeroSection() {
+  const { t } = useTranslation()
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedLocation, setSelectedLocation] = useState('Douala')
+
+  const categories = [
+    { id: 'immobilier', name: t.categories.housing, icon: Home, color: 'text-blue-600', count: '2,340' },
+    { id: 'vehicules', name: t.categories.cars, icon: Car, color: 'text-green-600', count: '1,856' },
+    { id: 'emplois', name: t.emplois.name, icon: Briefcase, color: 'text-purple-600', count: '967' },
+    { id: 'services', name: t.categoryGrid.servicesName, icon: Wrench, color: 'text-blue-600', count: '1,234' },
+    { id: 'terrain', name: t.categoryGrid.terrainName, icon: TreePine, color: 'text-emerald-600', count: '456' }
+  ]
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
@@ -44,17 +46,17 @@ export default function HeroSection() {
           
           {/* Main Headline */}
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
-            <span className="block">Trouve. Achète.</span>
-            <span className="block" style={{ color: '#F59E0B' }}>Simplement.</span>
+            <span className="block">{t.heroSection.tagline1}</span>
+            <span className="block" style={{ color: '#F59E0B' }}>{t.heroSection.tagline2}</span>
           </h1>
           
           {/* Subheadline */}
           <p className="text-xl md:text-2xl text-blue-100 mb-8 font-medium">
-            Le marketplace qui te comprend.
+            {t.heroSection.marketplaceTagline}
           </p>
           
           <p className="text-lg text-blue-200 mb-12 max-w-2xl mx-auto leading-relaxed">
-            La marketplace intelligente qui s'adapte à toi. Trouve exactement ce que tu cherches avec la technologie qui simplifie tout.
+            {t.heroSection.description}
           </p>
 
           {/* Search Bar */}
@@ -66,7 +68,7 @@ export default function HeroSection() {
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
                   type="text"
-                  placeholder="Que cherches-tu ? (iPhone, appartement, emploi...)"
+                  placeholder={t.heroSection.searchPlaceholder}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyPress={handleKeyPress}
@@ -82,11 +84,11 @@ export default function HeroSection() {
                   onChange={(e) => setSelectedLocation(e.target.value)}
                   className="pl-12 pr-8 py-4 text-lg border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white appearance-none min-w-[160px]"
                 >
-                  <option value="Douala">Douala</option>
-                  <option value="Yaoundé">Yaoundé</option>
-                  <option value="Bafoussam">Bafoussam</option>
-                  <option value="Bamenda">Bamenda</option>
-                  <option value="Garoua">Garoua</option>
+                  <option value="Douala">{t.cities.douala}</option>
+                  <option value="Yaoundé">{t.cities.yaounde}</option>
+                  <option value="Bafoussam">{t.cities.bafoussam}</option>
+                  <option value="Bamenda">{t.cities.bamenda}</option>
+                  <option value="Garoua">{t.cities.garoua}</option>
                   <option value="Maroua">Maroua</option>
                   <option value="Ngaoundéré">Ngaoundéré</option>
                   <option value="Bertoua">Bertoua</option>
@@ -101,7 +103,7 @@ export default function HeroSection() {
                 className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-yellow-600 hover:to-yellow-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
                 style={{ backgroundColor: '#F59E0B', backgroundImage: 'linear-gradient(to right, #F59E0B, #D97706)' }}
               >
-                Rechercher
+                {t.hero.search}
               </button>
             </div>
           </div>
@@ -121,7 +123,7 @@ export default function HeroSection() {
                       <IconComponent className="w-8 h-8 text-white mx-auto" />
                     </div>
                     <h3 className="font-semibold text-white text-sm mb-1">{category.name}</h3>
-                    <p className="text-blue-200 text-xs">{category.count} annonces</p>
+                    <p className="text-blue-200 text-xs">{category.count} {t.heroSection.annoncesLabel}</p>
                   </div>
                 </Link>
               )
@@ -132,15 +134,15 @@ export default function HeroSection() {
           <div className="grid grid-cols-3 gap-8 mt-16 max-w-2xl mx-auto">
             <div className="text-center">
               <div className="text-3xl md:text-4xl font-bold text-white mb-2">12k+</div>
-              <div className="text-blue-200 text-sm">Annonces actives</div>
+              <div className="text-blue-200 text-sm">{t.heroSection.statsActiveListings}</div>
             </div>
             <div className="text-center">
               <div className="text-3xl md:text-4xl font-bold text-white mb-2">5k+</div>
-              <div className="text-blue-200 text-sm">Utilisateurs</div>
+              <div className="text-blue-200 text-sm">{t.heroSection.statsUsers}</div>
             </div>
             <div className="text-center">
               <div className="text-3xl md:text-4xl font-bold text-white mb-2">10</div>
-              <div className="text-blue-200 text-sm">Villes</div>
+              <div className="text-blue-200 text-sm">{t.heroSection.statsCities}</div>
             </div>
           </div>
         </div>

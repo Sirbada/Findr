@@ -160,15 +160,27 @@ export default function CarDetailPage() {
 
   if (!listing) {
     return (
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col bg-[color:var(--background)]">
         <Header />
-        <main className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">{content.notFound}</h1>
-            <p className="text-gray-500 mb-4">{t.listings.notFoundDesc}</p>
-            <Link href="/cars">
-              <Button>{content.viewAll}</Button>
-            </Link>
+        <main className="flex-1 flex items-center justify-center px-4">
+          <div className="text-center max-w-md">
+            <div className="w-24 h-24 bg-[color:var(--green-50)] rounded-full flex items-center justify-center mx-auto mb-6">
+              <Car className="w-12 h-12 text-[color:var(--green-300)]" />
+            </div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-3">{content.notFound}</h1>
+            <p className="text-gray-500 mb-8 text-lg">{t.listings.notFoundDesc}</p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <button
+                onClick={() => window.history.back()}
+                className="flex items-center justify-center gap-2 px-5 py-3 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50 transition-colors font-medium"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                {t.listings.backToResults}
+              </button>
+              <Link href="/cars">
+                <Button className="w-full sm:w-auto px-5 py-3">{content.viewAll}</Button>
+              </Link>
+            </div>
           </div>
         </main>
       </div>

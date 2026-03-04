@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { MapPin, ArrowRight, Home, Car } from 'lucide-react'
+import { MapPin, ArrowRight, Home, Car, Briefcase } from 'lucide-react'
 import { useTranslation } from '@/lib/i18n/context'
 import { getProperties, getVehicles, Property, Vehicle } from '@/lib/supabase/queries'
 
@@ -11,7 +11,7 @@ function formatPrice(price: number): string {
 }
 
 export function Categories() {
-  const { lang } = useTranslation()
+  const { t } = useTranslation()
   const [housingListings, setHousingListings] = useState<Property[]>([])
   const [carListings, setCarListings] = useState<Vehicle[]>([])
   const [loading, setLoading] = useState(true)
@@ -58,10 +58,10 @@ export function Categories() {
               </div>
               <div>
                 <h2 className="text-xl font-bold text-gray-900">
-                  {lang === 'fr' ? 'Immobilier' : 'Real Estate'}
+                  {t.categories.housing}
                 </h2>
                 <p className="text-sm text-gray-500">
-                  {lang === 'fr' ? 'Annonces récentes' : 'Recent listings'}
+                  {t.listings.recentListings}
                 </p>
               </div>
             </div>
@@ -69,7 +69,7 @@ export function Categories() {
               href="/housing"
               className="flex items-center gap-1 text-[color:var(--green-700)] hover:text-[color:var(--green-900)] font-medium text-sm"
             >
-              {lang === 'fr' ? 'Voir tout' : 'View all'}
+              {t.listings.viewAllLink}
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -122,10 +122,10 @@ export function Categories() {
               </div>
               <div>
                 <h2 className="text-xl font-bold text-gray-900">
-                  {lang === 'fr' ? 'Véhicules' : 'Vehicles'}
+                  {t.categories.cars}
                 </h2>
                 <p className="text-sm text-gray-500">
-                  {lang === 'fr' ? 'Annonces récentes' : 'Recent listings'}
+                  {t.listings.recentListings}
                 </p>
               </div>
             </div>
@@ -133,7 +133,7 @@ export function Categories() {
               href="/cars"
               className="flex items-center gap-1 text-[color:var(--green-700)] hover:text-[color:var(--green-900)] font-medium text-sm"
             >
-              {lang === 'fr' ? 'Voir tout' : 'View all'}
+              {t.listings.viewAllLink}
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -158,7 +158,7 @@ export function Categories() {
                     </div>
                   )}
                   <div className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
-                    {formatPrice(listing.price_per_day)} XAF{lang === 'fr' ? '/jour' : '/day'}
+                    {formatPrice(listing.price_per_day)} XAF{t.listings.perDay}
                   </div>
                 </div>
                 <div className="p-3">
@@ -175,6 +175,47 @@ export function Categories() {
               </Link>
             ))}
           </div>
+        </div>
+
+        {/* Emplois Section — CTA card */}
+        <div className="mt-12">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-purple-50 rounded-xl flex items-center justify-center">
+                <Briefcase className="w-5 h-5 text-purple-600" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-gray-900">{t.emplois.name}</h2>
+                <p className="text-sm text-gray-500">{t.emplois.desc}</p>
+              </div>
+            </div>
+            <Link
+              href="/emplois"
+              className="flex items-center gap-1 text-purple-700 hover:text-purple-900 font-medium text-sm"
+            >
+              {t.listings.viewAllLink}
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          <Link
+            href="/emplois"
+            className="group flex items-center justify-between bg-gradient-to-r from-purple-50 to-purple-100 rounded-3xl p-6 hover:from-purple-100 hover:to-purple-200 transition-all shadow-[var(--shadow-soft-sm)] hover:shadow-[var(--shadow-soft)]"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm">
+                <Briefcase className="w-7 h-7 text-purple-600" />
+              </div>
+              <div>
+                <p className="font-semibold text-gray-900">{t.emplois.title}</p>
+                <p className="text-sm text-gray-500">{t.emplois.subtitle}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 text-purple-700 font-medium">
+              {t.listings.viewAllLink}
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </Link>
         </div>
       </div>
     </section>

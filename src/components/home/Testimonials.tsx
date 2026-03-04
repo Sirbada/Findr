@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Star, Quote } from 'lucide-react'
 import { useTranslation } from '@/lib/i18n/context'
+import type { Language } from '@/lib/i18n/translations'
 
 interface Testimonial {
   id: number
@@ -11,10 +12,7 @@ interface Testimonial {
   city: string
   avatar: string
   rating: number
-  testimonial: {
-    fr: string
-    en: string
-  }
+  testimonial: Record<Language, string>
 }
 
 const testimonials: Testimonial[] = [
@@ -27,8 +25,8 @@ const testimonials: Testimonial[] = [
     rating: 5,
     testimonial: {
       fr: "J'ai trouvé mon appartement à Bonanjo en 2 jours seulement ! L'interface est très simple et les annonces sont de qualité.",
-      en: "I found my apartment in Bonanjo in just 2 days! The interface is very simple and the listings are high quality."
-    }
+      en: 'I found my apartment in Bonanjo in just 2 days! The interface is very simple and the listings are high quality.',
+    },
   },
   {
     id: 2,
@@ -39,8 +37,8 @@ const testimonials: Testimonial[] = [
     rating: 5,
     testimonial: {
       fr: "Excellent pour la vente de voitures ! J'ai vendu ma Mercedes en une semaine avec de nombreux contacts qualifiés.",
-      en: "Excellent for selling cars! I sold my Mercedes in one week with many qualified contacts."
-    }
+      en: 'Excellent for selling cars! I sold my Mercedes in one week with many qualified contacts.',
+    },
   },
   {
     id: 3,
@@ -51,8 +49,8 @@ const testimonials: Testimonial[] = [
     rating: 5,
     testimonial: {
       fr: "Parfait pour les étudiants ! J'ai trouvé un studio meublé près de l'université à un prix abordable.",
-      en: "Perfect for students! I found a furnished studio near the university at an affordable price."
-    }
+      en: 'Perfect for students! I found a furnished studio near the university at an affordable price.',
+    },
   },
   {
     id: 4,
@@ -63,8 +61,8 @@ const testimonials: Testimonial[] = [
     rating: 5,
     testimonial: {
       fr: "Une plateforme professionnelle qui m'aide à gérer mes clients efficacement. Les outils sont vraiment utiles.",
-      en: "A professional platform that helps me manage my clients efficiently. The tools are really useful."
-    }
+      en: 'A professional platform that helps me manage my clients efficiently. The tools are really useful.',
+    },
   },
   {
     id: 5,
@@ -75,8 +73,8 @@ const testimonials: Testimonial[] = [
     rating: 5,
     testimonial: {
       fr: "Interface très intuitive. J'ai trouvé un emploi à distance grâce aux annonces de qualité disponibles.",
-      en: "Very intuitive interface. I found a remote job thanks to the quality listings available."
-    }
+      en: 'Very intuitive interface. I found a remote job thanks to the quality listings available.',
+    },
   },
   {
     id: 6,
@@ -87,13 +85,13 @@ const testimonials: Testimonial[] = [
     rating: 5,
     testimonial: {
       fr: "Je recommande vivement ! Ma clientèle a doublé depuis que je propose mes services sur la plateforme.",
-      en: "I highly recommend! My clientele has doubled since I started offering my services on the platform."
-    }
-  }
+      en: 'I highly recommend! My clientele has doubled since I started offering my services on the platform.',
+    },
+  },
 ]
 
 export function Testimonials() {
-  const { lang } = useTranslation()
+  const { t, lang } = useTranslation()
   const [currentIndex, setCurrentIndex] = useState(0)
   const [mounted, setMounted] = useState(false)
 
@@ -113,13 +111,10 @@ export function Testimonials() {
         {/* Header */}
         <div className="text-center mb-16 animate-slide-up">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            {lang === 'fr' ? 'Ce que disent nos utilisateurs' : 'What our users say'}
+            {t.testimonialSection.title}
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            {lang === 'fr' 
-              ? 'Découvrez comment Findr transforme la façon dont les Camerounais trouvent ce dont ils ont besoin'
-              : 'Discover how Findr transforms the way Cameroonians find what they need'
-            }
+            {t.testimonialSection.subtitle}
           </p>
         </div>
 
@@ -131,26 +126,23 @@ export function Testimonials() {
               <div className="absolute top-6 left-6 text-emerald-500 opacity-20">
                 <Quote size={60} />
               </div>
-              
+
               <div className="relative z-10">
                 {/* Rating */}
                 <div className="flex items-center justify-center mb-6">
                   {[...Array(5)].map((_, i) => (
-                    <Star 
-                      key={i} 
-                      className="w-6 h-6 text-yellow-400 fill-current" 
-                    />
+                    <Star key={i} className="w-6 h-6 text-yellow-400 fill-current" />
                   ))}
                 </div>
 
                 {/* Testimonial text */}
                 <blockquote className="text-xl md:text-2xl text-gray-800 text-center mb-8 leading-relaxed">
-                  "{testimonials[currentIndex].testimonial[lang]}"
+                  &ldquo;{testimonials[currentIndex].testimonial[lang]}&rdquo;
                 </blockquote>
 
                 {/* Author */}
                 <div className="flex items-center justify-center">
-                  <img 
+                  <img
                     src={testimonials[currentIndex].avatar}
                     alt={testimonials[currentIndex].name}
                     className="w-16 h-16 rounded-full object-cover mr-4 border-4 border-emerald-100"
@@ -160,7 +152,7 @@ export function Testimonials() {
                       {testimonials[currentIndex].name}
                     </div>
                     <div className="text-gray-600">
-                      {testimonials[currentIndex].role} • {testimonials[currentIndex].city}
+                      {testimonials[currentIndex].role} &bull; {testimonials[currentIndex].city}
                     </div>
                   </div>
                 </div>
@@ -172,7 +164,7 @@ export function Testimonials() {
         {/* Testimonial grid */}
         <div className="grid md:grid-cols-3 gap-6">
           {testimonials.slice(0, 3).map((testimonial, index) => (
-            <div 
+            <div
               key={testimonial.id}
               className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover-lift animate-slide-up border border-gray-100"
               style={{ animationDelay: `${index * 0.1}s` }}
@@ -180,31 +172,26 @@ export function Testimonials() {
               {/* Rating */}
               <div className="flex items-center mb-4">
                 {[...Array(testimonial.rating)].map((_, i) => (
-                  <Star 
-                    key={i} 
-                    className="w-4 h-4 text-yellow-400 fill-current" 
-                  />
+                  <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
                 ))}
               </div>
 
               {/* Testimonial */}
               <p className="text-gray-700 mb-4 text-sm leading-relaxed">
-                "{testimonial.testimonial[lang]}"
+                &ldquo;{testimonial.testimonial[lang]}&rdquo;
               </p>
 
               {/* Author */}
               <div className="flex items-center">
-                <img 
+                <img
                   src={testimonial.avatar}
                   alt={testimonial.name}
                   className="w-12 h-12 rounded-full object-cover mr-3 border-2 border-emerald-100"
                 />
                 <div>
-                  <div className="font-semibold text-gray-900 text-sm">
-                    {testimonial.name}
-                  </div>
+                  <div className="font-semibold text-gray-900 text-sm">{testimonial.name}</div>
                   <div className="text-gray-600 text-xs">
-                    {testimonial.role} • {testimonial.city}
+                    {testimonial.role} &bull; {testimonial.city}
                   </div>
                 </div>
               </div>
@@ -219,8 +206,8 @@ export function Testimonials() {
               key={index}
               onClick={() => setCurrentIndex(index)}
               className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                index === currentIndex 
-                  ? 'bg-emerald-600 scale-125' 
+                index === currentIndex
+                  ? 'bg-emerald-600 scale-125'
                   : 'bg-gray-300 hover:bg-gray-400'
               }`}
             />

@@ -111,10 +111,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   )
 }
 
+const defaultAuthContext: AuthContextType = {
+  user: null,
+  loading: true,
+  signIn: async () => {},
+  signOut: async () => {},
+  isAdmin: false,
+  isSuperAdmin: false,
+}
+
 export function useAuth(): AuthContextType {
   const context = useContext(AuthContext)
+  // Return safe defaults during SSR/prerender when provider is not present
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider')
+    return defaultAuthContext
   }
   return context
 }

@@ -1,8 +1,11 @@
 'use client'
 
-import { Smartphone, Download, Globe, Wifi, Bell, Star } from 'lucide-react'
+import { Smartphone, Download, Wifi, Bell, Star } from 'lucide-react'
+import { useTranslation } from '@/lib/i18n/context'
 
 export default function AppDownload() {
+  const { t } = useTranslation()
+
   return (
     <section className="py-16 bg-gradient-to-br from-blue-600 via-blue-700 to-purple-700 relative overflow-hidden">
       
@@ -16,17 +19,16 @@ export default function AppDownload() {
           <div className="text-white">
             <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-white font-medium mb-6">
               <Smartphone className="w-5 h-5" />
-              Disponible partout
+              {t.appDownload.availableBadge}
             </div>
 
             <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-              <span className="block">Findr dans</span>
-              <span className="block text-yellow-400">ta poche</span>
+              <span className="block">{t.appDownload.title1}</span>
+              <span className="block text-yellow-400">{t.appDownload.title2}</span>
             </h2>
 
             <p className="text-xl text-blue-100 mb-8 leading-relaxed">
-              Accède à toutes tes annonces, reçois les notifications en temps réel, 
-              et reste connecté avec tes acheteurs, même sans connexion.
+              {t.appDownload.subtitle}
             </p>
 
             {/* Features List */}
@@ -35,19 +37,19 @@ export default function AppDownload() {
                 <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
                   <Wifi className="w-4 h-4 text-white" />
                 </div>
-                <span className="text-lg">Fonctionne hors-ligne (PWA)</span>
+                <span className="text-lg">{t.appDownload.featureOffline}</span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: '#F59E0B' }}>
                   <Bell className="w-4 h-4 text-white" />
                 </div>
-                <span className="text-lg">Notifications instantanées</span>
+                <span className="text-lg">{t.appDownload.featureNotifications}</span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
                   <Star className="w-4 h-4 text-white" />
                 </div>
-                <span className="text-lg">Interface optimisée mobile</span>
+                <span className="text-lg">{t.appDownload.featureMobile}</span>
               </div>
             </div>
 
@@ -57,7 +59,7 @@ export default function AppDownload() {
               {/* PWA Install */}
               <button className="w-full md:w-auto bg-white text-blue-700 px-8 py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 hover:bg-gray-100 transition-colors shadow-lg hover:shadow-xl">
                 <Download className="w-6 h-6" />
-                Installer l'app (PWA)
+                {t.appDownload.installPwa}
               </button>
 
               {/* Coming Soon Buttons */}
@@ -66,18 +68,18 @@ export default function AppDownload() {
                   <div className="w-6 h-6 bg-white rounded text-black flex items-center justify-center text-xs font-bold">
                     📱
                   </div>
-                  App Store (Bientôt)
+                  {t.appDownload.appStoreSoon}
                 </button>
                 <button className="flex-1 bg-green-600 text-white px-6 py-3 rounded-xl font-medium flex items-center justify-center gap-3 opacity-60 cursor-not-allowed">
                   <div className="w-6 h-6 bg-white rounded text-green-600 flex items-center justify-center text-xs font-bold">
                     ▶
                   </div>
-                  Google Play (Bientôt)
+                  {t.appDownload.playSoon}
                 </button>
               </div>
               
               <p className="text-sm text-blue-200">
-                💡 En attendant, ajoute findr.cm à ton écran d'accueil pour une expérience app native
+                {t.appDownload.pwaHint}
               </p>
             </div>
           </div>
@@ -107,7 +109,7 @@ export default function AppDownload() {
                       {/* Header */}
                       <div className="text-center">
                         <h3 className="text-xl font-bold text-gray-900">Findr</h3>
-                        <p className="text-sm text-gray-600">Tes annonces</p>
+                        <p className="text-sm text-gray-600">{t.pwa.install}</p>
                       </div>
 
                       {/* Listing Cards */}
@@ -136,11 +138,11 @@ export default function AppDownload() {
                         <div className="flex justify-around">
                           <div className="text-blue-600 text-xs text-center">
                             <div className="w-6 h-6 mx-auto mb-1 bg-blue-600 rounded"></div>
-                            Accueil
+                            {t.nav.home}
                           </div>
                           <div className="text-gray-400 text-xs text-center">
                             <div className="w-6 h-6 mx-auto mb-1 bg-gray-300 rounded"></div>
-                            Recherche
+                            {t.hero.search}
                           </div>
                           <div className="text-gray-400 text-xs text-center">
                             <div className="w-6 h-6 mx-auto mb-1 bg-gray-300 rounded"></div>
@@ -160,7 +162,7 @@ export default function AppDownload() {
               {/* Notification Bubble */}
               <div className="absolute -top-4 -right-4 bg-red-500 text-white p-3 rounded-2xl shadow-lg animate-bounce">
                 <div className="text-xs font-medium mb-1">Nouveau message!</div>
-                <div className="text-xs opacity-90">"Je suis intéressé"</div>
+                <div className="text-xs opacity-90">&ldquo;Je suis intéressé&rdquo;</div>
               </div>
 
               {/* Wi-Fi Indicator */}
@@ -175,10 +177,10 @@ export default function AppDownload() {
         {/* Features Grid */}
         <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6">
           {[
-            { icon: '📱', title: 'Responsive', desc: 'Sur tous les écrans' },
-            { icon: '⚡', title: 'Ultra-rapide', desc: 'Chargement < 2s' },
-            { icon: '🔔', title: 'Notifications', desc: 'Temps réel' },
-            { icon: '📶', title: 'Mode hors-ligne', desc: 'Même sans réseau' }
+            { icon: '📱', title: t.appDownload.feat1Title, desc: t.appDownload.feat1Desc },
+            { icon: '⚡', title: t.appDownload.feat2Title, desc: t.appDownload.feat2Desc },
+            { icon: '🔔', title: t.appDownload.feat3Title, desc: t.appDownload.feat3Desc },
+            { icon: '📶', title: t.appDownload.feat4Title, desc: t.appDownload.feat4Desc }
           ].map((feature, index) => (
             <div key={index} className="text-center text-white">
               <div className="text-3xl mb-3">{feature.icon}</div>
@@ -191,44 +193,44 @@ export default function AppDownload() {
         {/* Stats */}
         <div className="mt-16 bg-white/10 backdrop-blur-sm rounded-2xl p-8">
           <h3 className="text-2xl font-bold text-white mb-6 text-center">
-            📈 Performance de l'app
+            {t.appDownload.perfTitle}
           </h3>
           <div className="grid grid-cols-3 gap-8 text-center text-white">
             <div>
               <div className="text-2xl md:text-3xl font-bold text-yellow-400 mb-2">98%</div>
-              <div className="text-sm text-blue-200">Satisfaction utilisateurs</div>
+              <div className="text-sm text-blue-200">{t.appDownload.satisfaction}</div>
             </div>
             <div>
               <div className="text-2xl md:text-3xl font-bold text-green-400 mb-2">1.8s</div>
-              <div className="text-sm text-blue-200">Temps de chargement</div>
+              <div className="text-sm text-blue-200">{t.appDownload.loadTime}</div>
             </div>
             <div>
               <div className="text-2xl md:text-3xl font-bold mb-2" style={{ color: '#F59E0B' }}>24/7</div>
-              <div className="text-sm text-blue-200">Disponibilité</div>
+              <div className="text-sm text-blue-200">{t.appDownload.uptime}</div>
             </div>
           </div>
         </div>
 
         {/* How to Install PWA */}
         <div className="mt-12 bg-white/5 backdrop-blur-sm rounded-2xl p-6">
-          <h4 className="text-xl font-bold text-white mb-4">📋 Comment installer l'app:</h4>
+          <h4 className="text-xl font-bold text-white mb-4">{t.appDownload.installTitle}</h4>
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <h5 className="font-semibold text-yellow-400 mb-3">📱 Sur iPhone/iPad:</h5>
+              <h5 className="font-semibold text-yellow-400 mb-3">{t.appDownload.iosTitle}</h5>
               <ol className="text-sm text-blue-100 space-y-2">
-                <li>1. Ouvre findr.cm dans Safari</li>
-                <li>2. Appuie sur le bouton de partage</li>
-                <li>3. Sélectionne "Ajouter à l'écran d'accueil"</li>
-                <li>4. Confirme l'installation</li>
+                <li>{t.appDownload.iosStep1}</li>
+                <li>{t.appDownload.iosStep2}</li>
+                <li>{t.appDownload.iosStep3}</li>
+                <li>{t.appDownload.iosStep4}</li>
               </ol>
             </div>
             <div>
-              <h5 className="font-semibold text-green-400 mb-3">🤖 Sur Android:</h5>
+              <h5 className="font-semibold text-green-400 mb-3">{t.appDownload.androidTitle}</h5>
               <ol className="text-sm text-blue-100 space-y-2">
-                <li>1. Visite findr.cm dans Chrome</li>
-                <li>2. Appuie sur "Ajouter à l'écran d'accueil"</li>
-                <li>3. Ou va dans Menu → "Installer l'app"</li>
-                <li>4. Confirme l'installation</li>
+                <li>{t.appDownload.androidStep1}</li>
+                <li>{t.appDownload.androidStep2}</li>
+                <li>{t.appDownload.androidStep3}</li>
+                <li>{t.appDownload.androidStep4}</li>
               </ol>
             </div>
           </div>

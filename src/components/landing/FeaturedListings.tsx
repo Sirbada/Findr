@@ -3,9 +3,10 @@
 import { useState, useRef, useEffect } from 'react'
 import { ChevronLeft, ChevronRight, MapPin, Clock, Star, Verified } from 'lucide-react'
 import Link from 'next/link'
+import { useTranslation } from '@/lib/i18n/context'
 
 // Mock data pour featured listings
-const featuredListings = [
+const featuredListingsData = [
   {
     id: '1',
     title: 'Villa moderne à Bonanjo',
@@ -13,11 +14,11 @@ const featuredListings = [
     currency: 'FCFA',
     location: 'Bonanjo, Douala',
     image: '/api/placeholder/400/280',
-    category: 'Immobilier',
+    categoryKey: 'housing' as const,
     featured: true,
     verified: true,
     rating: 4.8,
-    postedAgo: '2 heures',
+    postedAgo: '2h',
     seller: {
       name: 'Marie Kouam',
       verified: true,
@@ -31,11 +32,11 @@ const featuredListings = [
     currency: 'FCFA',
     location: 'Akwa, Douala',
     image: '/api/placeholder/400/280',
-    category: 'Véhicules',
+    categoryKey: 'cars' as const,
     featured: true,
     verified: true,
     rating: 4.9,
-    postedAgo: '5 heures',
+    postedAgo: '5h',
     seller: {
       name: 'Jean Fotso',
       verified: true,
@@ -49,11 +50,11 @@ const featuredListings = [
     currency: 'FCFA/mois',
     location: 'Bastos, Yaoundé',
     image: '/api/placeholder/400/280',
-    category: 'Emplois',
+    categoryKey: 'emplois' as const,
     featured: true,
     verified: false,
     rating: 4.7,
-    postedAgo: '1 jour',
+    postedAgo: '1j',
     seller: {
       name: 'TechStart Sarl',
       verified: true,
@@ -67,11 +68,11 @@ const featuredListings = [
     currency: 'FCFA',
     location: 'Dschang, Ouest',
     image: '/api/placeholder/400/280',
-    category: 'Électronique',
+    categoryKey: 'other' as const,
     featured: true,
     verified: true,
     rating: 5.0,
-    postedAgo: '3 heures',
+    postedAgo: '3h',
     seller: {
       name: 'Patrick Nkomo',
       verified: false,
@@ -85,11 +86,11 @@ const featuredListings = [
     currency: 'FCFA',
     location: 'PK12, Yaoundé',
     image: '/api/placeholder/400/280',
-    category: 'Terrain',
+    categoryKey: 'terrain' as const,
     featured: true,
     verified: true,
     rating: 4.6,
-    postedAgo: '6 heures',
+    postedAgo: '6h',
     seller: {
       name: 'Immobilier Plus',
       verified: true,
@@ -98,42 +99,52 @@ const featuredListings = [
   }
 ]
 
+function formatPrice(price: string, currency: string): string {
+  const numPrice = parseInt(price.replace(/,/g, ''))
+  if (numPrice >= 1000000) {
+    return `${(numPrice / 1000000).toFixed(1)}M ${currency.split('/')[0]}`
+  } else if (numPrice >= 1000) {
+    return `${(numPrice / 1000).toFixed(0)}K ${currency.split('/')[0]}`
+  }
+  return `${price} ${currency}`
+}
+
 export default function FeaturedListings() {
+  const { t } = useTranslation()
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
   const carouselRef = useRef<HTMLDivElement>(null)
+
+  // Category labels using translations
+  const categoryLabels: Record<string, string> = {
+    housing: t.categories.housing,
+    cars: t.categories.cars,
+    emplois: t.emplois.name,
+    terrain: t.categoryGrid.terrainName,
+    other: t.categoryGrid.autresName,
+  }
   
   // Auto-play functionality
   useEffect(() => {
     if (!isAutoPlaying) return
     
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % featuredListings.length)
+      setCurrentIndex((prev) => (prev + 1) % featuredListingsData.length)
     }, 5000)
     
     return () => clearInterval(interval)
   }, [isAutoPlaying])
 
   const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % featuredListings.length)
+    setCurrentIndex((prev) => (prev + 1) % featuredListingsData.length)
   }
 
   const prevSlide = () => {
-    setCurrentIndex((prev) => (prev - 1 + featuredListings.length) % featuredListings.length)
+    setCurrentIndex((prev) => (prev - 1 + featuredListingsData.length) % featuredListingsData.length)
   }
 
   const goToSlide = (index: number) => {
     setCurrentIndex(index)
-  }
-
-  const formatPrice = (price: string, currency: string) => {
-    const numPrice = parseInt(price.replace(/,/g, ''))
-    if (numPrice >= 1000000) {
-      return `${(numPrice / 1000000).toFixed(1)}M ${currency.split('/')[0]}`
-    } else if (numPrice >= 1000) {
-      return `${(numPrice / 1000).toFixed(0)}K ${currency.split('/')[0]}`
-    }
-    return `${price} ${currency}`
   }
 
   return (
@@ -144,11 +155,10 @@ export default function FeaturedListings() {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-12">
           <div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              ⭐ Annonces vedettes
+              {t.featuredSection.title}
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl">
-              Les meilleures offres sélectionnées par notre équipe. 
-              Vérifié, de qualité, prêt à acheter.
+              {t.featuredSection.subtitle}
             </p>
           </div>
           <Link 
@@ -158,7 +168,7 @@ export default function FeaturedListings() {
               background: 'linear-gradient(to right, #F59E0B, #D97706)',
             }}
           >
-            Voir toutes →
+            {t.featuredSection.viewAll}
           </Link>
         </div>
 
@@ -176,7 +186,7 @@ export default function FeaturedListings() {
               className="flex transition-transform duration-500 ease-in-out"
               style={{ transform: `translateX(-${currentIndex * 100}%)` }}
             >
-              {featuredListings.map((listing) => (
+              {featuredListingsData.map((listing) => (
                 <div key={listing.id} className="w-full flex-shrink-0">
                   <Link href={`/listing/${listing.id}`}>
                     <div className="relative bg-white group cursor-pointer">
@@ -194,13 +204,15 @@ export default function FeaturedListings() {
                         
                         {/* Badges */}
                         <div className="absolute top-4 left-4 flex gap-2">
-                          <span className="text-white px-3 py-1 rounded-full text-sm font-medium" style={{ backgroundColor: '#F59E0B' }}>
-                            ⭐ Vedette
-                          </span>
+                          {listing.featured && (
+                            <span className="text-white px-3 py-1 rounded-full text-sm font-medium" style={{ backgroundColor: '#F59E0B' }}>
+                              {t.featuredSection.featuredBadge}
+                            </span>
+                          )}
                           {listing.verified && (
                             <span className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1">
                               <Verified className="w-3 h-3" />
-                              Vérifié
+                              {t.listings.verified}
                             </span>
                           )}
                         </div>
@@ -208,7 +220,7 @@ export default function FeaturedListings() {
                         {/* Category */}
                         <div className="absolute top-4 right-4">
                           <span className="bg-white/20 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm font-medium">
-                            {listing.category}
+                            {categoryLabels[listing.categoryKey] ?? listing.categoryKey}
                           </span>
                         </div>
 
@@ -246,7 +258,7 @@ export default function FeaturedListings() {
                                 {listing.seller.verified && (
                                   <div className="text-xs text-green-300 flex items-center gap-1">
                                     <Verified className="w-3 h-3" />
-                                    Profil vérifié
+                                    {t.featuredSection.verifiedProfile}
                                   </div>
                                 )}
                               </div>
@@ -282,7 +294,7 @@ export default function FeaturedListings() {
 
         {/* Dots Indicator */}
         <div className="flex justify-center mt-8 gap-2">
-          {featuredListings.map((_, index) => (
+          {featuredListingsData.map((_, index) => (
             <button
               key={index}
               onClick={() => goToSlide(index)}
@@ -301,15 +313,15 @@ export default function FeaturedListings() {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-8 text-center">
             <div>
               <div className="text-2xl md:text-3xl font-bold text-blue-600 mb-1">15min</div>
-              <div className="text-gray-700 text-sm">Temps de publication moyen</div>
+              <div className="text-gray-700 text-sm">{t.featuredSection.publishTimeLabel}</div>
             </div>
             <div>
               <div className="text-2xl md:text-3xl font-bold mb-1" style={{ color: '#F59E0B' }}>3x</div>
-              <div className="text-gray-700 text-sm">Plus de vues avec "Vedette"</div>
+              <div className="text-gray-700 text-sm">{t.featuredSection.viewsBoostLabel}</div>
             </div>
             <div className="col-span-2 md:col-span-1">
               <div className="text-2xl md:text-3xl font-bold text-green-600 mb-1">89%</div>
-              <div className="text-gray-700 text-sm">Vendus en moins de 7 jours</div>
+              <div className="text-gray-700 text-sm">{t.featuredSection.soldRateLabel}</div>
             </div>
           </div>
         </div>

@@ -3,7 +3,7 @@
 import { useTranslation } from '@/lib/i18n/context'
 
 export function TrustedBy() {
-  const { lang } = useTranslation()
+  const { t } = useTranslation()
 
   // Placeholder logos - realistic for Cameroon market
   const logos = [
@@ -45,13 +45,10 @@ export function TrustedBy() {
         {/* Header */}
         <div className="text-center mb-12 animate-slide-up">
           <p className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-2">
-            {lang === 'fr' ? 'Ils nous font confiance' : 'Trusted by'}
+            {t.trustedBy.eyebrow}
           </p>
           <h2 className="text-2xl font-semibold text-gray-900">
-            {lang === 'fr' 
-              ? 'Partenaires et institutions de confiance'
-              : 'Trusted partners and institutions'
-            }
+            {t.trustedBy.title}
           </h2>
         </div>
 
@@ -95,13 +92,10 @@ export function TrustedBy() {
               </svg>
             </div>
             <h3 className="font-semibold text-gray-900 mb-2">
-              {lang === 'fr' ? 'Annonces vérifiées' : 'Verified listings'}
+              {t.trustedBy.verifiedListings}
             </h3>
             <p className="text-sm text-gray-600">
-              {lang === 'fr' 
-                ? 'Toutes les annonces sont vérifiées pour votre sécurité'
-                : 'All listings are verified for your safety'
-              }
+              {t.trustedBy.verifiedListingsDesc}
             </p>
           </div>
 
@@ -112,13 +106,10 @@ export function TrustedBy() {
               </svg>
             </div>
             <h3 className="font-semibold text-gray-900 mb-2">
-              {lang === 'fr' ? 'Sécurisé' : 'Secure'}
+              {t.trustedBy.secure}
             </h3>
             <p className="text-sm text-gray-600">
-              {lang === 'fr' 
-                ? 'Vos données sont protégées et sécurisées'
-                : 'Your data is protected and secure'
-              }
+              {t.trustedBy.secureDesc}
             </p>
           </div>
 
@@ -129,13 +120,10 @@ export function TrustedBy() {
               </svg>
             </div>
             <h3 className="font-semibold text-gray-900 mb-2">
-              {lang === 'fr' ? 'Support 24/7' : '24/7 Support'}
+              {t.trustedBy.support}
             </h3>
             <p className="text-sm text-gray-600">
-              {lang === 'fr' 
-                ? 'Notre équipe est là pour vous aider'
-                : 'Our team is here to help you'
-              }
+              {t.trustedBy.supportDesc}
             </p>
           </div>
         </div>

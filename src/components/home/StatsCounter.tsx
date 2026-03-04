@@ -4,66 +4,51 @@ import { useState, useEffect, useRef } from 'react'
 import { Home, Car, Users, MapPin } from 'lucide-react'
 import { useTranslation } from '@/lib/i18n/context'
 
-interface Stat {
-  icon: any
+interface StatConfig {
+  icon: React.ComponentType<{ className?: string }>
   value: number
-  label: {
-    fr: string
-    en: string
-  }
+  labelKey: 'activeListings' | 'activeUsers' | 'vehiclesSold' | 'citiesCovered'
   suffix: string
   color: string
   bgColor: string
 }
 
-const stats: Stat[] = [
+const statConfigs: StatConfig[] = [
   {
     icon: Home,
     value: 10000,
-    label: {
-      fr: 'Annonces actives',
-      en: 'Active listings'
-    },
+    labelKey: 'activeListings',
     suffix: '+',
     color: 'text-emerald-600',
-    bgColor: 'bg-emerald-50'
+    bgColor: 'bg-emerald-50',
   },
   {
     icon: Users,
     value: 5000,
-    label: {
-      fr: 'Utilisateurs actifs',
-      en: 'Active users'
-    },
+    labelKey: 'activeUsers',
     suffix: '+',
     color: 'text-blue-600',
-    bgColor: 'bg-blue-50'
+    bgColor: 'bg-blue-50',
   },
   {
     icon: Car,
     value: 2500,
-    label: {
-      fr: 'Véhicules vendus',
-      en: 'Vehicles sold'
-    },
+    labelKey: 'vehiclesSold',
     suffix: '+',
     color: 'text-purple-600',
-    bgColor: 'bg-purple-50'
+    bgColor: 'bg-purple-50',
   },
   {
     icon: MapPin,
     value: 50,
-    label: {
-      fr: 'Villes couvertes',
-      en: 'Cities covered'
-    },
+    labelKey: 'citiesCovered',
     suffix: '+',
     color: 'text-orange-600',
-    bgColor: 'bg-orange-50'
-  }
+    bgColor: 'bg-orange-50',
+  },
 ]
 
-function useCountUp(end: number, duration: number = 2000) {
+function useCountUp(end: number, duration = 2000) {
   const [count, setCount] = useState(0)
   const [isVisible, setIsVisible] = useState(false)
   const elementRef = useRef<HTMLDivElement>(null)
@@ -75,33 +60,23 @@ function useCountUp(end: number, duration: number = 2000) {
           setIsVisible(true)
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     )
-
-    if (elementRef.current) {
-      observer.observe(elementRef.current)
-    }
-
+    if (elementRef.current) observer.observe(elementRef.current)
     return () => observer.disconnect()
   }, [isVisible])
 
   useEffect(() => {
     if (!isVisible) return
-
     let startTime: number
     let animationFrame: number
 
     const animate = (currentTime: number) => {
       if (!startTime) startTime = currentTime
       const progress = Math.min((currentTime - startTime) / duration, 1)
-      
-      // Easing function for smooth animation
       const easedProgress = 1 - Math.pow(1 - progress, 3)
       setCount(Math.floor(end * easedProgress))
-
-      if (progress < 1) {
-        animationFrame = requestAnimationFrame(animate)
-      }
+      if (progress < 1) animationFrame = requestAnimationFrame(animate)
     }
 
     animationFrame = requestAnimationFrame(animate)
@@ -111,31 +86,34 @@ function useCountUp(end: number, duration: number = 2000) {
   return { count, elementRef }
 }
 
-function StatCard({ stat, index }: { stat: Stat; index: number }) {
+function StatCard({ stat, index }: { stat: StatConfig; index: number }) {
   const { count, elementRef } = useCountUp(stat.value)
-  const { lang } = useTranslation()
+  const { t } = useTranslation()
   const IconComponent = stat.icon
 
   return (
-    <div 
+    <div
       ref={elementRef}
       className="group relative animate-slide-up"
       style={{ animationDelay: `${index * 0.1}s` }}
     >
       <div className="bg-white rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover-lift border border-gray-100 group-hover:border-emerald-200">
         {/* Icon */}
-        <div className={`inline-flex items-center justify-center w-14 h-14 ${stat.bgColor} rounded-2xl mb-4 group-hover:scale-110 transition-transform duration-300`}>
+        <div
+          className={`inline-flex items-center justify-center w-14 h-14 ${stat.bgColor} rounded-2xl mb-4 group-hover:scale-110 transition-transform duration-300`}
+        >
           <IconComponent className={`w-7 h-7 ${stat.color}`} />
         </div>
 
         {/* Number */}
         <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-          {count.toLocaleString()}{stat.suffix}
+          {count.toLocaleString()}
+          {stat.suffix}
         </div>
 
         {/* Label */}
         <div className={`text-sm font-medium ${stat.color} uppercase tracking-wide`}>
-          {stat.label[lang]}
+          {t.statsCounter[stat.labelKey]}
         </div>
 
         {/* Hover effect */}
@@ -146,7 +124,7 @@ function StatCard({ stat, index }: { stat: Stat; index: number }) {
 }
 
 export function StatsCounter() {
-  const { lang } = useTranslation()
+  const { t } = useTranslation()
 
   return (
     <section className="py-20 bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden">
@@ -161,19 +139,16 @@ export function StatsCounter() {
         {/* Header */}
         <div className="text-center mb-16 animate-slide-up">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            {lang === 'fr' ? 'Findr en chiffres' : 'Findr by numbers'}
+            {t.statsCounter.title}
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            {lang === 'fr' 
-              ? 'Rejoignez une communauté grandissante de Camerounais qui trouvent ce qu\'ils cherchent'
-              : 'Join a growing community of Cameroonians finding what they need'
-            }
+            {t.statsCounter.subtitle}
           </p>
         </div>
 
         {/* Stats grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-          {stats.map((stat, index) => (
+          {statConfigs.map((stat, index) => (
             <StatCard key={index} stat={stat} index={index} />
           ))}
         </div>
@@ -182,12 +157,7 @@ export function StatsCounter() {
         <div className="text-center mt-16 animate-slide-up" style={{ animationDelay: '0.4s' }}>
           <div className="inline-flex items-center space-x-2 bg-white/80 backdrop-blur-sm text-gray-700 px-6 py-3 rounded-full text-sm font-medium shadow-lg border border-gray-200">
             <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-            <span>
-              {lang === 'fr' 
-                ? 'Et ça grandit chaque jour !' 
-                : 'And growing every day!'
-              }
-            </span>
+            <span>{t.statsCounter.badge}</span>
           </div>
         </div>
       </div>
