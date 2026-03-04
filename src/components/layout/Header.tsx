@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
 import { useTranslation } from '@/lib/i18n/context'
+import { DiasporaToggle } from '@/components/ui/DiasporaToggle'
 
 const NAV_ITEMS = [
   { href: '/housing', labelFr: 'Immobilier', labelEn: 'Housing', color: '#059669', bg: '#ecfdf5' },
@@ -97,6 +98,11 @@ export function Header() {
 
           {/* Right actions */}
           <div className="flex items-center gap-2">
+            {/* Diaspora Mode Toggle */}
+            <div className="hidden md:flex">
+              <DiasporaToggle />
+            </div>
+
             {/* Language */}
             <button
               onClick={() => setLang(lang === 'fr' ? 'en' : 'fr')}

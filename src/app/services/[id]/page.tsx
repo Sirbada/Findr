@@ -12,6 +12,7 @@ import { DatePicker } from '@/components/ui/DatePicker'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { createClient } from '@/lib/supabase/client'
 import { getService, ServiceListing } from '@/lib/supabase/services'
+import { ContactSellerButton } from '@/components/ui/ContactSellerButton'
 
 const requestSchema = z.object({
   city: z.string().min(2, 'Ville requise'),
@@ -189,6 +190,16 @@ export default function ServiceDetailPage() {
                 <Bookmark className="h-3 w-3" />
                 Sauvegarder
               </button>
+            </div>
+
+            <div className="mt-4">
+              <ContactSellerButton
+                listingId={service.id}
+                listingType="services"
+                sellerId={service.pro_id || ''}
+                sellerPhone={(service as any).owner_phone || (service as any).phone}
+                listingTitle={service.title}
+              />
             </div>
           </Card>
 

@@ -97,7 +97,7 @@ const adminRoles = [
 // Generate demo transactions for revenue tracking
 const demoTransactions = generateDemoTransactions(75)
 
-type Tab = 'overview' | 'listings' | 'users' | 'reports' | 'revenue' | 'roles' | 'settings'
+type Tab = 'overview' | 'listings' | 'users' | 'reports' | 'revenue' | 'roles' | 'settings' | 'verifications'
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<Tab>('overview')
@@ -106,6 +106,9 @@ export default function AdminPage() {
   const [roleStatus, setRoleStatus] = useState('')
   const [trustForm, setTrustForm] = useState({ userId: '', score: 85 })
   const [trustStatus, setTrustStatus] = useState('')
+  const [verifications, setVerifications] = useState<any[]>([])
+  const [verificationsLoading, setVerificationsLoading] = useState(false)
+  const [verificationActionStatus, setVerificationActionStatus] = useState<Record<string, string>>({})
 
   const roleSchema = z.object({
     userId: z.string().uuid(),
@@ -197,6 +200,7 @@ export default function AdminPage() {
               { id: 'listings', icon: Home, label: 'Annonces', badge: stats.pendingReview },
               { id: 'users', icon: Users, label: 'Utilisateurs' },
               { id: 'reports', icon: Flag, label: 'Signalements', badge: stats.reportedContent },
+              { id: 'verifications', icon: Shield, label: 'Vérifications' },
               { id: 'roles', icon: UserCog, label: 'Rôles & Admins' },
               { id: 'settings', icon: Settings, label: 'Paramètres' },
             ].map((item) => (
@@ -746,8 +750,235 @@ export default function AdminPage() {
               </div>
             </div>
           )}
+
+          {/* Verifications Tab */}
+          {activeTab === 'verifications' && (
+            <VerificationsTab
+              verifications={verifications}
+              loading={verificationsLoading}
+              actionStatus={verificationActionStatus}
+              onLoad={async () => {
+                setVerificationsLoading(true)
+                const supabase = createClient()
+                const { data } = await supabase
+                  .from('verification_requests')
+                  .select(`
+                    id,
+                    document_type,
+                    document_url,
+                    selfie_url,
+                    status,
+                    submitted_at,
+                    admin_notes,
+                    user_id,
+                    profiles:user_id (full_name, avatar_url)
+                  `)
+                  .order('submitted_at', { ascending: false })
+                setVerifications(data || [])
+                setVerificationsLoading(false)
+              }}
+              onAction={async (id: string, status: 'approved' | 'rejected', notes?: string) => {
+                setVerificationActionStatus(prev => ({ ...prev, [id]: 'loading' }))
+                const res = await fetch(`/api/verify/${id}`, {
+                  method: 'PATCH',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ status, admin_notes: notes }),
+                })
+                if (res.ok) {
+                  setVerificationActionStatus(prev => ({ ...prev, [id]: status }))
+                  setVerifications(prev =>
+                    prev.map(v => v.id === id ? { ...v, status } : v)
+                  )
+                } else {
+                  setVerificationActionStatus(prev => ({ ...prev, [id]: 'error' }))
+                }
+              }}
+            />
+          )}
         </main>
       </div>
+    </div>
+  )
+}
+
+// Verifications Tab Component
+function VerificationsTab({
+  verifications,
+  loading,
+  actionStatus,
+  onLoad,
+  onAction,
+}: {
+  verifications: any[]
+  loading: boolean
+  actionStatus: Record<string, string>
+  onLoad: () => void
+  onAction: (id: string, status: 'approved' | 'rejected', notes?: string) => void
+}) {
+  const [loaded, setLoaded] = useState(false)
+  const [rejectNotes, setRejectNotes] = useState<Record<string, string>>({})
+
+  if (!loaded) {
+    return (
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900 mb-6">Vérifications d'identité</h1>
+        <button
+          onClick={() => { onLoad(); setLoaded(true) }}
+          className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl transition-colors"
+        >
+          Charger les demandes
+        </button>
+      </div>
+    )
+  }
+
+  const docTypeLabels: Record<string, string> = {
+    national_id: 'CNI',
+    passport: 'Passeport',
+    drivers_license: 'Permis de conduire',
+  }
+
+  const statusColors: Record<string, string> = {
+    pending: 'bg-yellow-100 text-yellow-700',
+    approved: 'bg-green-100 text-green-700',
+    rejected: 'bg-red-100 text-red-700',
+  }
+
+  const statusLabels: Record<string, string> = {
+    pending: 'En attente',
+    approved: 'Approuvé',
+    rejected: 'Rejeté',
+  }
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold text-gray-900">Vérifications d'identité</h1>
+        <button
+          onClick={onLoad}
+          className="px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+        >
+          Actualiser
+        </button>
+      </div>
+
+      {loading ? (
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full" />
+        </div>
+      ) : verifications.length === 0 ? (
+        <div className="bg-white rounded-xl shadow-sm p-8 text-center">
+          <p className="text-gray-500">Aucune demande de vérification.</p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {verifications.map((v) => {
+            const profile = Array.isArray(v.profiles) ? v.profiles[0] : v.profiles
+            const userName = profile?.full_name || v.user_id?.slice(0, 8) + '...'
+            const status = actionStatus[v.id] || v.status
+            const isLoading = status === 'loading'
+
+            return (
+              <div key={v.id} className="bg-white rounded-xl shadow-sm p-6">
+                <div className="flex flex-col md:flex-row gap-6">
+                  {/* User Info */}
+                  <div className="flex items-start gap-3 flex-1">
+                    <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <span className="text-green-700 font-semibold text-sm">
+                        {userName.charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900">{userName}</p>
+                      <p className="text-sm text-gray-500">
+                        {docTypeLabels[v.document_type] || v.document_type}
+                      </p>
+                      <p className="text-xs text-gray-400 mt-1">
+                        Soumis le {new Date(v.submitted_at).toLocaleDateString('fr-FR', {
+                          year: 'numeric', month: 'long', day: 'numeric'
+                        })}
+                      </p>
+                      <span className={`inline-block mt-2 text-xs font-medium px-2 py-1 rounded-full ${statusColors[v.status] || 'bg-gray-100 text-gray-700'}`}>
+                        {statusLabels[v.status] || v.status}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Document Preview */}
+                  <div className="flex gap-3">
+                    {v.document_url && (
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Document</p>
+                        <a href={v.document_url} target="_blank" rel="noopener noreferrer">
+                          <img
+                            src={v.document_url}
+                            alt="Document"
+                            className="w-24 h-16 object-cover rounded-lg border border-gray-200 hover:opacity-80 transition-opacity"
+                          />
+                        </a>
+                      </div>
+                    )}
+                    {v.selfie_url && (
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Selfie</p>
+                        <a href={v.selfie_url} target="_blank" rel="noopener noreferrer">
+                          <img
+                            src={v.selfie_url}
+                            alt="Selfie"
+                            className="w-24 h-16 object-cover rounded-lg border border-gray-200 hover:opacity-80 transition-opacity"
+                          />
+                        </a>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Actions */}
+                  {v.status === 'pending' && (
+                    <div className="flex flex-col gap-2 min-w-[200px]">
+                      <input
+                        type="text"
+                        placeholder="Notes (optionnel)"
+                        value={rejectNotes[v.id] || ''}
+                        onChange={(e) => setRejectNotes(prev => ({ ...prev, [v.id]: e.target.value }))}
+                        className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => onAction(v.id, 'approved')}
+                          disabled={isLoading}
+                          className="flex-1 py-2 px-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-300 text-white text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-1"
+                        >
+                          <Check className="w-4 h-4" />
+                          Approuver
+                        </button>
+                        <button
+                          onClick={() => onAction(v.id, 'rejected', rejectNotes[v.id])}
+                          disabled={isLoading}
+                          className="flex-1 py-2 px-3 bg-red-600 hover:bg-red-700 disabled:bg-gray-300 text-white text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-1"
+                        >
+                          <X className="w-4 h-4" />
+                          Rejeter
+                        </button>
+                      </div>
+                      {actionStatus[v.id] === 'error' && (
+                        <p className="text-xs text-red-600">Erreur. Réessayez.</p>
+                      )}
+                    </div>
+                  )}
+
+                  {(status === 'approved' || status === 'rejected') && v.status !== 'pending' && (
+                    <div className="flex items-center">
+                      <span className={`text-sm font-medium px-3 py-1 rounded-full ${statusColors[status] || 'bg-gray-100 text-gray-700'}`}>
+                        {statusLabels[status] || status}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }

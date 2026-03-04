@@ -2,11 +2,12 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { 
-  ArrowLeft, Home, Car, Upload, X, MapPin, 
+import {
+  ArrowLeft, Home, Car, Upload, X, MapPin,
   DollarSign, Image as ImageIcon, Loader2, CheckCircle
 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { LandmarkInput, type LocationValue } from '@/components/ui/LandmarkInput'
 
 const housingTypes = [
   { value: 'apartment', label: 'Appartement' },
@@ -42,6 +43,7 @@ export default function NewListingPage() {
   const [loading, setLoading] = useState(false)
   const [images, setImages] = useState<string[]>([])
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([])
+  const [locationValue, setLocationValue] = useState<LocationValue>({})
 
   // Form data
   const [formData, setFormData] = useState({
@@ -68,7 +70,20 @@ export default function NewListingPage() {
 
   const handleSubmit = async () => {
     setLoading(true)
-    // TODO: Implement actual submission
+    // Build submission payload including location fields
+    const payload = {
+      ...formData,
+      city: locationValue.city || formData.city,
+      neighborhood: locationValue.landmark || formData.neighborhood,
+      lat: locationValue.lat,
+      lng: locationValue.lng,
+      landmark: locationValue.landmark,
+      amenities: selectedAmenities,
+      images,
+      category,
+    }
+    // TODO: Implement actual submission with payload
+    console.log('Submitting listing:', payload)
     setTimeout(() => {
       setLoading(false)
       setStep(4) // Success step
@@ -381,34 +396,22 @@ export default function NewListingPage() {
               </div>
 
               {/* Location */}
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Ville *
-                  </label>
-                  <select
-                    value={formData.city}
-                    onChange={(e) => setFormData({...formData, city: e.target.value})}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  >
-                    <option value="">Sélectionner</option>
-                    {cities.map(city => (
-                      <option key={city} value={city}>{city}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Quartier
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.neighborhood}
-                    onChange={(e) => setFormData({...formData, neighborhood: e.target.value})}
-                    placeholder="Ex: Bonanjo, Bastos..."
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  />
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  Localisation
+                </label>
+                <LandmarkInput
+                  value={locationValue}
+                  onChange={(loc) => {
+                    setLocationValue(loc)
+                    setFormData({
+                      ...formData,
+                      city: loc.city || formData.city,
+                      neighborhood: loc.landmark || formData.neighborhood,
+                    })
+                  }}
+                  placeholder="Ex: près de Total Bonanjo, derrière le marché central..."
+                />
               </div>
 
               {/* Price */}

@@ -1,16 +1,21 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { 
-  Search, Calendar, MapPin, Fuel, Settings2, Users, 
-  Heart, CheckCircle, Car, ChevronDown, Filter
+import {
+  Search, Calendar, MapPin, Fuel, Settings2, Users,
+  Heart, CheckCircle, Car, ChevronDown, Filter, Bell, List, Map
 } from 'lucide-react'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { Button } from '@/components/ui/Button'
 import { getListings, Listing } from '@/lib/supabase/queries'
 import { useTranslation } from '@/lib/i18n/context'
+import { SaveSearchModal } from '@/components/ui/SaveSearchModal'
+import { useAuth } from '@/lib/auth/context'
+
+const MapView = dynamic(() => import('@/components/ui/MapView').then(m => ({ default: m.MapView })), { ssr: false })
 
 function formatPrice(price: number): string {
   return new Intl.NumberFormat('fr-FR').format(price)
@@ -18,8 +23,11 @@ function formatPrice(price: number): string {
 
 export function CarsPageClient() {
   const { t, lang } = useTranslation()
+  const { user } = useAuth()
   const [listings, setListings] = useState<Listing[]>([])
   const [loading, setLoading] = useState(true)
+  const [viewMode, setViewMode] = useState<'list' | 'map'>('list')
+  const [showSaveSearch, setShowSaveSearch] = useState(false)
   
   // Filters
   const [selectedCity, setSelectedCity] = useState('all')
@@ -357,14 +365,64 @@ export function CarsPageClient() {
               </p>
             </div>
             
-            <Button variant="outline" size="sm">
-              <Filter className="w-4 h-4 mr-2" />
-              {content.moreFilters}
-            </Button>
+            <div className="flex items-center gap-3">
+              {/* Save Search Button - only for logged-in users */}
+              {user && (
+                <button
+                  onClick={() => setShowSaveSearch(true)}
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-green-700 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 transition-colors"
+                >
+                  <Bell className="w-4 h-4" />
+                  Sauvegarder
+                </button>
+              )}
+
+              {/* Map / List Toggle */}
+              <div className="flex bg-gray-100 rounded-lg p-1">
+                <button
+                  onClick={() => setViewMode('list')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-colors ${viewMode === 'list' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-600 hover:text-gray-900'}`}
+                >
+                  <List className="w-4 h-4" />
+                  Liste
+                </button>
+                <button
+                  onClick={() => setViewMode('map')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-colors ${viewMode === 'map' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-600 hover:text-gray-900'}`}
+                >
+                  <Map className="w-4 h-4" />
+                  Carte
+                </button>
+              </div>
+
+              {viewMode === 'list' && (
+                <Button variant="outline" size="sm">
+                  <Filter className="w-4 h-4 mr-2" />
+                  {content.moreFilters}
+                </Button>
+              )}
+            </div>
           </div>
 
+          {/* Map View */}
+          {viewMode === 'map' && !loading && (
+            <MapView
+              listings={filteredAndSortedListings
+                .filter(l => (l as any).lat != null && (l as any).lng != null)
+                .map(l => ({
+                  id: l.id,
+                  title: l.title,
+                  price: l.price_per_day ?? l.price,
+                  lat: (l as any).lat,
+                  lng: (l as any).lng,
+                  type: 'cars',
+                }))}
+              onListingClick={(id) => { window.location.href = `/cars/${id}` }}
+            />
+          )}
+
           {/* Listings Grid - Mobile.de Style */}
-          {loading ? (
+          {viewMode === 'list' && loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {[1,2,3,4,5,6].map(i => (
                 <div key={i} className="animate-pulse">
@@ -374,7 +432,7 @@ export function CarsPageClient() {
                 </div>
               ))}
             </div>
-          ) : (
+          ) : viewMode === 'list' ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredAndSortedListings.map((listing) => (
                 <Link 
@@ -489,7 +547,7 @@ export function CarsPageClient() {
                 </Link>
               ))}
             </div>
-          )}
+          ) : null}
 
           {/* No Results - Empty State */}
           {!loading && filteredAndSortedListings.length === 0 && (
@@ -521,6 +579,20 @@ export function CarsPageClient() {
       </main>
 
       <Footer />
+
+      {/* Save Search Modal */}
+      <SaveSearchModal
+        isOpen={showSaveSearch}
+        onClose={() => setShowSaveSearch(false)}
+        category="cars"
+        filters={{
+          city: selectedCity,
+          brand: selectedBrand,
+          fuel: selectedFuel,
+          duree: selectedDuree,
+          rentalType,
+        }}
+      />
     </div>
   )
 }

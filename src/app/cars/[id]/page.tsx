@@ -3,10 +3,10 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { 
+import {
   ArrowLeft, MapPin, Fuel, Settings2, Users, Calendar,
   Heart, Share2, CheckCircle, Phone, MessageSquare, User,
-  Car, Shield, ChevronLeft, ChevronRight, Star
+  Car, Shield, ChevronLeft, ChevronRight, Star, Tag
 } from 'lucide-react'
 import { z } from 'zod'
 import { Header } from '@/components/layout/Header'
@@ -16,6 +16,11 @@ import { DatePicker } from '@/components/ui/DatePicker'
 import { getVehicle, Vehicle } from '@/lib/supabase/queries'
 import { useTranslation } from '@/lib/i18n/context'
 import { WhatsAppButton, WhatsAppFloatingButton } from '@/components/ui/WhatsAppButton'
+import { MakeOfferModal } from '@/components/ui/MakeOfferModal'
+import { useAuth } from '@/lib/auth/context'
+import { ContactSellerButton } from '@/components/ui/ContactSellerButton'
+import { useDiaspora } from '@/lib/diaspora/context'
+import { EscrowButton } from '@/components/ui/EscrowButton'
 
 function formatPrice(price: number): string {
   return new Intl.NumberFormat('fr-FR').format(price)
@@ -24,9 +29,12 @@ function formatPrice(price: number): string {
 export default function CarDetailPage() {
   const params = useParams()
   const { t, lang } = useTranslation()
+  const { user } = useAuth()
+  const { isDiasporaMode, convertPrice } = useDiaspora()
   const [listing, setListing] = useState<Vehicle | null>(null)
   const [loading, setLoading] = useState(true)
   const [currentImage, setCurrentImage] = useState(0)
+  const [showOffer, setShowOffer] = useState(false)
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
   const [bookingStatus, setBookingStatus] = useState('')
@@ -393,6 +401,34 @@ export default function CarDetailPage() {
                       ))}
                     </div>
                   )}
+                  {/* Make an Offer - only for logged-in non-sellers */}
+                  {user && user.id !== listing.owner_id && (
+                    <button
+                      onClick={() => setShowOffer(true)}
+                      className="w-full flex items-center justify-center gap-2 py-3 px-4 border-2 border-green-600 text-green-700 rounded-xl font-medium hover:bg-green-50 transition-colors"
+                    >
+                      <Tag className="w-4 h-4" />
+                      {lang === 'fr' ? 'Faire une offre' : 'Make an Offer'}
+                    </button>
+                  )}
+                  {/* Escrow Payment - only for logged-in non-sellers */}
+                  {user && user.id !== listing.owner_id && listing.owner_id && (
+                    <EscrowButton
+                      listingId={listing.id}
+                      listingType="cars"
+                      sellerId={listing.owner_id}
+                      amount={pricePerDay}
+                      listingTitle={listing.title}
+                    />
+                  )}
+                  <ContactSellerButton
+                    listingId={listing.id}
+                    listingType="cars"
+                    sellerId={listing.owner_id || ''}
+                    sellerPhone={(listing as any).owner_phone || (listing as any).phone}
+                    listingTitle={listing.title}
+                    className="w-full"
+                  />
                   <WhatsAppButton
                     phone="+237 6 99 00 00 00"
                     listingTitle={listing.title}
@@ -400,6 +436,23 @@ export default function CarDetailPage() {
                     variant="outline"
                     size="lg"
                   />
+                  {/* Send to Family - Diaspora Feature */}
+                  {(() => {
+                    const url = typeof window !== 'undefined' ? window.location.href : `https://findr.cm/cars/${listing.id}`
+                    const xafPrice = `${formatPrice(pricePerDay)} XAF/jour`
+                    const convertedPrice = isDiasporaMode ? ` (${convertPrice(pricePerDay).formatted})` : ''
+                    const msg = `Regarde cette annonce sur Findr: ${listing.title} - ${xafPrice}${convertedPrice} - ${url}`
+                    return (
+                      <a
+                        href={`https://wa.me/?text=${encodeURIComponent(msg)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full flex items-center justify-center gap-2 py-3 px-4 border-2 border-green-200 text-green-700 bg-green-50 rounded-xl font-medium hover:bg-green-100 transition-colors text-sm"
+                      >
+                        📤 Envoyer à la famille
+                      </a>
+                    )
+                  })()}
                 </div>
 
                 {/* Owner Info */}
@@ -408,7 +461,7 @@ export default function CarDetailPage() {
                     <div className="w-12 h-12 bg-[color:var(--green-50)] rounded-full flex items-center justify-center">
                       <Car className="w-6 h-6 text-[color:var(--green-600)]" />
                     </div>
-                    <div>
+                    <div className="flex-1">
                       <p className="font-medium text-gray-900">{content.proOwner}</p>
                       <div className="flex items-center gap-1 text-sm text-gray-500">
                         <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
@@ -416,6 +469,15 @@ export default function CarDetailPage() {
                       </div>
                     </div>
                   </div>
+                  {listing.owner_id && (
+                    <Link
+                      href={`/profile/${listing.owner_id}`}
+                      className="mt-3 flex items-center justify-center gap-2 w-full py-2 px-4 border border-gray-200 rounded-xl text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    >
+                      <User className="w-4 h-4" />
+                      Voir le profil
+                    </Link>
+                  )}
                 </div>
 
                 {/* Trust badges */}
@@ -438,6 +500,17 @@ export default function CarDetailPage() {
         phone="+237 6 99 00 00 00"
         listingTitle={listing.title}
         listingType="cars"
+      />
+
+      {/* Make an Offer Modal */}
+      <MakeOfferModal
+        isOpen={showOffer}
+        onClose={() => setShowOffer(false)}
+        listingId={listing.id}
+        listingType="cars"
+        sellerId={listing.owner_id || ''}
+        askingPrice={listing.price_per_day}
+        listingTitle={listing.title}
       />
     </div>
   )

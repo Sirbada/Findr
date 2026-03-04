@@ -197,9 +197,9 @@ export default function DashboardPage() {
                 <h2 className="font-semibold text-[color:var(--green-900)]">{displayName}</h2>
                 <p className="text-sm text-[color:var(--green-600)]">{user.phone || user.email}</p>
                 {!user.is_verified && (
-                  <button className="mt-2 text-xs text-[color:var(--green-700)] hover:underline">
+                  <Link href="/verify" className="mt-2 text-xs text-[color:var(--green-700)] hover:underline">
                     Vérifier mon compte →
-                  </button>
+                  </Link>
                 )}
               </div>
 
@@ -241,6 +241,13 @@ export default function DashboardPage() {
                   )
                 })}
                 <hr className="my-2" />
+                <Link
+                  href="/chat"
+                  className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-[color:var(--green-700)] hover:bg-[color:var(--green-50)]"
+                >
+                  <MessageSquare className="w-5 h-5" />
+                  <span>Messagerie</span>
+                </Link>
                 <Link
                   href="/dashboard/settings"
                   className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-[color:var(--green-700)] hover:bg-[color:var(--green-50)]"
@@ -336,6 +343,44 @@ export default function DashboardPage() {
                     <Button variant="outline">Configurer</Button>
                   </div>
                 </Card>
+
+                {/* Identity Verification Card */}
+                {!user.is_verified && (
+                  <Card className="p-6 border-2 border-[color:var(--green-100)] bg-gradient-to-r from-[color:var(--green-50)] to-white">
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-[color:var(--green-100)] rounded-2xl flex items-center justify-center flex-shrink-0">
+                          <ShieldCheck className="w-6 h-6 text-[color:var(--green-600)]" />
+                        </div>
+                        <div>
+                          <h2 className="text-lg font-semibold text-[color:var(--green-900)]">Vérifier mon identité</h2>
+                          <p className="text-sm text-[color:var(--green-700)]">
+                            Obtenez un badge de vérification et renforcez la confiance des autres utilisateurs.
+                          </p>
+                        </div>
+                      </div>
+                      <Link href="/verify" className="flex-shrink-0">
+                        <Button>Vérifier →</Button>
+                      </Link>
+                    </div>
+                  </Card>
+                )}
+
+                {user.is_verified && (
+                  <Card className="p-6 border-2 border-green-200 bg-green-50">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center flex-shrink-0">
+                        <CheckCircle className="w-6 h-6 text-green-600" />
+                      </div>
+                      <div>
+                        <h2 className="text-lg font-semibold text-green-900">Identité vérifiée ✓</h2>
+                        <p className="text-sm text-green-700">
+                          Votre compte est vérifié. Un badge de confiance est affiché sur votre profil.
+                        </p>
+                      </div>
+                    </div>
+                  </Card>
+                )}
               </>
             )}
 

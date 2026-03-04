@@ -1,10 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { 
-  Search, SlidersHorizontal, MapPin, Bed, Bath, Square, 
-  Heart, CheckCircle, X, ChevronDown, Grid, List, Map
+import {
+  Search, SlidersHorizontal, MapPin, Bed, Bath, Square,
+  Heart, CheckCircle, X, ChevronDown, Grid, List, Map, Bell
 } from 'lucide-react'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
@@ -12,6 +13,10 @@ import { Button } from '@/components/ui/Button'
 import { getListings, Listing } from '@/lib/supabase/queries'
 import { useTranslation } from '@/lib/i18n/context'
 import { NEIGHBORHOODS, getNeighborhoodsByCity } from '@/lib/data/neighborhoods'
+import { SaveSearchModal } from '@/components/ui/SaveSearchModal'
+import { useAuth } from '@/lib/auth/context'
+
+const MapView = dynamic(() => import('@/components/ui/MapView').then(m => ({ default: m.MapView })), { ssr: false })
 
 function formatPrice(price: number): string {
   return new Intl.NumberFormat('fr-FR').format(price)
@@ -19,10 +24,13 @@ function formatPrice(price: number): string {
 
 export function HousingPageClient() {
   const { t, lang } = useTranslation()
+  const { user } = useAuth()
   const [listings, setListings] = useState<Listing[]>([])
   const [loading, setLoading] = useState(true)
   const [view, setView] = useState<'grid' | 'list'>('grid')
+  const [viewMode, setViewMode] = useState<'list' | 'map'>('list')
   const [showFilters, setShowFilters] = useState(false)
+  const [showSaveSearch, setShowSaveSearch] = useState(false)
   
   // Filters
   const [selectedCity, setSelectedCity] = useState('all')
@@ -370,42 +378,92 @@ export function HousingPageClient() {
             </div>
             
             <div className="flex items-center gap-3">
-              {/* Sort Dropdown */}
-              <div className="relative">
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="pl-3 pr-8 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
+              {/* Save Search Button - only for logged-in users */}
+              {user && (
+                <button
+                  onClick={() => setShowSaveSearch(true)}
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-green-700 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 transition-colors"
                 >
-                  {content.sortOptions.map(option => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-              </div>
+                  <Bell className="w-4 h-4" />
+                  Sauvegarder
+                </button>
+              )}
 
-              {/* View Toggle */}
+              {/* Map / List Toggle */}
               <div className="flex bg-gray-100 rounded-lg p-1">
                 <button
-                  onClick={() => setView('grid')}
-                  className={`p-2 rounded transition-colors ${view === 'grid' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-600 hover:text-gray-900'}`}
-                >
-                  <Grid className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => setView('list')}
-                  className={`p-2 rounded transition-colors ${view === 'list' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-600 hover:text-gray-900'}`}
+                  onClick={() => setViewMode('list')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-colors ${viewMode === 'list' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-600 hover:text-gray-900'}`}
                 >
                   <List className="w-4 h-4" />
+                  Liste
+                </button>
+                <button
+                  onClick={() => setViewMode('map')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-colors ${viewMode === 'map' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-600 hover:text-gray-900'}`}
+                >
+                  <Map className="w-4 h-4" />
+                  Carte
                 </button>
               </div>
+
+              {/* Sort Dropdown (only in list mode) */}
+              {viewMode === 'list' && (
+                <div className="relative">
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="pl-3 pr-8 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
+                  >
+                    {content.sortOptions.map(option => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                </div>
+              )}
+
+              {/* Grid/List View Toggle (only in list mode) */}
+              {viewMode === 'list' && (
+                <div className="flex bg-gray-100 rounded-lg p-1">
+                  <button
+                    onClick={() => setView('grid')}
+                    className={`p-2 rounded transition-colors ${view === 'grid' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-600 hover:text-gray-900'}`}
+                  >
+                    <Grid className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => setView('list')}
+                    className={`p-2 rounded transition-colors ${view === 'list' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-600 hover:text-gray-900'}`}
+                  >
+                    <List className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
+          {/* Map View */}
+          {viewMode === 'map' && !loading && (
+            <MapView
+              listings={filteredAndSortedListings
+                .filter(l => (l as any).lat != null && (l as any).lng != null)
+                .map(l => ({
+                  id: l.id,
+                  title: l.title,
+                  price: l.price,
+                  lat: (l as any).lat,
+                  lng: (l as any).lng,
+                  type: 'housing',
+                }))}
+              onListingClick={(id) => { window.location.href = `/housing/${id}` }}
+            />
+          )}
+
           {/* Listings Grid */}
-          {loading ? (
+          {viewMode === 'list' && loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {[1,2,3,4,5,6].map(i => (
                 <div key={i} className="animate-pulse">
@@ -415,10 +473,10 @@ export function HousingPageClient() {
                 </div>
               ))}
             </div>
-          ) : (
+          ) : viewMode === 'list' ? (
             <div className={`grid gap-6 ${
-              view === 'grid' 
-                ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' 
+              view === 'grid'
+                ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
                 : 'grid-cols-1'
             }`}>
               {filteredAndSortedListings.map((listing) => (
@@ -544,7 +602,7 @@ export function HousingPageClient() {
                 </Link>
               ))}
             </div>
-          )}
+          ) : null}
 
           {/* No Results - Empty State */}
           {!loading && filteredAndSortedListings.length === 0 && (
@@ -576,6 +634,20 @@ export function HousingPageClient() {
       </main>
 
       <Footer />
+
+      {/* Save Search Modal */}
+      <SaveSearchModal
+        isOpen={showSaveSearch}
+        onClose={() => setShowSaveSearch(false)}
+        category="housing"
+        filters={{
+          city: selectedCity,
+          neighborhood: selectedNeighborhood,
+          type: selectedType,
+          price: selectedPrice,
+          duree: selectedDuree,
+        }}
+      />
     </div>
   )
 }
