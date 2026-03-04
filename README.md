@@ -1,110 +1,140 @@
-# Findr — Premium Booking Platform (Cameroon)
+# Findr 🇨🇲 — Premium Marketplace for Cameroon
 
-Findr is a premium booking marketplace for Cameroon that blends:
-- Short‑term stays (Airbnb‑style)
-- Hotels (Booking.com‑style)
-- Premium car rental (Sixt‑style)
-- Local services (quote‑based professionals)
+> **The go-to platform to find everything in Cameroon.**  
+> Housing · Vehicles · Land · Jobs · Services  
+> Built for Mobile Money, WhatsApp-first, offline-capable, trust-critical markets.
 
-Built with Next.js, Tailwind, and Supabase.  
-Optimized for mobile‑first usage, unstable networks, and USSD‑first payments.
+[![CI](https://github.com/Sirbada/Findr/actions/workflows/webpack.yml/badge.svg)](https://github.com/Sirbada/Findr/actions)
 
 ---
 
-## Stack
-- Next.js 16 (App Router)
-- Supabase (Auth, DB, RLS)
-- Tailwind CSS
-- Zod for validation
-- Vitest + Playwright (tests)
+## 🌟 What Makes Findr Different
+
+| Feature | How it works |
+|---------|-------------|
+| 📱 **Mobile Money first** | MTN MoMo + Orange Money as primary payment (not credit cards) |
+| 💬 **WhatsApp-native** | Every listing has a one-tap WhatsApp contact + share button |
+| 🔔 **Saved Search Alerts** | Get SMS/WhatsApp when a matching listing is posted |
+| 💸 **Make an Offer** | Price negotiation built in — culturally essential in Cameroon |
+| 🗺️ **Landmark Location** | "near Total Bonanjo" instead of street addresses |
+| 🌍 **Diaspora Mode** | EUR/USD pricing, PayPal payment, "Send to family" share |
+| 🔒 **Escrow Payments** | Secure hold/release with 2% Findr fee |
+| 🪪 **ID Verification** | Upload national ID → admin approves → "Vérifié" badge |
+| ⚡ **Offline-first PWA** | Full browsing without internet, background sync |
+| ☀️ **Nature+Sun Design** | Apple/Tesla-inspired UI with vibrant green & gold palette |
 
 ---
 
-## Key Features
+## 🚀 Stack
 
-### Search & Filtering
-- **Full-text search** across title, description, city, neighborhood (Housing) and title, brand, model, city (Cars)
-- **Advanced filter panel** (collapsible) with:
-  - Housing: bedroom count, bathroom count, min/max price, property type, neighborhood
-  - Cars: brand, fuel type, transmission (auto/manual), seat count, min/max price
-- **Sort options**: Newest first · Price low→high · Price high→low · Most popular
-- **URL-based filter persistence** — filters survive page refresh and can be shared as links
-- **Active filter chips** with individual remove buttons and "Clear all"
+- **Next.js 16** (App Router, RSC + client components)
+- **Supabase** (Auth, PostgreSQL, Realtime, Storage, RLS)
+- **Tailwind CSS** + custom design system
+- **Leaflet.js** + OpenStreetMap (map view)
+- **Zod** (validation)
+- **Vitest** + **Playwright** (testing)
 
-### Bookings
-- Availability lock (anti double‑booking) via `availability` table
-- Rate-limited booking API (8 req/min per IP)
-- HMAC-verified payment webhooks (Orange Money + MTN MoMo)
+---
 
-### Auth & Dashboard
-- Phone OTP login (+237 Cameroon numbers: Orange, MTN, Nexttel)
-- Real Supabase auth on dashboard — fetches user profile, listings, bookings
-- Protected routes redirect unauthenticated users to `/login`
-- Working logout
+## 📦 Features
 
-### Payments
-- Orange Money (mock → ready for Web Pay API)
-- MTN Mobile Money (mock → ready for MoMo API)
-- PayPal (mock → ready for REST API v2)
+### Core Verticals
+- 🏠 **Housing** — Apartments, villas, studios, hotels, guesthouses
+- 🚗 **Vehicles** — Car rental & sales with brand/fuel/transmission filters
+- 🌿 **Terrain** — Land listings with title deed status
+- 💼 **Emplois** — Job listings (CDI, CDD, freelance, stages)
+- ⚡ **Services** — Verified local professionals with broadcast requests
+
+### Search & Discovery
+- Full-text search across title, description, city, neighborhood
+- Advanced filters: bedrooms, bathrooms, price range, transmission, seats
+- Sort: Newest · Price ↑ · Price ↓ · Most popular
+- **Map view** with price pins (Leaflet + OpenStreetMap)
+- **Saved Search Alerts** — SMS/WhatsApp notifications for new matches
+- URL-based filter persistence (shareable links)
+- Active filter chips with "Clear all"
+
+### Trust & Safety
+- **ID Verification** — Upload national ID → admin review → Vérifié badge
+- **Trust Score** — Admin-managed score displayed on listings
+- **Two-Way Reviews** — Buyer reviews seller AND seller reviews buyer
+- **Scam prevention** — Rate-limited APIs, HMAC-signed webhooks
+
+### Communication
+- **In-App Chat** — Supabase Realtime conversations
+- **WhatsApp Fallback** — `wa.me/237{phone}` one-tap contact
+- **Make an Offer** — Price negotiation with counter-offer support
+- **Broadcast Requests** — Post a need, receive quotes from pros
+
+### Payments & Monetization
+- **Orange Money** (mock → ready for Web Pay API)
+- **MTN Mobile Money** (mock → ready for MoMo API)
+- **PayPal** (diaspora payments, mock → ready for REST API v2)
+- **Escrow Payments** — Secure hold/release/dispute flow (2% fee)
+- **Boost Listings** — 500/1,000/3,000 XAF for 3/7/30 days
 - Commission calculator
 
-### PWA
-- Service worker with cache-first / network-first strategies
-- Offline support
-- Install prompt (iOS + Android)
-- Full icon set (72px → 512px)
-- OG images for all verticals
+### User Experience
+- 📱 **PWA** — Install prompt, service worker, offline support
+- 🌍 **Diaspora Mode** — EUR/USD/XAF pricing + "Envoyer à la famille"
+- 📍 **Landmark Location** — Cameroon-specific location input
+- 🎨 **Nature+Sun Design** — Vibrant green/gold/sky/coral color system
+- 🌐 **FR/EN** translations
+- 📊 **Data-Saver Mode** — Compressed images, reduced bandwidth
+- 🔔 **Push Notifications** (ready)
+- 📈 **Analytics Tracker** (ready)
 
-### Landing Page (WOW)
-- **HeroEnhanced** — animated gradient, glass morphism, category tabs, popular cities
-- **StatsCounter** — animated counters (10k+ listings, 5k+ users, 2.5k+ vehicles, 50+ cities)
-- **CategoriesEnhanced** — 4 main categories with hover effects and demo fallbacks
-- **HowItWorks** — 3-step process with animated icons
-- **Testimonials** — rotating Cameroonian testimonials with star ratings
-- **TrustedBy** — partner logos (Orange, MTN, Ecobank, BICEC, Total)
-
-### SEO
-- Per-category metadata (title, description, keywords, OG image)
-- JSON-LD structured data (RealEstateListing, JobPosting, Product, Service)
-- Sitemap at `/sitemap.xml`, robots at `/robots.txt`
-- Breadcrumb structured data on all category pages
-
-### Other
-- Trust Score (admin-managed)
-- Pro dashboard with stats, listings, bookings
-- Admin panel with user management
-- Analytics tracker
-- Push notifications (ready)
-- Data-saver mode
-- FR/EN translations
-- View count tracking via `increment_views` RPC
-- Error boundary component
-- Toast notification system
-- Onboarding flow for new users
+### Admin
+- Admin panel with user management, listing moderation
+- ID verification review queue
+- Trust Score management
+- Analytics dashboard
 
 ---
 
-## Local Setup
+## 🗂️ Pages
 
-### 1) Install
-```bash
-npm install
-```
+| Route | Description |
+|-------|-------------|
+| `/` | Home (HeroEnhanced + Stats + Categories + HowItWorks + Testimonials) |
+| `/housing` | Property listings with advanced search + map view |
+| `/housing/[id]` | Property detail + booking + make offer + escrow |
+| `/cars` | Vehicle listings with advanced search + map view |
+| `/cars/[id]` | Vehicle detail + booking + make offer |
+| `/terrain` | Land listings |
+| `/emplois` | Job listings |
+| `/services` | Service professionals + broadcast |
+| `/services/[id]` | Service detail |
+| `/chat` | Chat conversations list |
+| `/chat/[id]` | Individual conversation with Realtime |
+| `/profile/[id]` | Public user profile with reviews |
+| `/verify` | ID verification upload flow |
+| `/escrow/[id]` | Escrow status + hold/release/dispute |
+| `/boost/success` | Listing boost confirmation |
+| `/alerts` | Saved search alerts management |
+| `/dashboard` | User dashboard (auth required) |
+| `/dashboard/pro` | Pro/agent portal |
+| `/dashboard/analytics` | Analytics (pro) |
+| `/dashboard/notifications` | Notification settings |
+| `/dashboard/messages` | Messages |
+| `/dashboard/new` | Create listing with landmark input |
+| `/admin` | Admin panel + verification queue |
+| `/admin/dashboard` | Admin analytics |
+| `/admin/users` | User management |
+| `/login` | Phone OTP login (+237) |
+| `/signup` | Registration |
+| `/onboarding` | Onboarding flow |
+| `/pro` | Pro plan page |
+| `/faq` | FAQ |
+| `/cgu` | Terms of service |
+| `/mentions-legales` | Legal notices |
 
-### 2) Environment Variables
-Create `.env.local`:
-```env
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+---
 
-# Mobile Money Webhook Secrets
-OM_WEBHOOK_SECRET=
-MOMO_WEBHOOK_SECRET=
-```
+## 🗄️ Database Migrations
 
-### 3) Database Migrations (Supabase)
-Run in Supabase SQL Editor in order:
+Run in Supabase SQL Editor **in this order**:
+
 ```
 supabase/migrations/20260221_refactor_listings_bookings.sql
 supabase/migrations/20260221_services_admin_roles.sql
@@ -115,9 +145,40 @@ supabase/migrations/005_featured_ads.sql
 supabase/migrations/006_admin_features.sql
 supabase/migrations/007_notifications_analytics.sql
 supabase/migrations/20260303_increment_views_function.sql
+supabase/migrations/20260303_saved_searches.sql
+supabase/migrations/20260303_offers.sql
+supabase/migrations/20260303_listing_boosts.sql
+supabase/migrations/20260303_chat.sql
+supabase/migrations/20260303_reviews.sql
+supabase/migrations/20260303_verification.sql
+supabase/migrations/20260303_escrow.sql
 ```
 
-### 4) Run
+---
+
+## ⚙️ Local Setup
+
+### 1) Install
+```bash
+npm install
+```
+
+### 2) Environment Variables
+Create `.env.local`:
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# Webhooks
+OM_WEBHOOK_SECRET=your-secret
+MOMO_WEBHOOK_SECRET=your-secret
+
+# Optional: push notifications
+NEXT_PUBLIC_VAPID_PUBLIC_KEY=your-vapid-key
+```
+
+### 3) Run
 ```bash
 npm run dev
 ```
@@ -125,7 +186,7 @@ Open: `http://localhost:3000`
 
 ---
 
-## Production Build
+## 🏗️ Production Build
 ```bash
 npm run build
 npm run start
@@ -133,131 +194,120 @@ npm run start
 
 ---
 
-## Tests
+## 🧪 Tests
 ```bash
-# Unit tests
+# Unit tests (Vitest)
 npm run test
 
-# E2E (requires running dev server)
+# E2E (Playwright — requires running dev server)
 npx playwright test
 ```
 
 ---
 
-## API Routes
+## 🌐 API Routes
 
-### Booking API
-`POST /api/bookings`
-```json
-{
-  "property_id": "uuid",
-  "start_date": "YYYY-MM-DD",
-  "end_date": "YYYY-MM-DD"
-}
-```
-or
-```json
-{
-  "vehicle_id": "uuid",
-  "start_date": "YYYY-MM-DD",
-  "end_date": "YYYY-MM-DD"
-}
-```
+### Booking
+`POST /api/bookings` — Create booking with availability lock (rate-limited 8 req/min)
 
-Response:
-- `201` — booking created, returns `{ booking_id, total_price }`
-- `409` — conflicts with locked dates, returns `{ conflicts: [...] }`
-- `401` — not authenticated
-- `429` — rate limit exceeded (8 req/min)
+### Offers
+`POST /api/offers` — Make an offer on a listing  
+`PATCH /api/offers` — Accept / reject / counter an offer
+
+### Alerts
+`GET /api/alerts` — List saved searches  
+`POST /api/alerts` — Create saved search alert  
+`DELETE /api/alerts` — Remove alert
+
+### Chat
+`GET /api/conversations` — List conversations  
+`POST /api/conversations` — Start conversation  
+`GET /api/conversations/[id]/messages` — Get messages  
+`POST /api/conversations/[id]/messages` — Send message
+
+### Boost
+`POST /api/boost` — Create listing boost  
+`POST /api/payments/boost/momo` — Pay boost via MTN MoMo  
+`POST /api/payments/boost/orange` — Pay boost via Orange Money  
+`POST /api/payments/boost/paypal` — Pay boost via PayPal
+
+### Reviews
+`POST /api/reviews` — Submit review
+
+### Verification
+`POST /api/verify` — Submit ID verification request  
+`PATCH /api/verify/[id]` — Admin approve/reject
+
+### Escrow
+`POST /api/escrow` — Create escrow hold  
+`PATCH /api/escrow/[id]` — Release / refund / dispute
 
 ### Payment Webhooks
-Orange Money  
-`POST /api/payments/om-callback`
-
-MTN MoMo  
-`POST /api/payments/momo-callback`
-
-Both validate HMAC-SHA256 signature using:
-- `OM_WEBHOOK_SECRET`
-- `MOMO_WEBHOOK_SECRET`
+`POST /api/payments/om-callback` — Orange Money (HMAC-verified)  
+`POST /api/payments/momo-callback` — MTN MoMo (HMAC-verified)
 
 ### Admin
-`GET /api/admin/check` — verify admin role  
-`GET /api/payments/status` — payment status lookup  
-`GET /api/schema` — DB schema introspection (admin only)
+`GET /api/admin/check` — Verify admin role
 
 ---
 
-## Pages
+## 🗺️ Roadmap to Live
 
-| Route | Description |
-|-------|-------------|
-| `/` | Home (HeroEnhanced + WOW landing sections) |
-| `/housing` | Property listings with advanced search |
-| `/housing/[id]` | Property detail + booking |
-| `/cars` | Vehicle listings with advanced search |
-| `/cars/[id]` | Vehicle detail + booking |
-| `/terrain` | Land listings with SEO metadata |
-| `/emplois` | Job listings with SEO metadata |
-| `/services` | Service professionals |
-| `/services/[id]` | Service detail |
-| `/dashboard` | User dashboard (auth required) |
-| `/dashboard/pro` | Pro/agent portal |
-| `/dashboard/analytics` | Analytics (pro) |
-| `/dashboard/notifications` | Notification settings |
-| `/dashboard/messages` | Messages |
-| `/dashboard/new` | Create listing |
-| `/admin` | Admin panel |
-| `/admin/dashboard` | Admin dashboard |
-| `/admin/users` | User management |
-| `/login` | Phone OTP login |
-| `/signup` | Registration |
-| `/onboarding` | Onboarding flow |
-| `/pro` | Pro plan page |
-| `/faq` | FAQ |
-| `/cgu` | Terms of service |
-| `/mentions-legales` | Legal notices |
+### ✅ Done (code complete)
+- [x] All 5 verticals (housing, cars, terrain, emplois, services)
+- [x] Advanced search + filters + map view + URL persistence
+- [x] Booking API with availability lock
+- [x] Saved Search Alerts
+- [x] Make an Offer / price negotiation
+- [x] In-App Chat with WhatsApp fallback
+- [x] Landmark-based location input
+- [x] Two-Way Reviews + public profiles
+- [x] ID Verification flow (upload + admin review)
+- [x] Boost Listings (500–3,000 XAF)
+- [x] Diaspora Mode (EUR/USD/XAF + "Envoyer à la famille")
+- [x] Escrow Payments (hold → release → dispute)
+- [x] PWA (offline, install prompt, push notifications)
+- [x] Admin panel + analytics
+- [x] Pro/agent portal
 
----
-
-## Roles
-Roles are stored in `user_roles`:
-- `user`
-- `pro`
-- `admin`
-- `super_admin`
-
-Only `super_admin` can assign roles.
-
----
-
-## Trust Score
-Stored in `trust_scores`. Admin can adjust it in `/admin`.
-
----
-
-## CI (GitHub Actions)
-CI runs on pushes and PRs to `master`:
-- `npm ci`
-- `npm run lint`
-- `npm run build`
-
-Workflow: `.github/workflows/webpack.yml`
-
----
-
-## Deployment Checklist
-
-Before going live:
-- [ ] Run all SQL migrations in Supabase dashboard
-- [ ] Enable Supabase Phone Auth + configure SMS provider (Twilio / Africa's Talking)
-- [ ] Obtain Orange Money merchant account → replace mock in `src/lib/payments/orange-money.ts`
+### 🔧 To Configure Before Launch
+- [ ] Run all 16 SQL migrations in Supabase dashboard
+- [ ] Enable Supabase Phone Auth → configure Africa's Talking or Twilio for SMS
 - [ ] Obtain MTN MoMo merchant account → replace mock in `src/lib/payments/mtn-momo.ts`
-- [ ] Set `OM_WEBHOOK_SECRET` and `MOMO_WEBHOOK_SECRET` in Vercel environment variables
+- [ ] Obtain Orange Money merchant account → replace mock in `src/lib/payments/orange-money.ts`
 - [ ] Configure PayPal REST API credentials
-- [ ] Set `NEXT_PUBLIC_APP_URL` to production domain
-- [ ] Verify OG images are accessible at `/og-image.jpg`, `/og-housing.jpg`, etc.
+- [ ] Set `OM_WEBHOOK_SECRET` and `MOMO_WEBHOOK_SECRET` in Vercel environment variables
+- [ ] Set `NEXT_PUBLIC_APP_URL` to production domain (e.g. `https://findr.cm`)
+- [ ] Set up Supabase Storage bucket for ID verification documents (private)
+- [ ] Configure Africa's Talking for SMS alert delivery
+
+### 🚀 Deploy
+```bash
+# Connect GitHub → Vercel → Set env vars → Deploy
+vercel --prod
+```
+or push to `master` — CI auto-deploys via GitHub Actions.
 
 ---
 
-*Last updated: March 2026*
+## 👥 Roles
+
+| Role | Permissions |
+|------|------------|
+| `user` | Post listings, make offers, chat, reviews |
+| `pro` | All user + boosted visibility, pro dashboard, analytics |
+| `admin` | Moderate listings, verify IDs, manage trust scores |
+| `super_admin` | All admin + assign roles |
+
+---
+
+## 🤝 Contributing
+
+PRs welcome. Please follow the existing code patterns:
+- Use `(supabase as any).auth` for Supabase auth calls (SSR compatibility)
+- All new pages: wrap `useSearchParams()` in `<Suspense>`
+- Exclude test files from main TypeScript check (see `tsconfig.json`)
+
+---
+
+*Last updated: March 2026 · Made with ❤️ for Cameroon*
