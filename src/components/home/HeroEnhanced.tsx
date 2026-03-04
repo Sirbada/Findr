@@ -85,7 +85,7 @@ export function HeroEnhanced() {
     <section
       className="relative overflow-hidden"
       style={{
-        background: 'linear-gradient(160deg, #ecfdf5 0%, #f0fdf4 25%, #fafaf9 55%, #fffbeb 80%, #fef9c3 100%)',
+        background: 'linear-gradient(160deg, #d1fae5 0%, #a7f3d0 15%, #ecfdf5 40%, #fafaf9 65%, #fef3c7 85%, #fde68a 100%)',
         minHeight: '520px',
       }}
     >
@@ -133,20 +133,13 @@ export function HeroEnhanced() {
             fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
             letterSpacing: '-0.04em',
             lineHeight: 1.05,
-            color: '#1a1a1a',
+            color: '#064e3b',
           }}
         >
           {lang === 'fr' ? (
             <>
               Trouvez{' '}
-              <span
-                style={{
-                  background: 'linear-gradient(135deg, #059669, #10b981, #34d399)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                }}
-              >
+              <span style={{ color: '#059669' }}>
                 tout
               </span>{' '}
               au Cameroun
@@ -154,14 +147,7 @@ export function HeroEnhanced() {
           ) : (
             <>
               Find{' '}
-              <span
-                style={{
-                  background: 'linear-gradient(135deg, #059669, #10b981, #34d399)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                }}
-              >
+              <span style={{ color: '#059669' }}>
                 everything
               </span>{' '}
               in Cameroon
