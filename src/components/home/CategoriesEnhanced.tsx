@@ -140,24 +140,32 @@ function formatPrice(price: number): string {
 }
 
 function CategorySection({ 
-  title, 
+  title,
+  subtitle,
   icon: IconComponent, 
   listings, 
   href, 
   color,
   bgColor,
+  viewAllLabel,
+  perDaySuffix,
+  perMonthSuffix,
+  fromPrefix,
   index 
 }: {
   title: string
-  icon: any
+  subtitle: string
+  icon: React.ComponentType<{ className?: string }>
   listings: DemoListing[]
   href: string
   color: string
   bgColor: string
+  viewAllLabel: string
+  perDaySuffix: string
+  perMonthSuffix: string
+  fromPrefix: string
   index: number
 }) {
-  const { lang } = useTranslation()
-
   return (
     <div className={`animate-slide-up`} style={{ animationDelay: `${index * 0.2}s` }}>
       <div className="flex items-center justify-between mb-6">
@@ -170,15 +178,15 @@ function CategorySection({
               {title}
             </h2>
             <p className="text-gray-600">
-              {lang === 'fr' ? 'Découvrez nos annonces' : 'Discover our listings'}
+              {subtitle}
             </p>
           </div>
         </div>
         <Link 
           href={href}
-          className={`group flex items-center gap-2 ${color} hover:${color.replace('600', '700')} font-medium px-4 py-2 rounded-lg hover:bg-gray-50 transition-all`}
+          className={`group flex items-center gap-2 ${color} font-medium px-4 py-2 rounded-lg hover:bg-gray-50 transition-all`}
         >
-          {lang === 'fr' ? 'Voir tout' : 'View all'}
+          {viewAllLabel}
           <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </Link>
       </div>
@@ -201,12 +209,12 @@ function CategorySection({
               <div className="absolute bottom-3 left-3 right-3">
                 <div className="text-white text-lg font-bold mb-1">
                   {listing.pricePerDay 
-                    ? `${formatPrice(listing.pricePerDay)} XAF/jour`
+                    ? `${formatPrice(listing.pricePerDay)} XAF${perDaySuffix}`
                     : listing.category === 'jobs'
-                    ? `${formatPrice(listing.price)} XAF/mois`
+                    ? `${formatPrice(listing.price)} XAF${perMonthSuffix}`
                     : listing.category === 'services'
-                    ? `À partir de ${formatPrice(listing.price)} XAF`
-                    : `${formatPrice(listing.price)} XAF/mois`
+                    ? `${fromPrefix} ${formatPrice(listing.price)} XAF`
+                    : `${formatPrice(listing.price)} XAF${perMonthSuffix}`
                   }
                 </div>
               </div>
@@ -235,11 +243,12 @@ function CategorySection({
 }
 
 export function CategoriesEnhanced() {
-  const { lang } = useTranslation()
+  const { t } = useTranslation()
 
   const categories = [
     {
-      title: lang === 'fr' ? 'Immobilier' : 'Real Estate',
+      title: t.categories.housing,
+      subtitle: t.listings.recentListings,
       icon: Home,
       listings: demoHousingListings,
       href: '/housing',
@@ -247,7 +256,8 @@ export function CategoriesEnhanced() {
       bgColor: 'bg-emerald-100'
     },
     {
-      title: lang === 'fr' ? 'Véhicules' : 'Vehicles',
+      title: t.categories.cars,
+      subtitle: t.listings.recentListings,
       icon: Car,
       listings: demoCarListings,
       href: '/cars',
@@ -255,15 +265,17 @@ export function CategoriesEnhanced() {
       bgColor: 'bg-blue-100'
     },
     {
-      title: lang === 'fr' ? 'Emplois' : 'Jobs',
+      title: t.emplois.name,
+      subtitle: t.listings.recentListings,
       icon: Briefcase,
       listings: demoJobListings,
-      href: '/jobs',
+      href: '/emplois',
       color: 'text-purple-600',
       bgColor: 'bg-purple-100'
     },
     {
-      title: 'Services',
+      title: t.categoryGrid.servicesName,
+      subtitle: t.listings.recentListings,
       icon: Wrench,
       listings: demoServiceListings,
       href: '/services',
@@ -278,13 +290,10 @@ export function CategoriesEnhanced() {
         {/* Header */}
         <div className="text-center mb-16 animate-slide-up">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            {lang === 'fr' ? 'Explorez nos catégories' : 'Explore our categories'}
+            {t.categoryGrid.title}
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            {lang === 'fr' 
-              ? 'Trouvez exactement ce que vous cherchez dans nos différentes catégories'
-              : 'Find exactly what you\'re looking for in our different categories'
-            }
+            {t.categoryGrid.subtitle}
           </p>
         </div>
 
@@ -294,11 +303,16 @@ export function CategoriesEnhanced() {
             <CategorySection
               key={category.title}
               title={category.title}
+              subtitle={category.subtitle}
               icon={category.icon}
               listings={category.listings}
               href={category.href}
               color={category.color}
               bgColor={category.bgColor}
+              viewAllLabel={t.listings.viewAllLink}
+              perDaySuffix={t.listings.perDay}
+              perMonthSuffix={t.listings.perMonth}
+              fromPrefix="À partir de"
               index={index}
             />
           ))}
@@ -308,19 +322,16 @@ export function CategoriesEnhanced() {
         <div className="text-center mt-16 animate-slide-up" style={{ animationDelay: '0.8s' }}>
           <div className="inline-flex flex-col items-center space-y-4 bg-white rounded-2xl p-8 shadow-lg">
             <h3 className="text-2xl font-bold text-gray-900">
-              {lang === 'fr' ? 'Vous ne trouvez pas ce que vous cherchez ?' : 'Can\'t find what you\'re looking for?'}
+              {t.categoryGrid.noCategory}
             </h3>
             <p className="text-gray-600 max-w-md">
-              {lang === 'fr' 
-                ? 'Publiez votre annonce gratuitement et touchez des milliers d\'acheteurs potentiels'
-                : 'Post your ad for free and reach thousands of potential buyers'
-              }
+              {t.categoryGrid.noCategoryDesc}
             </p>
             <Link
               href="/publish"
               className="bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700 transition-colors font-medium"
             >
-              {lang === 'fr' ? 'Publier une annonce' : 'Post an ad'}
+              {t.nav.postAd}
             </Link>
           </div>
         </div>

@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 
 export function Hero() {
-  const { lang } = useTranslation()
+  const { t } = useTranslation()
   const [activeTab, setActiveTab] = useState<'housing' | 'cars'>('housing')
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -27,32 +27,28 @@ export function Hero() {
           <div>
             <div className="inline-flex items-center gap-2 rounded-full bg-[color:var(--green-50)] px-3 py-1 text-xs text-[color:var(--green-700)]">
               <Sparkles className="h-3 w-3" />
-              {lang === 'fr' ? 'Plateforme premium au Cameroun' : 'Premium platform in Cameroon'}
+              {t.heroPremium.platformTagline}
             </div>
             <h1 className="mt-4 text-4xl font-semibold text-[color:var(--green-900)] md:text-5xl">
-              {lang === 'fr'
-                ? 'Réservez logements, voitures & services en 2 minutes'
-                : 'Book stays, cars & services in 2 minutes'}
+              {t.heroPremium.headlineBook}
             </h1>
             <p className="mt-4 max-w-xl text-sm text-[color:var(--green-700)] md:text-base">
-              {lang === 'fr'
-                ? 'Recherche rapide, Trust Score, paiement mobile USSD. Pensé pour les réseaux instables.'
-                : 'Fast search, Trust Score, USSD mobile payment. Built for unstable networks.'}
+              {t.heroPremium.taglineDesc}
             </p>
 
             <div className="mt-6 flex flex-wrap gap-3">
               <Link href="/housing">
-                <Button size="lg">Explorer logements</Button>
+                <Button size="lg">{t.heroPremium.exploreHousing}</Button>
               </Link>
               <Link href="/services">
-                <Button size="lg" variant="outline">Trouver un pro</Button>
+                <Button size="lg" variant="outline">{t.heroPremium.findPro}</Button>
               </Link>
             </div>
 
             <div className="mt-8 flex flex-wrap gap-6 text-xs text-[color:var(--green-600)]">
-              <span>✓ Paiement sécurisé</span>
-              <span>✓ Vérification locale</span>
-              <span>✓ Support WhatsApp</span>
+              <span>✓ {t.heroPremium.badgeSafe}</span>
+              <span>✓ {t.heroPremium.badgeLocal}</span>
+              <span>✓ {t.heroPremium.badgeSupport}</span>
             </div>
           </div>
 
@@ -69,7 +65,7 @@ export function Hero() {
               >
                 <div className="flex items-center justify-center gap-2">
                   <Home className="h-4 w-4" />
-                  {lang === 'fr' ? 'Immobilier' : 'Real Estate'}
+                  {t.nav.housing}
                 </div>
               </button>
               <button
@@ -82,18 +78,20 @@ export function Hero() {
               >
                 <div className="flex items-center justify-center gap-2">
                   <Car className="h-4 w-4" />
-                  {lang === 'fr' ? 'Véhicules' : 'Vehicles'}
+                  {t.nav.cars}
                 </div>
               </button>
             </div>
 
-            <label className="text-xs font-medium text-[color:var(--green-700)]">Où recherchez‑vous ?</label>
+            <label className="text-xs font-medium text-[color:var(--green-700)]">
+              {t.heroPremium.whereSearch}
+            </label>
             <div className="mt-2 flex items-center gap-2 rounded-2xl border border-[color:var(--green-100)] bg-white/80 px-3 py-3">
               <MapPin className="h-4 w-4 text-[color:var(--green-500)]" />
               <input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={lang === 'fr' ? 'Douala, Yaoundé, Kribi...' : 'Douala, Yaoundé, Kribi...'}
+                placeholder="Douala, Yaoundé, Kribi..."
                 className="w-full bg-transparent text-sm text-[color:var(--green-900)] outline-none"
               />
             </div>
@@ -114,15 +112,13 @@ export function Hero() {
               <Link href={activeTab === 'housing' ? '/housing' : '/cars'}>
                 <Button size="lg" className="w-full">
                   <Search className="mr-2 h-4 w-4" />
-                  {lang === 'fr' ? 'Rechercher' : 'Search'}
+                  {t.hero.search}
                 </Button>
               </Link>
             </div>
 
             <div className="mt-4 rounded-2xl bg-[color:var(--green-50)] px-4 py-3 text-xs text-[color:var(--green-700)]">
-              {lang === 'fr'
-                ? 'Confirmez votre paiement sur votre téléphone (Orange Money / MTN MoMo).'
-                : 'Confirm payment on your phone (Orange Money / MTN MoMo).'}
+              {t.heroPremium.paymentHint}
             </div>
           </Card>
         </div>

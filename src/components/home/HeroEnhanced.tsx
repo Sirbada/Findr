@@ -1,294 +1,206 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Search, ArrowRight } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Search, MapPin, Home, Car, Briefcase, Wrench, ArrowRight } from 'lucide-react'
 import { useTranslation } from '@/lib/i18n/context'
-
-const CITIES = ['Douala', 'Yaoundé', 'Kribi', 'Bafoussam', 'Limbe', 'Bamenda']
-
-const CATEGORIES = [
-  {
-    id: 'housing',
-    href: '/housing',
-    icon: '🏠',
-    labelFr: 'Immobilier',
-    labelEn: 'Housing',
-    color: '#059669',
-    bg: 'linear-gradient(135deg, #059669, #10b981)',
-    lightBg: '#ecfdf5',
-    textColor: '#065f46',
-  },
-  {
-    id: 'cars',
-    href: '/cars',
-    icon: '🚗',
-    labelFr: 'Véhicules',
-    labelEn: 'Vehicles',
-    color: '#0ea5e9',
-    bg: 'linear-gradient(135deg, #0ea5e9, #38bdf8)',
-    lightBg: '#f0f9ff',
-    textColor: '#0c4a6e',
-  },
-  {
-    id: 'terrain',
-    href: '/terrain',
-    icon: '🌿',
-    labelFr: 'Terrain',
-    labelEn: 'Land',
-    color: '#d97706',
-    bg: 'linear-gradient(135deg, #d97706, #f59e0b)',
-    lightBg: '#fffbeb',
-    textColor: '#92400e',
-  },
-  {
-    id: 'emplois',
-    href: '/emplois',
-    icon: '💼',
-    labelFr: 'Emplois',
-    labelEn: 'Jobs',
-    color: '#8b5cf6',
-    bg: 'linear-gradient(135deg, #8b5cf6, #a78bfa)',
-    lightBg: '#f5f3ff',
-    textColor: '#4c1d95',
-  },
-  {
-    id: 'services',
-    href: '/services',
-    icon: '⚡',
-    labelFr: 'Services',
-    labelEn: 'Services',
-    color: '#f43f5e',
-    bg: 'linear-gradient(135deg, #f43f5e, #fb7185)',
-    lightBg: '#fff1f2',
-    textColor: '#9f1239',
-  },
-]
+import { Button } from '@/components/ui/Button'
+import Link from 'next/link'
 
 export function HeroEnhanced() {
-  const { lang } = useTranslation()
-  const router = useRouter()
-  const [query, setQuery] = useState('')
-  const [activeCategory, setActiveCategory] = useState('housing')
+  const { t } = useTranslation()
+  const [activeTab, setActiveTab] = useState<'housing' | 'cars' | 'jobs' | 'services'>('housing')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [mounted, setMounted] = useState(false)
 
-  const activeCat = CATEGORIES.find(c => c.id === activeCategory)!
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
-  const handleSearch = () => {
-    router.push(query ? `${activeCat.href}?q=${encodeURIComponent(query)}` : activeCat.href)
-  }
+  const categories = [
+    {
+      key: 'housing' as const,
+      icon: Home,
+      label: t.categories.housing,
+      description: t.categories.housingDesc,
+      color: 'from-emerald-500 to-emerald-600',
+      bgColor: 'bg-emerald-50',
+    },
+    {
+      key: 'cars' as const,
+      icon: Car,
+      label: t.categories.cars,
+      description: t.heroEnhanced.carsDesc,
+      color: 'from-blue-500 to-blue-600',
+      bgColor: 'bg-blue-50',
+    },
+    {
+      key: 'jobs' as const,
+      icon: Briefcase,
+      label: t.emplois.name,
+      description: t.heroEnhanced.jobsDesc,
+      color: 'from-purple-500 to-purple-600',
+      bgColor: 'bg-purple-50',
+    },
+    {
+      key: 'services' as const,
+      icon: Wrench,
+      label: t.categoryGrid.servicesName,
+      description: t.heroEnhanced.servicesDesc,
+      color: 'from-orange-500 to-orange-600',
+      bgColor: 'bg-orange-50',
+    },
+  ]
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') handleSearch()
-  }
+  const activeCategory = categories.find((c) => c.key === activeTab) ?? categories[0]
 
   return (
-    <section
-      className="relative overflow-hidden"
-      style={{
-        background: 'linear-gradient(160deg, #ecfdf5 0%, #f0fdf4 25%, #fafaf9 55%, #fffbeb 80%, #fef9c3 100%)',
-        minHeight: '520px',
-      }}
-    >
-      {/* Decorative blobs */}
+    <section className="relative overflow-hidden min-h-screen flex items-center">
+      {/* Animated gradient background */}
+      <div className="absolute inset-0 gradient-bg opacity-90" />
+
+      {/* Floating elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-20 h-20 bg-white/10 rounded-full animate-float" />
+        <div className="absolute top-40 right-20 w-16 h-16 bg-white/10 rounded-full animate-float" style={{ animationDelay: '1s' }} />
+        <div className="absolute bottom-40 left-20 w-12 h-12 bg-white/10 rounded-full animate-float" style={{ animationDelay: '2s' }} />
+        <div className="absolute bottom-20 right-40 w-24 h-24 bg-white/10 rounded-full animate-float" style={{ animationDelay: '0.5s' }} />
+      </div>
+
       <div
-        className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full pointer-events-none opacity-30"
-        style={{
-          background: 'radial-gradient(circle, #34d399 0%, transparent 70%)',
-          transform: 'translate(30%, -30%)',
-        }}
-      />
-      <div
-        className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full pointer-events-none opacity-20"
-        style={{
-          background: 'radial-gradient(circle, #fbbf24 0%, transparent 70%)',
-          transform: 'translate(-30%, 30%)',
-        }}
-      />
-      <div
-        className="absolute top-1/2 left-1/4 w-[300px] h-[300px] rounded-full pointer-events-none opacity-10"
-        style={{
-          background: 'radial-gradient(circle, #0ea5e9 0%, transparent 70%)',
-          transform: 'translate(-50%, -50%)',
-        }}
-      />
+        className={`relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 ${
+          mounted ? 'animate-fade-in' : 'opacity-0'
+        }`}
+      >
+        <div className="text-center">
+          {/* Badge */}
+          <div className="inline-flex items-center glass text-white px-6 py-3 rounded-full text-sm font-medium mb-8 animate-slide-up">
+            <div className="w-2 h-2 bg-emerald-400 rounded-full mr-3 animate-pulse" />
+            {t.heroEnhanced.badge}
+          </div>
 
-      <div className="relative max-w-[1200px] mx-auto px-6 pt-16 pb-14 text-center">
-        {/* Eyebrow pill */}
-        <div
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-6 text-[13px] font-semibold"
-          style={{
-            background: 'linear-gradient(135deg, #d1fae5, #fef3c7)',
-            color: '#065f46',
-            border: '1px solid #a7f3d0',
-          }}
-        >
-          <span className="w-2 h-2 bg-[#059669] rounded-full animate-pulse" />
-          {lang === 'fr' ? '🇨🇲 Cameroun · Douala · Yaoundé · Kribi' : '🇨🇲 Cameroon · Douala · Yaoundé · Kribi'}
-        </div>
+          {/* Main headline */}
+          <h1
+            className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight animate-slide-up"
+            style={{ animationDelay: '0.2s' }}
+          >
+            {t.heroEnhanced.titleFind}{' '}
+            <span className="text-emerald-300">{t.heroEnhanced.titleEverything}</span>{' '}
+            {t.heroEnhanced.titleIn}
+            <br />
+            <span className="bg-gradient-to-r from-emerald-300 to-emerald-100 bg-clip-text text-transparent">
+              Cameroun
+            </span>
+          </h1>
 
-        {/* Headline */}
-        <h1
-          className="font-bold mb-4"
-          style={{
-            fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
-            letterSpacing: '-0.04em',
-            lineHeight: 1.05,
-            color: '#1a1a1a',
-          }}
-        >
-          {lang === 'fr' ? (
-            <>
-              Trouvez{' '}
-              <span
-                style={{
-                  background: 'linear-gradient(135deg, #059669, #10b981, #34d399)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                }}
-              >
-                tout
-              </span>{' '}
-              au Cameroun
-            </>
-          ) : (
-            <>
-              Find{' '}
-              <span
-                style={{
-                  background: 'linear-gradient(135deg, #059669, #10b981, #34d399)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                }}
-              >
-                everything
-              </span>{' '}
-              in Cameroon
-            </>
-          )}
-        </h1>
+          <p
+            className="text-xl md:text-2xl text-emerald-50 mb-12 max-w-3xl mx-auto animate-slide-up"
+            style={{ animationDelay: '0.4s' }}
+          >
+            {t.heroEnhanced.subtitle}
+          </p>
 
-        {/* Subheadline */}
-        <p
-          className="mb-8 max-w-[560px] mx-auto"
-          style={{ fontSize: '18px', color: '#4b5563', letterSpacing: '-0.01em', lineHeight: 1.5 }}
-        >
-          {lang === 'fr'
-            ? 'Logements, véhicules, terrains, emplois et services — tout en un seul endroit.'
-            : 'Housing, vehicles, land, jobs and services — all in one place.'}
-        </p>
+          {/* Enhanced Search Card */}
+          <div
+            className="glass backdrop-blur-xl rounded-3xl p-6 max-w-4xl mx-auto mb-12 animate-scale-in"
+            style={{ animationDelay: '0.6s' }}
+          >
+            {/* Category tabs */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+              {categories.map((category) => {
+                const IconComponent = category.icon
+                return (
+                  <button
+                    key={category.key}
+                    onClick={() => setActiveTab(category.key)}
+                    className={`group relative p-4 rounded-2xl transition-all duration-300 ${
+                      activeTab === category.key
+                        ? 'bg-white text-emerald-600 shadow-lg transform scale-105'
+                        : 'text-white hover:bg-white/20'
+                    }`}
+                  >
+                    <div className="flex flex-col items-center space-y-2">
+                      <div
+                        className={`p-2 rounded-xl ${
+                          activeTab === category.key ? category.bgColor : 'bg-white/10'
+                        }`}
+                      >
+                        <IconComponent className="w-6 h-6" />
+                      </div>
+                      <div className="text-center">
+                        <div className="font-medium text-sm">{category.label}</div>
+                        <div
+                          className={`text-xs ${
+                            activeTab === category.key ? 'text-gray-600' : 'text-white/70'
+                          }`}
+                        >
+                          {category.description}
+                        </div>
+                      </div>
+                    </div>
+                    {activeTab === category.key && (
+                      <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/20 to-emerald-600/20 rounded-2xl animate-pulse" />
+                    )}
+                  </button>
+                )
+              })}
+            </div>
 
-        {/* Category tabs — colorful */}
-        <div className="flex items-center justify-center gap-2 mb-6 flex-wrap">
-          {CATEGORIES.map((cat) => {
-            const isActive = activeCategory === cat.id
-            return (
-              <button
-                key={cat.id}
-                onClick={() => setActiveCategory(cat.id)}
-                className="flex items-center gap-2 px-4 py-2 text-[14px] font-semibold rounded-full transition-all duration-200"
-                style={
-                  isActive
-                    ? {
-                        background: cat.bg,
-                        color: '#ffffff',
-                        boxShadow: `0 4px 16px ${cat.color}40`,
-                        transform: 'translateY(-1px)',
-                      }
-                    : {
-                        background: cat.lightBg,
-                        color: cat.textColor,
-                        border: `1.5px solid ${cat.color}30`,
-                      }
+            {/* Search inputs */}
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex-1 relative">
+                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-emerald-600" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={t.heroEnhanced.searchPlaceholder}
+                  className="w-full pl-14 pr-6 py-5 bg-white/90 backdrop-blur-sm rounded-2xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/30 focus:bg-white transition-all text-lg font-medium"
+                />
+              </div>
+              <Link
+                href={
+                  searchQuery
+                    ? `/annonces?q=${encodeURIComponent(searchQuery)}&category=${activeTab}`
+                    : `/${activeTab}`
                 }
               >
-                <span className="text-base">{cat.icon}</span>
-                <span>{lang === 'fr' ? cat.labelFr : cat.labelEn}</span>
-              </button>
-            )
-          })}
-        </div>
-
-        {/* Search bar */}
-        <div className="max-w-[640px] mx-auto">
-          <div
-            className="flex items-center gap-3 bg-white rounded-2xl px-5 py-3.5"
-            style={{
-              boxShadow: `0 4px 24px rgba(0,0,0,0.08), 0 0 0 1.5px ${activeCat.color}30`,
-            }}
-          >
-            <span className="text-xl flex-shrink-0">{activeCat.icon}</span>
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder={
-                lang === 'fr'
-                  ? `Rechercher ${activeCat.labelFr.toLowerCase()} à Douala, Yaoundé...`
-                  : `Search ${activeCat.labelEn.toLowerCase()} in Douala, Yaoundé...`
-              }
-              className="flex-1 bg-transparent text-[15px] outline-none"
-              style={{ color: '#1a1a1a', letterSpacing: '-0.01em' }}
-            />
-            <button
-              onClick={handleSearch}
-              className="flex items-center gap-2 px-5 py-2.5 text-white text-[14px] font-semibold rounded-xl flex-shrink-0 transition-all duration-200"
-              style={{
-                background: activeCat.bg,
-                boxShadow: `0 2px 12px ${activeCat.color}40`,
-              }}
-            >
-              <Search className="w-4 h-4" />
-              {lang === 'fr' ? 'Rechercher' : 'Search'}
-            </button>
+                <Button
+                  size="lg"
+                  className={`w-full md:w-auto px-10 py-5 text-lg font-semibold rounded-2xl bg-gradient-to-r ${activeCategory.color} hover:shadow-xl transform transition-all duration-300 hover:scale-105 group`}
+                >
+                  <Search className="w-6 h-6 mr-3 group-hover:rotate-12 transition-transform" />
+                  {t.hero.search}
+                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </Link>
+            </div>
           </div>
 
           {/* Popular cities */}
-          <div className="flex items-center justify-center gap-2 mt-4 flex-wrap">
-            <span className="text-[12px] text-[#9ca3af] font-medium">
-              {lang === 'fr' ? 'Villes populaires :' : 'Popular cities:'}
+          <div
+            className="flex flex-wrap items-center justify-center gap-3 animate-slide-up"
+            style={{ animationDelay: '0.8s' }}
+          >
+            <span className="text-emerald-100 text-sm font-medium">
+              {t.heroEnhanced.popularCities}
             </span>
-            {CITIES.map((city) => (
-              <button
+            {['Douala', 'Yaoundé', 'Kribi', 'Bafoussam', 'Bamenda'].map((city, index) => (
+              <Link
                 key={city}
-                onClick={() => router.push(`${activeCat.href}?city=${encodeURIComponent(city)}`)}
-                className="text-[12px] font-semibold transition-colors px-2 py-0.5 rounded-full"
-                style={{
-                  color: activeCat.color,
-                  background: activeCat.lightBg,
-                }}
+                href={`/${activeTab}?city=${city}`}
+                className="group flex items-center space-x-2 glass text-white hover:bg-white/30 px-4 py-2 rounded-full text-sm font-medium transition-all hover-lift"
+                style={{ animationDelay: `${0.9 + index * 0.1}s` }}
               >
-                {city}
-              </button>
+                <span>{city}</span>
+                <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+              </Link>
             ))}
           </div>
         </div>
-
-        {/* Stats row */}
-        <div className="flex items-center justify-center gap-8 mt-10 flex-wrap">
-          {[
-            { value: '10K+', label: lang === 'fr' ? 'Annonces' : 'Listings', color: '#059669', bg: '#ecfdf5' },
-            { value: '5K+', label: lang === 'fr' ? 'Utilisateurs' : 'Users', color: '#0ea5e9', bg: '#f0f9ff' },
-            { value: '50+', label: lang === 'fr' ? 'Villes' : 'Cities', color: '#d97706', bg: '#fffbeb' },
-            { value: '100%', label: lang === 'fr' ? 'Gratuit' : 'Free', color: '#8b5cf6', bg: '#f5f3ff' },
-          ].map((stat) => (
-            <div
-              key={stat.label}
-              className="flex flex-col items-center px-4 py-2 rounded-2xl"
-              style={{ background: stat.bg }}
-            >
-              <span className="text-[22px] font-bold" style={{ color: stat.color, letterSpacing: '-0.03em' }}>
-                {stat.value}
-              </span>
-              <span className="text-[11px] font-medium" style={{ color: stat.color + 'cc' }}>
-                {stat.label}
-              </span>
-            </div>
-          ))}
-        </div>
       </div>
+
+      {/* Bottom fade */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent" />
     </section>
   )
 }

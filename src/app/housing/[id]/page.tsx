@@ -3,10 +3,10 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import {
+import { 
   ArrowLeft, MapPin, Bed, Bath, Square, Heart, Share2,
-  CheckCircle, Calendar, Phone, MessageSquare, User,
-  Wifi, Car, Shield, Zap, Droplets, Wind, ChevronLeft, ChevronRight, Tag
+  CheckCircle, Calendar, Phone, MessageSquare, User, Home,
+  Wifi, Car, Shield, Zap, Droplets, Wind, ChevronLeft, ChevronRight
 } from 'lucide-react'
 import { z } from 'zod'
 import { Header } from '@/components/layout/Header'
@@ -17,11 +17,6 @@ import { getProperty, Property } from '@/lib/supabase/queries'
 import { useTranslation } from '@/lib/i18n/context'
 import { WhatsAppButton, WhatsAppFloatingButton } from '@/components/ui/WhatsAppButton'
 import { ListingShare, FacebookShareButton, WhatsAppShareButton } from '@/components/ui/SocialShare'
-import { MakeOfferModal } from '@/components/ui/MakeOfferModal'
-import { useAuth } from '@/lib/auth/context'
-import { ContactSellerButton } from '@/components/ui/ContactSellerButton'
-import { useDiaspora } from '@/lib/diaspora/context'
-import { EscrowButton } from '@/components/ui/EscrowButton'
 
 function formatPrice(price: number): string {
   return new Intl.NumberFormat('fr-FR').format(price)
@@ -39,13 +34,10 @@ const amenityIcons: { [key: string]: any } = {
 export default function HousingDetailPage() {
   const params = useParams()
   const { t, lang } = useTranslation()
-  const { user } = useAuth()
-  const { isDiasporaMode, convertPrice } = useDiaspora()
   const [listing, setListing] = useState<Property | null>(null)
   const [loading, setLoading] = useState(true)
   const [currentImage, setCurrentImage] = useState(0)
   const [showPhone, setShowPhone] = useState(false)
-  const [showOffer, setShowOffer] = useState(false)
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
   const [bookingStatus, setBookingStatus] = useState('')
@@ -124,15 +116,27 @@ export default function HousingDetailPage() {
 
   if (!listing) {
     return (
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col bg-[color:var(--background)]">
         <Header />
-        <main className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">{t.listings.notFound}</h1>
-            <p className="text-gray-500 mb-4">{t.listings.notFoundDesc}</p>
-            <Link href="/housing">
-              <Button>{t.listings.viewAll}</Button>
-            </Link>
+        <main className="flex-1 flex items-center justify-center px-4">
+          <div className="text-center max-w-md">
+            <div className="w-24 h-24 bg-[color:var(--green-50)] rounded-full flex items-center justify-center mx-auto mb-6">
+              <Home className="w-12 h-12 text-[color:var(--green-300)]" />
+            </div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-3">{t.listings.notFound}</h1>
+            <p className="text-gray-500 mb-8 text-lg">{t.listings.notFoundDesc}</p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <button
+                onClick={() => window.history.back()}
+                className="flex items-center justify-center gap-2 px-5 py-3 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50 transition-colors font-medium"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                {t.listings.backToResults}
+              </button>
+              <Link href="/housing">
+                <Button className="w-full sm:w-auto px-5 py-3">{t.listings.viewAll}</Button>
+              </Link>
+            </div>
           </div>
         </main>
       </div>
@@ -403,57 +407,12 @@ export default function HousingDetailPage() {
                       ))}
                     </div>
                   )}
-                  {/* Make an Offer - only for logged-in non-sellers */}
-                  {user && user.id !== listing.owner_id && (
-                    <button
-                      onClick={() => setShowOffer(true)}
-                      className="w-full flex items-center justify-center gap-2 py-3 px-4 border-2 border-green-600 text-green-700 rounded-xl font-medium hover:bg-green-50 transition-colors"
-                    >
-                      <Tag className="w-4 h-4" />
-                      {lang === 'fr' ? 'Faire une offre' : 'Make an Offer'}
-                    </button>
-                  )}
-                  {/* Escrow Payment - only for logged-in non-sellers */}
-                  {user && user.id !== listing.owner_id && listing.owner_id && (
-                    <EscrowButton
-                      listingId={listing.id}
-                      listingType="housing"
-                      sellerId={listing.owner_id}
-                      amount={listing.price_per_night}
-                      listingTitle={listing.title}
-                    />
-                  )}
-                  <ContactSellerButton
-                    listingId={listing.id}
-                    listingType="housing"
-                    sellerId={listing.owner_id || ''}
-                    sellerPhone={(listing as any).owner_phone || (listing as any).phone}
-                    listingTitle={listing.title}
-                    className="w-full"
-                  />
                   <WhatsAppButton
                     phone="+237 6 99 00 00 00"
                     listingTitle={listing.title}
                     listingType="housing"
                     size="lg"
                   />
-                  {/* Send to Family - Diaspora Feature */}
-                  {(() => {
-                    const url = typeof window !== 'undefined' ? window.location.href : `https://findr.cm/housing/${listing.id}`
-                    const xafPrice = `${formatPrice(listing.price_per_night)} XAF/nuit`
-                    const convertedPrice = isDiasporaMode ? ` (${convertPrice(listing.price_per_night).formatted})` : ''
-                    const msg = `Regarde cette annonce sur Findr: ${listing.title} - ${xafPrice}${convertedPrice} - ${url}`
-                    return (
-                      <a
-                        href={`https://wa.me/?text=${encodeURIComponent(msg)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-full flex items-center justify-center gap-2 py-3 px-4 border-2 border-green-200 text-green-700 bg-green-50 rounded-xl font-medium hover:bg-green-100 transition-colors text-sm"
-                      >
-                        📤 Envoyer à la famille
-                      </a>
-                    )
-                  })()}
                 </div>
 
                 {/* Owner Info */}
@@ -462,20 +421,11 @@ export default function HousingDetailPage() {
                     <div className="w-12 h-12 bg-[color:var(--green-50)] rounded-full flex items-center justify-center">
                       <User className="w-6 h-6 text-[color:var(--green-600)]" />
                     </div>
-                    <div className="flex-1">
+                    <div>
                       <p className="font-medium text-gray-900">{t.detail.owner}</p>
                       <p className="text-sm text-gray-500">{t.detail.memberSince} 2025</p>
                     </div>
                   </div>
-                  {listing.owner_id && (
-                    <Link
-                      href={`/profile/${listing.owner_id}`}
-                      className="mt-3 flex items-center justify-center gap-2 w-full py-2 px-4 border border-gray-200 rounded-xl text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                    >
-                      <User className="w-4 h-4" />
-                      Voir le profil
-                    </Link>
-                  )}
                 </div>
 
                 {/* Safety Tips */}
@@ -497,17 +447,6 @@ export default function HousingDetailPage() {
         phone="+237 6 99 00 00 00"
         listingTitle={listing.title}
         listingType="housing"
-      />
-
-      {/* Make an Offer Modal */}
-      <MakeOfferModal
-        isOpen={showOffer}
-        onClose={() => setShowOffer(false)}
-        listingId={listing.id}
-        listingType="housing"
-        sellerId={listing.owner_id || ''}
-        askingPrice={listing.price_per_night}
-        listingTitle={listing.title}
       />
     </div>
   )
