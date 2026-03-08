@@ -7,7 +7,7 @@ interface GlassHeaderProps extends HTMLAttributes<HTMLDivElement> {}
 export function GlassHeader({ className = '', ...props }: GlassHeaderProps) {
   return (
     <div
-      className={`sticky top-0 z-40 bg-white/80 backdrop-blur-[20px] backdrop-saturate-[180%] border-b border-gray-200 ${className}`}
+      className={`sticky top-0 z-40 bg-[#FAFAF8]/90 backdrop-blur-[12px] border-b border-[#E8E8E4] ${className}`}
       {...props}
     />
   )

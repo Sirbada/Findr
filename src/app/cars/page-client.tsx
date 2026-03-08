@@ -205,11 +205,11 @@ export function CarsPageClient() {
   })()
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-[#FAFAF8]">
       <Header />
       
       {/* Hero Search */}
-      <div className="bg-gradient-to-r from-zinc-800 to-zinc-900 py-16 min-h-[280px] flex items-center text-white">
+      <div className="bg-gradient-to-r from-[#0D3D24] to-[#1B5E3B] py-16 min-h-[280px] flex items-center text-white">
         <div className="max-w-6xl mx-auto px-4">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
             {content.heroTitle}
@@ -224,8 +224,8 @@ export function CarsPageClient() {
               onClick={() => setRentalType('rent')}
               className={`px-8 py-3 rounded-full font-medium transition-all duration-300 ${
                 rentalType === 'rent'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-[#1B5E3B] text-white shadow-sm'
+                  : 'bg-white/15 text-white/70 hover:bg-white/20'
               }`}
             >
               {content.rent}
@@ -234,7 +234,7 @@ export function CarsPageClient() {
               onClick={() => setRentalType('buy')}
               className={`px-8 py-3 rounded-full font-medium transition-all duration-300 ${
                 rentalType === 'buy'
-                  ? 'bg-blue-600 text-white shadow-sm'
+                  ? 'bg-[#1B5E3B] text-white shadow-sm'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
@@ -243,7 +243,7 @@ export function CarsPageClient() {
           </div>
           
           {/* Search Bar */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-[#E8E8E4]">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
               {/* Location */}
               <div>
@@ -253,7 +253,7 @@ export function CarsPageClient() {
                 <select
                   value={selectedCity}
                   onChange={(e) => setSelectedCity(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 focus:ring-2 focus:ring-[#1B5E3B] focus:border-[#1B5E3B]/30 transition-all duration-300 bg-[#FAFAF8] hover:bg-white"
                 >
                   {content.cities.map(city => (
                     <option key={city.value} value={city.value}>{city.label}</option>
@@ -270,7 +270,7 @@ export function CarsPageClient() {
                     </label>
                     <input
                       type="date"
-                      className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 focus:ring-2 focus:ring-[#1B5E3B] focus:border-[#1B5E3B]/30 transition-all duration-300 bg-[#FAFAF8] hover:bg-white"
                     />
                   </div>
                   
@@ -281,7 +281,7 @@ export function CarsPageClient() {
                     </label>
                     <input
                       type="date"
-                      className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 focus:ring-2 focus:ring-[#1B5E3B] focus:border-[#1B5E3B]/30 transition-all duration-300 bg-[#FAFAF8] hover:bg-white"
                     />
                   </div>
                 </>
@@ -297,7 +297,7 @@ export function CarsPageClient() {
                     <select
                       value={selectedBrand}
                       onChange={(e) => setSelectedBrand(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 focus:ring-2 focus:ring-[#1B5E3B] focus:border-[#1B5E3B]/30 transition-all duration-300 bg-[#FAFAF8] hover:bg-white"
                     >
                       {content.carBrands.map(brand => (
                         <option key={brand.value} value={brand.value}>{brand.label}</option>
@@ -313,7 +313,7 @@ export function CarsPageClient() {
                     <select
                       value={selectedFuel}
                       onChange={(e) => setSelectedFuel(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 focus:ring-2 focus:ring-[#1B5E3B] focus:border-[#1B5E3B]/30 transition-all duration-300 bg-[#FAFAF8] hover:bg-white"
                     >
                       {content.fuelTypes.map(fuel => (
                         <option key={fuel.value} value={fuel.value}>{fuel.label}</option>
@@ -327,7 +327,7 @@ export function CarsPageClient() {
                     <select
                       value={selectedDuree}
                       onChange={(e) => setSelectedDuree(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 focus:ring-2 focus:ring-[#1B5E3B] focus:border-[#1B5E3B]/30 transition-all duration-300 bg-[#FAFAF8] hover:bg-white"
                     >
                       {content.dureeOptions.map(duree => (
                         <option key={duree.value} value={duree.value}>{duree.label}</option>
@@ -339,7 +339,7 @@ export function CarsPageClient() {
               
               {/* Search Button */}
               <div className="flex items-end">
-                <Button size="lg" className="w-full bg-blue-600 hover:bg-blue-700 rounded-2xl py-3 font-medium hover:scale-[1.02] transition-all duration-300">
+                <Button size="lg" className="w-full bg-[#1B5E3B] hover:bg-[#0D3D24] rounded-xl py-3 font-medium hover:scale-[1.02] transition-all duration-300">
                   <Search className="w-5 h-5 mr-3" />
                   {content.search}
                 </Button>
@@ -370,7 +370,7 @@ export function CarsPageClient() {
               {user && (
                 <button
                   onClick={() => setShowSaveSearch(true)}
-                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-green-700 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-[#1B5E3B] bg-[#F0F9F4] border border-[#E6F2EC] rounded-lg hover:bg-[#E6F2EC] transition-colors"
                 >
                   <Bell className="w-4 h-4" />
                   Sauvegarder
@@ -381,14 +381,14 @@ export function CarsPageClient() {
               <div className="flex bg-gray-100 rounded-lg p-1">
                 <button
                   onClick={() => setViewMode('list')}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-colors ${viewMode === 'list' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-600 hover:text-gray-900'}`}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-colors ${viewMode === 'list' ? 'bg-white shadow-sm text-[#1B5E3B]' : 'text-gray-600 hover:text-gray-900'}`}
                 >
                   <List className="w-4 h-4" />
                   Liste
                 </button>
                 <button
                   onClick={() => setViewMode('map')}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-colors ${viewMode === 'map' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-600 hover:text-gray-900'}`}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-colors ${viewMode === 'map' ? 'bg-white shadow-sm text-[#1B5E3B]' : 'text-gray-600 hover:text-gray-900'}`}
                 >
                   <Map className="w-4 h-4" />
                   Carte
@@ -440,7 +440,7 @@ export function CarsPageClient() {
                   href={`/cars/${listing.id}`}
                   className="group"
                 >
-                  <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-300 border border-gray-100">
+                  <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] hover:-translate-y-0.5 transition-all duration-300 border border-[#E8E8E4]">
                     {/* Image */}
                     <div className="relative h-48 overflow-hidden">
                       {listing.images?.[0] ? (
@@ -470,9 +470,9 @@ export function CarsPageClient() {
                       {/* Badges */}
                       <div className="absolute top-3 left-3 flex gap-2">
                         {listing.is_verified && (
-                          <span className="bg-green-600 text-white text-xs font-medium px-2 py-1 rounded-full flex items-center gap-1">
+                          <span className="bg-[#1B5E3B] text-white text-xs font-medium px-2 py-1 rounded-full flex items-center gap-1">
                             <CheckCircle className="w-3 h-3" />
-                            Vérifié ✓
+                            Verified
                           </span>
                         )}
                       </div>
@@ -484,14 +484,14 @@ export function CarsPageClient() {
                       <div className="mb-3">
                         {listing.price_per_day ? (
                           <>
-                            <span className="text-xl font-bold text-blue-600">
+                            <span className="text-xl font-bold text-[#1B5E3B]">
                               {formatPrice(listing.price_per_day)}
                             </span>
                             <span className="text-gray-500 text-sm"> XAF{t.listings.perDay}</span>
                           </>
                         ) : (
                           <>
-                            <span className="text-xl font-bold text-blue-600">
+                            <span className="text-xl font-bold text-[#1B5E3B]">
                               {formatPrice(listing.price)}
                             </span>
                             <span className="text-gray-500 text-sm"> XAF</span>
@@ -502,7 +502,7 @@ export function CarsPageClient() {
                       {/* Brand & Model */}
                       <div className="flex items-center gap-2 mb-1">
                         {listing.car_brand && (
-                          <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
+                          <span className="text-xs font-medium text-[#1B5E3B] bg-[#F0F9F4] px-2 py-0.5 rounded">
                             {listing.car_brand}
                           </span>
                         )}
@@ -511,7 +511,7 @@ export function CarsPageClient() {
                         )}
                       </div>
                       
-                      <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors mb-2">
+                      <h3 className="font-semibold text-gray-900 group-hover:text-[#1B5E3B] transition-colors mb-2">
                         {listing.title}
                       </h3>
                       
@@ -554,11 +554,11 @@ export function CarsPageClient() {
             <div className="text-center py-16">
               {/* CSS-only car illustration */}
               <div className="relative w-24 h-24 mx-auto mb-8">
-                <div className="absolute inset-0 bg-gradient-to-b from-blue-100 to-blue-200 rounded-2xl"></div>
+                <div className="absolute inset-0 bg-gradient-to-b from-[#E6F2EC] to-[#F0F9F4] rounded-xl"></div>
                 <div className="absolute top-6 left-3 w-18 h-8 bg-white rounded-lg shadow-sm flex items-center justify-center">
                   <Car className="w-8 h-5 text-gray-400" />
                 </div>
-                <div className="absolute bottom-2 right-2 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold">+</div>
+                <div className="absolute bottom-2 right-2 w-6 h-6 bg-[#F0F9F4]0 rounded-full flex items-center justify-center text-white text-xs font-bold">+</div>
               </div>
               
               <h3 className="text-xl font-semibold text-gray-900 mb-3">
@@ -569,7 +569,7 @@ export function CarsPageClient() {
               </p>
               
               <Link href="/dashboard/new">
-                <Button size="lg" className="bg-blue-600 hover:bg-blue-700 px-8">
+                <Button size="lg" className="bg-[#1B5E3B] hover:bg-[#0D3D24] px-8">
                   Publier une annonce →
                 </Button>
               </Link>

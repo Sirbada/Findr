@@ -1,5 +1,6 @@
 'use client'
 
+import { ShieldCheck, Lock, HeadphonesIcon } from 'lucide-react'
 import { useTranslation } from '@/lib/i18n/context'
 
 export function TrustedBy() {
@@ -24,7 +25,7 @@ export function TrustedBy() {
     },
     {
       name: 'BICEC',
-      logo: 'https://via.placeholder.com/120x60/16a34a/ffffff?text=BICEC',
+      logo: 'https://via.placeholder.com/120x60/1B5E3B/ffffff?text=BICEC',
       alt: 'BICEC'
     },
     {
@@ -34,46 +35,63 @@ export function TrustedBy() {
     },
     {
       name: 'Université de Yaoundé',
-      logo: 'https://via.placeholder.com/120x60/16a34a/ffffff?text=UY1',
+      logo: 'https://via.placeholder.com/120x60/1B5E3B/ffffff?text=UY1',
       alt: 'Université de Yaoundé I'
     }
   ]
 
+  const trustIndicators = [
+    {
+      icon: ShieldCheck,
+      title: t.trustedBy.verifiedListings,
+      description: t.trustedBy.verifiedListingsDesc,
+    },
+    {
+      icon: Lock,
+      title: t.trustedBy.secure,
+      description: t.trustedBy.secureDesc,
+    },
+    {
+      icon: HeadphonesIcon,
+      title: t.trustedBy.support,
+      description: t.trustedBy.supportDesc,
+    },
+  ]
+
   return (
-    <section className="py-16 bg-white border-t border-gray-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-24 bg-white border-t border-[#E8E8E4]">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-12 animate-slide-up">
-          <p className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-2">
+        <div className="mb-12 animate-slide-up">
+          <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#7A7A73] mb-3">
             {t.trustedBy.eyebrow}
           </p>
-          <h2 className="text-2xl font-semibold text-gray-900">
+          <h2 className="text-xl font-semibold text-[#1A1A18] tracking-[-0.01em]">
             {t.trustedBy.title}
           </h2>
         </div>
 
         {/* Logos grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 items-center">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 items-center mb-20">
           {logos.map((company, index) => (
-            <div 
+            <div
               key={company.name}
               className="group flex items-center justify-center animate-fade-in"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <div className="relative overflow-hidden rounded-lg p-4 transition-all duration-300 hover:bg-gray-50 group-hover:scale-105">
+              <div className="relative overflow-hidden rounded-lg p-4 transition-all duration-200 hover:bg-[#F4F4F1] group-hover:scale-105">
                 <img
                   src={company.logo}
                   alt={company.alt}
-                  className="h-12 w-auto object-contain grayscale group-hover:grayscale-0 transition-all duration-300 opacity-60 group-hover:opacity-100"
+                  className="h-12 w-auto object-contain grayscale group-hover:grayscale-0 transition-all duration-300 opacity-50 group-hover:opacity-100"
                   onError={(e) => {
-                    // Fallback to text-based logo if image fails to load
                     e.currentTarget.style.display = 'none'
                     const fallback = e.currentTarget.nextElementSibling as HTMLElement
                     if (fallback) fallback.style.display = 'flex'
                   }}
                 />
-                <div 
-                  className="hidden items-center justify-center h-12 bg-gray-100 rounded text-gray-600 font-semibold text-xs px-3"
+                <div
+                  className="hidden items-center justify-center h-12 bg-[#F4F4F1] rounded-lg text-[#7A7A73] font-semibold text-xs px-3"
                   style={{ display: 'none' }}
                 >
                   {company.name}
@@ -83,49 +101,32 @@ export function TrustedBy() {
           ))}
         </div>
 
-        {/* Additional trust indicators */}
-        <div className="mt-16 grid md:grid-cols-3 gap-8">
-          <div className="text-center animate-slide-up" style={{ animationDelay: '0.6s' }}>
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-green-100 rounded-full mb-4">
-              <svg className="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <h3 className="font-semibold text-gray-900 mb-2">
-              {t.trustedBy.verifiedListings}
-            </h3>
-            <p className="text-sm text-gray-600">
-              {t.trustedBy.verifiedListingsDesc}
-            </p>
-          </div>
-
-          <div className="text-center animate-slide-up" style={{ animationDelay: '0.7s' }}>
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full mb-4">
-              <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
-            </div>
-            <h3 className="font-semibold text-gray-900 mb-2">
-              {t.trustedBy.secure}
-            </h3>
-            <p className="text-sm text-gray-600">
-              {t.trustedBy.secureDesc}
-            </p>
-          </div>
-
-          <div className="text-center animate-slide-up" style={{ animationDelay: '0.8s' }}>
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-purple-100 rounded-full mb-4">
-              <svg className="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M12 3v2.25m0 13.5V21m8.25-9H18.75m-13.5 0H3" />
-              </svg>
-            </div>
-            <h3 className="font-semibold text-gray-900 mb-2">
-              {t.trustedBy.support}
-            </h3>
-            <p className="text-sm text-gray-600">
-              {t.trustedBy.supportDesc}
-            </p>
-          </div>
+        {/* Trust indicators */}
+        <div className="grid md:grid-cols-3 gap-6">
+          {trustIndicators.map((indicator, index) => {
+            const IconComponent = indicator.icon
+            return (
+              <div
+                key={index}
+                className="animate-slide-up"
+                style={{ animationDelay: `${0.6 + index * 0.1}s` }}
+              >
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-10 h-10 bg-[#F0F9F4] rounded-xl flex items-center justify-center">
+                    <IconComponent className="w-5 h-5 text-[#1B5E3B]" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-[#1A1A18] text-sm mb-1">
+                      {indicator.title}
+                    </h3>
+                    <p className="text-sm text-[#7A7A73] leading-relaxed">
+                      {indicator.description}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )
+          })}
         </div>
       </div>
     </section>

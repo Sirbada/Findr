@@ -106,52 +106,55 @@ export function Testimonials() {
   if (!mounted) return null
 
   return (
-    <section className="py-20 bg-gradient-to-br from-green-50 to-green-50 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-24 bg-[#FAFAF8] overflow-hidden">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-16 animate-slide-up">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+        <div className="mb-16 animate-slide-up">
+          <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#2D8A5F] mb-3">
+            {lang === 'fr' ? 'Témoignages' : 'Testimonials'}
+          </p>
+          <h2 className="text-[32px] font-semibold text-[#1A1A18] tracking-[-0.015em] mb-4">
             {t.testimonialSection.title}
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-[#4A4A45] max-w-2xl leading-relaxed">
             {t.testimonialSection.subtitle}
           </p>
         </div>
 
         {/* Main testimonial */}
         <div className="mb-16 animate-scale-in">
-          <div className="max-w-4xl mx-auto">
-            <div className="relative bg-white rounded-3xl shadow-2xl p-8 md:p-12 border border-gray-100">
+          <div className="max-w-3xl">
+            <div className="relative bg-white rounded-xl p-8 md:p-12 border border-[#E8E8E4] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.03)]">
               {/* Quote icon */}
-              <div className="absolute top-6 left-6 text-green-500 opacity-20">
-                <Quote size={60} />
+              <div className="absolute top-6 left-6 text-[#2D8A5F] opacity-15">
+                <Quote size={48} />
               </div>
 
               <div className="relative z-10">
                 {/* Rating */}
-                <div className="flex items-center justify-center mb-6">
+                <div className="flex items-center mb-6">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-6 h-6 text-yellow-400 fill-current" />
+                    <Star key={i} className="w-5 h-5 text-[#E8960C] fill-current" />
                   ))}
                 </div>
 
                 {/* Testimonial text */}
-                <blockquote className="text-xl md:text-2xl text-gray-800 text-center mb-8 leading-relaxed">
+                <blockquote className="text-xl text-[#1A1A18] mb-8 leading-relaxed">
                   &ldquo;{testimonials[currentIndex].testimonial[lang]}&rdquo;
                 </blockquote>
 
                 {/* Author */}
-                <div className="flex items-center justify-center">
+                <div className="flex items-center">
                   <img
                     src={testimonials[currentIndex].avatar}
                     alt={testimonials[currentIndex].name}
-                    className="w-16 h-16 rounded-full object-cover mr-4 border-4 border-green-100"
+                    className="w-12 h-12 rounded-full object-cover mr-4 border-2 border-[#E6F2EC]"
                   />
-                  <div className="text-center">
-                    <div className="font-semibold text-lg text-gray-900">
+                  <div>
+                    <div className="font-semibold text-[#1A1A18]">
                       {testimonials[currentIndex].name}
                     </div>
-                    <div className="text-gray-600">
+                    <div className="text-sm text-[#7A7A73]">
                       {testimonials[currentIndex].role} &bull; {testimonials[currentIndex].city}
                     </div>
                   </div>
@@ -162,22 +165,22 @@ export function Testimonials() {
         </div>
 
         {/* Testimonial grid */}
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-5">
           {testimonials.slice(0, 3).map((testimonial, index) => (
             <div
               key={testimonial.id}
-              className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover-lift animate-slide-up border border-gray-100"
+              className="bg-white rounded-xl p-6 border border-[#E8E8E4] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06),0_1px_4px_rgba(0,0,0,0.04)] hover:-translate-y-0.5 hover:border-[#D4D4CE] transition-all duration-200 animate-slide-up"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               {/* Rating */}
               <div className="flex items-center mb-4">
                 {[...Array(testimonial.rating)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
+                  <Star key={i} className="w-4 h-4 text-[#E8960C] fill-current" />
                 ))}
               </div>
 
               {/* Testimonial */}
-              <p className="text-gray-700 mb-4 text-sm leading-relaxed">
+              <p className="text-[#4A4A45] mb-4 text-sm leading-relaxed">
                 &ldquo;{testimonial.testimonial[lang]}&rdquo;
               </p>
 
@@ -186,11 +189,11 @@ export function Testimonials() {
                 <img
                   src={testimonial.avatar}
                   alt={testimonial.name}
-                  className="w-12 h-12 rounded-full object-cover mr-3 border-2 border-green-100"
+                  className="w-10 h-10 rounded-full object-cover mr-3 border-2 border-[#E6F2EC]"
                 />
                 <div>
-                  <div className="font-semibold text-gray-900 text-sm">{testimonial.name}</div>
-                  <div className="text-gray-600 text-xs">
+                  <div className="font-semibold text-[#1A1A18] text-sm">{testimonial.name}</div>
+                  <div className="text-[#7A7A73] text-xs">
                     {testimonial.role} &bull; {testimonial.city}
                   </div>
                 </div>
@@ -205,10 +208,10 @@ export function Testimonials() {
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+              className={`w-2 h-2 rounded-full transition-all duration-200 ${
                 index === currentIndex
-                  ? 'bg-green-600 scale-125'
-                  : 'bg-gray-300 hover:bg-gray-400'
+                  ? 'bg-[#1B5E3B] w-6'
+                  : 'bg-[#D4D4CE] hover:bg-[#ADADAA]'
               }`}
             />
           ))}

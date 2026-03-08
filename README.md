@@ -21,7 +21,7 @@
 | 🔒 **Escrow Payments** | Secure hold/release with 2% Findr fee |
 | 🪪 **ID Verification** | Upload national ID → admin approves → "Vérifié" badge |
 | ⚡ **Offline-first PWA** | Full browsing without internet, background sync |
-| ☀️ **Nature+Sun Design v2** | Apple/Tesla/Airbnb-inspired light-only UI — green `#16a34a` + gold palette |
+| 🎨 **Calm Luxury Design v3** | Linear × Stripe × Mercury-inspired — deep forest green `#1B5E3B` + warm amber `#E8960C` |
 
 ---
 
@@ -78,7 +78,7 @@
 - 📱 **PWA** — Install prompt, service worker, offline support
 - 🌍 **Diaspora Mode** — EUR/USD/XAF pricing + "Envoyer à la famille"
 - 📍 **Landmark Location** — Cameroon-specific location input
-- 🎨 **Nature+Sun Design v2** — Light-only, `#16a34a` green + gold + sky + coral, Apple-smooth motion
+- 🎨 **Calm Luxury Design v3** — Deep forest `#1B5E3B` + amber `#E8960C`, Linear/Stripe-inspired precision
 - 🌐 **FR/EN** translations
 - 📊 **Data-Saver Mode** — Compressed images, reduced bandwidth
 - 🔔 **Push Notifications** (ready)
@@ -297,6 +297,74 @@ Apple precision + Tesla boldness + Airbnb warmth. Light-only, no dark mode. Inte
 
 ---
 
+## 🎨 Design System v3 — Calm Luxury Redesign (March 2026)
+
+A complete transformation from the vibrant "Nature+Sun" palette to a **calm luxury** product aesthetic — inspired by Linear, Stripe, Mercury, Loom, and Faire. Every user-facing surface was updated across 29 files in 7 phases.
+
+### Design Philosophy
+
+> Soft. Premium. Precise. No noise, no multi-color chaos — just one trusted green family and a warm amber accent.
+
+| Principle | v2 (Nature+Sun) | v3 (Calm Luxury) |
+|-----------|-----------------|------------------|
+| Hero | Light background, centered text, bright blobs | Dark green gradient, left-aligned, white text |
+| Colors | `#16a34a` + sky + coral + lavender + violet | `#1B5E3B` primary + `#E8960C` amber accent only |
+| Shadows | Colored green/gold glow | Neutral `rgba(0,0,0,0.04–0.12)` levels |
+| Footer | Light gray `#f5f5f7` | Deep forest `#0D3D24` |
+| Nav icons | Emojis (🏠🚗🧰💼✨) | Lucide icons (Home, Car, Wrench, Briefcase, Compass) |
+| Border radius | `rounded-2xl` cards, `rounded-xl` buttons | `rounded-xl` cards, `rounded-lg` buttons |
+| Max width | `max-w-7xl` | `max-w-6xl` |
+
+### New Color Tokens
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--bg-base` | `#FAFAF8` | Page background |
+| `--bg-surface` | `#FFFFFF` | Cards, panels |
+| `--bg-subtle` | `#F4F4F1` | Hover states, stripes |
+| `--primary-900` | `#0D3D24` | Deepest green (hero, footer) |
+| `--primary-700` | `#1B5E3B` | Primary brand color |
+| `--primary-500` | `#2D8A5F` | Icon accents, secondary text |
+| `--primary-100` | `#E6F2EC` | Tag backgrounds |
+| `--primary-50` | `#F0F9F4` | Subtle surfaces |
+| `--accent-500` | `#E8960C` | Amber (stars, highlights) |
+| `--text-primary` | `#1A1A18` | Headlines |
+| `--text-secondary` | `#4A4A45` | Body copy |
+| `--text-tertiary` | `#7A7A73` | Labels, captions |
+| `--border-soft` | `#E8E8E4` | Default borders |
+
+### Files Modified (29)
+
+| Phase | Category | Files |
+|-------|----------|-------|
+| 1 | Foundation | `globals.css`, `tailwind.config.ts` |
+| 2 | Layout Shell | `Header.tsx`, `Footer.tsx`, `GlassHeader.tsx` |
+| 3 | Core UI | `Button.tsx`, `Card.tsx`, `Input.tsx` (new), `Toast.tsx`, `TrustBadges.tsx`, `InstallPrompt.tsx` |
+| 4 | Homepage | `HeroEnhanced.tsx`, `StatsCounter.tsx`, `CategoriesEnhanced.tsx`, `HowItWorks.tsx`, `Testimonials.tsx`, `TrustedBy.tsx` |
+| 5 | Category Pages | `housing/page-client.tsx`, `cars/page-client.tsx`, `emplois/page-client.tsx`, `services/page.tsx`, `terrain/page-client.tsx` |
+| 6 | Dashboard | `dashboard/page.tsx`, `dashboard/new/page.tsx`, `dashboard/analytics/page.tsx`, `dashboard/pro/page.tsx`, `dashboard/notifications/page.tsx`, `dashboard/messages/page.tsx` |
+| 7 | Meta | `layout.tsx` (themeColor, PWA colors) |
+
+### Key Visual Changes
+
+- **Hero section**: `linear-gradient(160deg, #0D3D24 0%, #1B5E3B 60%, #2D8A5F 100%)` dark background with white left-aligned text and warm `#FEF3C7` amber accent word
+- **Footer**: Fully inverted to `bg-[#0D3D24]` with white text hierarchy
+- **Category heroes**: All 5 verticals now use the unified dark green gradient (no more stone/teal/emerald variations)
+- **Stars/ratings**: Migrated to amber `#E8960C` from yellow-400
+- **Trust badges & stats**: All unified to single `text-[#1B5E3B] / bg-[#F0F9F4]` (removed blue, purple, orange multi-color)
+- **Wallet card (dashboard)**: `bg-[#1B5E3B]` deep green
+- **Emoji policy**: Removed all nav/UI emojis — replaced with lucide-react icons
+
+### Build Status
+
+```
+✓ 49 pages compiled and generated
+✓ 0 TypeScript errors
+✓ 0 lint errors blocking build
+```
+
+---
+
 ## 🗺️ Roadmap to Live
 
 ### ✅ Done (code complete)
@@ -316,6 +384,7 @@ Apple precision + Tesla boldness + Airbnb warmth. Light-only, no dark mode. Inte
 - [x] Admin panel + analytics
 - [x] Pro/agent portal
 - [x] Design System v2 — Tailwind v4 fix, color migration, animation fixes (15 files)
+- [x] Design System v3 — Calm Luxury premium redesign (29 files, all verticals)
 
 ### 🔧 To Configure Before Launch
 - [ ] Run all 16 SQL migrations in Supabase dashboard

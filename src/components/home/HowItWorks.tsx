@@ -11,95 +11,75 @@ export function HowItWorks() {
       icon: Search,
       title: t.howItWorksSimple.step1Title,
       description: t.howItWorksSimple.step1Desc,
-      color: 'from-green-500 to-green-600',
-      bgColor: 'bg-green-50',
-      borderColor: 'border-green-200',
     },
     {
       icon: MessageCircle,
       title: t.howItWorksSimple.step2Title,
       description: t.howItWorksSimple.step2Desc,
-      color: 'from-blue-500 to-blue-600',
-      bgColor: 'bg-blue-50',
-      borderColor: 'border-blue-200',
     },
     {
       icon: Handshake,
       title: t.howItWorksSimple.step3Title,
       description: t.howItWorksSimple.step3Desc,
-      color: 'from-purple-500 to-purple-600',
-      bgColor: 'bg-purple-50',
-      borderColor: 'border-purple-200',
     },
   ]
 
   return (
-    <section className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-24 bg-[#FAFAF8]">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-16 animate-slide-up">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+        <div className="mb-16 animate-slide-up">
+          <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#2D8A5F] mb-3">
             {t.howItWorksSimple.title}
-          </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            {t.howItWorksSimple.subtitle}
           </p>
+          <h2 className="text-[32px] font-semibold text-[#1A1A18] tracking-[-0.015em] mb-4">
+            {t.howItWorksSimple.subtitle}
+          </h2>
         </div>
 
         {/* Steps */}
-        <div className="grid md:grid-cols-3 gap-8 md:gap-12 relative">
+        <div className="grid md:grid-cols-3 gap-6 relative">
           {steps.map((step, index) => {
             const IconComponent = step.icon
             return (
               <div
                 key={index}
                 className="relative group animate-slide-up"
-                style={{ animationDelay: `${index * 0.2}s` }}
+                style={{ animationDelay: `${index * 0.15}s` }}
               >
                 {/* Connection line */}
                 {index < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-20 left-full w-full h-0.5 bg-gradient-to-r from-gray-300 to-gray-200 transform -translate-x-6 z-0" />
+                  <div className="hidden md:block absolute top-16 left-full w-full h-px bg-[#E8E8E4] transform -translate-x-6 z-0" />
                 )}
 
                 {/* Step card */}
-                <div
-                  className={`relative bg-white rounded-2xl p-8 border-2 ${step.borderColor} shadow-lg hover:shadow-xl transition-all duration-300 hover-lift group-hover:border-opacity-100 z-10`}
-                >
+                <div className="relative bg-white rounded-xl p-8 border border-[#E8E8E4] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06),0_1px_4px_rgba(0,0,0,0.04)] hover:-translate-y-0.5 hover:border-[#D4D4CE] transition-all duration-200 z-10">
                   {/* Step number */}
-                  <div className="absolute -top-4 left-8 flex items-center justify-center w-8 h-8 bg-white border-2 border-gray-300 rounded-full text-sm font-bold text-gray-600 group-hover:border-gray-400 transition-colors">
+                  <div className="absolute -top-3.5 left-8 flex items-center justify-center w-7 h-7 bg-white border border-[#E8E8E4] rounded-full text-xs font-semibold text-[#7A7A73]">
                     {index + 1}
                   </div>
 
                   {/* Icon */}
-                  <div
-                    className={`inline-flex items-center justify-center w-16 h-16 ${step.bgColor} rounded-2xl mb-6 group-hover:scale-110 transition-transform duration-300`}
-                  >
-                    <div
-                      className={`w-12 h-12 bg-gradient-to-br ${step.color} rounded-xl flex items-center justify-center shadow-lg`}
-                    >
-                      <IconComponent className="w-6 h-6 text-white" />
-                    </div>
+                  <div className="inline-flex items-center justify-center w-12 h-12 bg-[#F0F9F4] rounded-xl mb-6">
+                    <IconComponent className="w-6 h-6 text-[#1B5E3B]" />
                   </div>
 
                   {/* Content */}
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-green-700 transition-colors">
+                  <h3 className="text-lg font-semibold text-[#1A1A18] mb-3 tracking-[-0.01em]">
                     {step.title}
                   </h3>
 
-                  <p className="text-gray-600 leading-relaxed">{step.description}</p>
-
-                  {/* Hover effect */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-green-600/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <p className="text-sm text-[#4A4A45] leading-relaxed">{step.description}</p>
                 </div>
               </div>
             )
           })}
         </div>
 
-        {/* Call to action */}
-        <div className="text-center mt-16 animate-slide-up" style={{ animationDelay: '0.6s' }}>
-          <div className="inline-flex items-center space-x-2 bg-green-50 text-green-700 px-6 py-3 rounded-full text-sm font-medium border border-green-200">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+        {/* Badge */}
+        <div className="mt-12 animate-slide-up" style={{ animationDelay: '0.5s' }}>
+          <div className="inline-flex items-center space-x-2 bg-[#F0F9F4] text-[#1B5E3B] px-4 py-2 rounded-full text-sm font-medium border border-[#E6F2EC]">
+            <div className="w-1.5 h-1.5 bg-[#2D8A5F] rounded-full" />
             <span>{t.howItWorksSimple.badge}</span>
           </div>
         </div>

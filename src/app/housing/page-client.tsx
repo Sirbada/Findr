@@ -207,11 +207,11 @@ export function HousingPageClient() {
   })()
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-[#FAFAF8]">
       <Header />
       
       {/* Hero Search */}
-      <div className="bg-gradient-to-r from-slate-800 to-slate-900 py-16 min-h-[280px] flex items-center text-white">
+      <div className="bg-gradient-to-r from-[#0D3D24] to-[#1B5E3B] py-16 min-h-[280px] flex items-center text-white">
         <div className="max-w-6xl mx-auto px-4">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
             {content.heroTitle}
@@ -221,7 +221,7 @@ export function HousingPageClient() {
           </p>
           
           {/* Search Bar */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+          <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
               {/* City */}
               <div>
@@ -229,7 +229,7 @@ export function HousingPageClient() {
                 <select
                   value={selectedCity}
                   onChange={(e) => setSelectedCity(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-[#1B5E3B] focus:border-[#1B5E3B]/30 transition-all duration-300 bg-[#FAFAF8] hover:bg-white"
                 >
                   {content.cities.map(city => (
                     <option key={city.value} value={city.value}>{city.label}</option>
@@ -246,8 +246,8 @@ export function HousingPageClient() {
                   value={selectedNeighborhood}
                   onChange={(e) => setSelectedNeighborhood(e.target.value)}
                   disabled={selectedCity === 'all'}
-                  className={`w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 ${
-                    selectedCity === 'all' ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-50 hover:bg-white'
+                  className={`w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-[#1B5E3B] focus:border-[#1B5E3B]/30 transition-all duration-300 ${
+                    selectedCity === 'all' ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-[#FAFAF8] hover:bg-white'
                   }`}
                 >
                   <option value="all">
@@ -265,7 +265,7 @@ export function HousingPageClient() {
                 <select
                   value={selectedType}
                   onChange={(e) => setSelectedType(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-[#1B5E3B] focus:border-[#1B5E3B]/30 transition-all duration-300 bg-[#FAFAF8] hover:bg-white"
                 >
                   {content.propertyTypes.map(type => (
                     <option key={type.value} value={type.value}>{type.label}</option>
@@ -279,7 +279,7 @@ export function HousingPageClient() {
                 <select
                   value={selectedPrice}
                   onChange={(e) => setSelectedPrice(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-[#1B5E3B] focus:border-[#1B5E3B]/30 transition-all duration-300 bg-[#FAFAF8] hover:bg-white"
                 >
                   {content.priceRanges.map(range => (
                     <option key={range.value} value={range.value}>{range.label}</option>
@@ -293,7 +293,7 @@ export function HousingPageClient() {
                 <select
                   value={selectedDuree}
                   onChange={(e) => setSelectedDuree(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-[#1B5E3B] focus:border-[#1B5E3B]/30 transition-all duration-300 bg-[#FAFAF8] hover:bg-white"
                 >
                   {content.dureeOptions.map(duree => (
                     <option key={duree.value} value={duree.value}>{duree.label}</option>
@@ -303,7 +303,7 @@ export function HousingPageClient() {
               
               {/* Search Button */}
               <div className="flex items-end">
-                <Button size="lg" className="w-full bg-blue-600 hover:bg-blue-700 rounded-2xl py-3 font-medium hover:scale-[1.02] transition-all duration-300">
+                <Button size="lg" className="w-full bg-[#1B5E3B] hover:bg-[#0D3D24] rounded-lg py-3 font-medium hover:scale-[1.02] transition-all duration-300">
                   <Search className="w-5 h-5 mr-3" />
                   {content.search}
                 </Button>
@@ -382,7 +382,7 @@ export function HousingPageClient() {
               {user && (
                 <button
                   onClick={() => setShowSaveSearch(true)}
-                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-green-700 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-[#1B5E3B] bg-[#F0F9F4] border border-[#E6F2EC] rounded-lg hover:bg-[#E6F2EC] transition-colors"
                 >
                   <Bell className="w-4 h-4" />
                   Sauvegarder
@@ -393,14 +393,14 @@ export function HousingPageClient() {
               <div className="flex bg-gray-100 rounded-lg p-1">
                 <button
                   onClick={() => setViewMode('list')}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-colors ${viewMode === 'list' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-600 hover:text-gray-900'}`}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-colors ${viewMode === 'list' ? 'bg-white shadow-sm text-[#1B5E3B]' : 'text-gray-600 hover:text-gray-900'}`}
                 >
                   <List className="w-4 h-4" />
                   Liste
                 </button>
                 <button
                   onClick={() => setViewMode('map')}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-colors ${viewMode === 'map' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-600 hover:text-gray-900'}`}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-colors ${viewMode === 'map' ? 'bg-white shadow-sm text-[#1B5E3B]' : 'text-gray-600 hover:text-gray-900'}`}
                 >
                   <Map className="w-4 h-4" />
                   Carte
@@ -413,7 +413,7 @@ export function HousingPageClient() {
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="pl-3 pr-8 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
+                    className="pl-3 pr-8 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:ring-2 focus:ring-[#1B5E3B] focus:border-transparent appearance-none"
                   >
                     {content.sortOptions.map(option => (
                       <option key={option.value} value={option.value}>
@@ -430,13 +430,13 @@ export function HousingPageClient() {
                 <div className="flex bg-gray-100 rounded-lg p-1">
                   <button
                     onClick={() => setView('grid')}
-                    className={`p-2 rounded transition-colors ${view === 'grid' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-600 hover:text-gray-900'}`}
+                    className={`p-2 rounded transition-colors ${view === 'grid' ? 'bg-white shadow-sm text-[#1B5E3B]' : 'text-gray-600 hover:text-gray-900'}`}
                   >
                     <Grid className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => setView('list')}
-                    className={`p-2 rounded transition-colors ${view === 'list' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-600 hover:text-gray-900'}`}
+                    className={`p-2 rounded transition-colors ${view === 'list' ? 'bg-white shadow-sm text-[#1B5E3B]' : 'text-gray-600 hover:text-gray-900'}`}
                   >
                     <List className="w-4 h-4" />
                   </button>
@@ -485,7 +485,7 @@ export function HousingPageClient() {
                   href={`/housing/${listing.id}`}
                   className={`group ${view === 'list' ? 'flex gap-4' : ''}`}
                 >
-                  <div className={`bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-300 border border-gray-100 ${
+                  <div className={`bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] hover:-translate-y-0.5 transition-all duration-300 border border-gray-100 ${
                     view === 'list' ? 'flex flex-1' : ''
                   }`}>
                     {/* Image */}
@@ -526,7 +526,7 @@ export function HousingPageClient() {
                         {listing.is_verified && (
                           <span className="bg-green-600 text-white text-xs font-medium px-2 py-1 rounded-full flex items-center gap-1">
                             <CheckCircle className="w-3 h-3" />
-                            Vérifié ✓
+                            Verified
                           </span>
                         )}
                       </div>
@@ -541,7 +541,7 @@ export function HousingPageClient() {
                     <div className="p-4 flex-1">
                       {/* Price prominant */}
                       <div className="mb-3">
-                        <span className="text-xl font-bold text-blue-600">
+                        <span className="text-xl font-bold text-[#1B5E3B]">
                           {formatPrice(listing.price)} XAF
                         </span>
                         {listing.rental_period !== 'sale' && (
@@ -550,7 +550,7 @@ export function HousingPageClient() {
                       </div>
 
                       <div className="flex items-start justify-between gap-2 mb-2">
-                        <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-1">
+                        <h3 className="font-semibold text-gray-900 group-hover:text-[#1B5E3B] transition-colors line-clamp-1">
                           {listing.title}
                         </h3>
                       </div>
@@ -609,11 +609,11 @@ export function HousingPageClient() {
             <div className="text-center py-16">
               {/* CSS-only illustration */}
               <div className="relative w-24 h-24 mx-auto mb-8">
-                <div className="absolute inset-0 bg-gradient-to-b from-blue-100 to-blue-200 rounded-2xl"></div>
+                <div className="absolute inset-0 bg-gradient-to-b from-[#E6F2EC] to-[#F0F9F4] rounded-lg"></div>
                 <div className="absolute top-4 left-4 w-16 h-12 bg-white rounded-lg shadow-sm flex items-center justify-center">
                   <div className="w-8 h-6 bg-gray-200 rounded"></div>
                 </div>
-                <div className="absolute bottom-2 right-2 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold">+</div>
+                <div className="absolute bottom-2 right-2 w-6 h-6 bg-[#1B5E3B] rounded-full flex items-center justify-center text-white text-xs font-bold">+</div>
               </div>
               
               <h3 className="text-xl font-semibold text-gray-900 mb-3">
@@ -624,7 +624,7 @@ export function HousingPageClient() {
               </p>
               
               <Link href="/dashboard/new">
-                <Button size="lg" className="bg-blue-600 hover:bg-blue-700 px-8">
+                <Button size="lg" className="bg-[#1B5E3B] hover:bg-[#0D3D24] px-8">
                   Publier une annonce →
                 </Button>
               </Link>

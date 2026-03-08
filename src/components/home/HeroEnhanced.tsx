@@ -2,67 +2,17 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Search } from 'lucide-react'
+import { Search, Home, Car, TreePine, Briefcase, Zap } from 'lucide-react'
 import { useTranslation } from '@/lib/i18n/context'
 
-const CITIES = ['Douala', 'Yaoundé', 'Kribi', 'Bafoussam', 'Limbe', 'Bamenda']
+const CITIES = ['Douala', 'Yaound\u00e9', 'Kribi', 'Bafoussam', 'Limbe', 'Bamenda']
 
 const CATEGORIES = [
-  {
-    id: 'housing',
-    href: '/housing',
-    icon: '🏠',
-    labelFr: 'Immobilier',
-    labelEn: 'Housing',
-    color: '#16a34a',
-    bg: 'linear-gradient(135deg, #16a34a, #22c55e)',
-    lightBg: '#f0fdf4',
-    textColor: '#14532d',
-  },
-  {
-    id: 'cars',
-    href: '/cars',
-    icon: '🚗',
-    labelFr: 'Véhicules',
-    labelEn: 'Vehicles',
-    color: '#0ea5e9',
-    bg: 'linear-gradient(135deg, #0ea5e9, #38bdf8)',
-    lightBg: '#f0f9ff',
-    textColor: '#0c4a6e',
-  },
-  {
-    id: 'terrain',
-    href: '/terrain',
-    icon: '🌿',
-    labelFr: 'Terrain',
-    labelEn: 'Land',
-    color: '#d97706',
-    bg: 'linear-gradient(135deg, #d97706, #f59e0b)',
-    lightBg: '#fffbeb',
-    textColor: '#92400e',
-  },
-  {
-    id: 'emplois',
-    href: '/emplois',
-    icon: '💼',
-    labelFr: 'Emplois',
-    labelEn: 'Jobs',
-    color: '#8b5cf6',
-    bg: 'linear-gradient(135deg, #8b5cf6, #a78bfa)',
-    lightBg: '#f5f3ff',
-    textColor: '#4c1d95',
-  },
-  {
-    id: 'services',
-    href: '/services',
-    icon: '⚡',
-    labelFr: 'Services',
-    labelEn: 'Services',
-    color: '#f43f5e',
-    bg: 'linear-gradient(135deg, #f43f5e, #fb7185)',
-    lightBg: '#fff1f2',
-    textColor: '#9f1239',
-  },
+  { id: 'housing', href: '/housing', icon: Home, labelFr: 'Immobilier', labelEn: 'Housing' },
+  { id: 'cars', href: '/cars', icon: Car, labelFr: 'V\u00e9hicules', labelEn: 'Vehicles' },
+  { id: 'terrain', href: '/terrain', icon: TreePine, labelFr: 'Terrain', labelEn: 'Land' },
+  { id: 'emplois', href: '/emplois', icon: Briefcase, labelFr: 'Emplois', labelEn: 'Jobs' },
+  { id: 'services', href: '/services', icon: Zap, labelFr: 'Services', labelEn: 'Services' },
 ]
 
 export function HeroEnhanced() {
@@ -85,102 +35,53 @@ export function HeroEnhanced() {
     <section
       className="relative overflow-hidden"
       style={{
-        background: 'linear-gradient(160deg, #dcfce7 0%, #f0fdf4 25%, #f9fafb 55%, #fffbeb 85%, #fef3c7 100%)',
+        background: 'linear-gradient(160deg, #0D3D24 0%, #1B5E3B 60%, #2D8A5F 100%)',
         minHeight: '520px',
       }}
     >
-      {/* Decorative blobs */}
-      <div
-        className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full pointer-events-none opacity-20"
-        style={{
-          background: 'radial-gradient(circle, #4ade80 0%, transparent 70%)',
-          transform: 'translate(30%, -30%)',
-        }}
-      />
-      <div
-        className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full pointer-events-none opacity-15"
-        style={{
-          background: 'radial-gradient(circle, #fbbf24 0%, transparent 70%)',
-          transform: 'translate(-30%, 30%)',
-        }}
-      />
-
-      <div className="relative max-w-[1280px] mx-auto px-6 pt-16 pb-14 text-center">
-        {/* Eyebrow pill */}
-        <div
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-6 text-[13px] font-semibold"
-          style={{
-            background: '#dcfce7',
-            color: '#14532d',
-            border: '1px solid #bbf7d0',
-          }}
-        >
-          <span className="w-2 h-2 bg-green-600 rounded-full animate-pulse" />
+      <div className="relative max-w-6xl mx-auto px-6 pt-20 pb-16">
+        {/* Eyebrow */}
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-6 text-[12px] font-semibold uppercase tracking-[0.06em] bg-white/10 text-white/80 border border-white/15">
+          <span className="w-1.5 h-1.5 bg-white rounded-full" />
           {t.heroEnhanced.badge}
         </div>
 
-        {/* Headline */}
+        {/* Headline — left-aligned */}
         <h1
-          className="font-extrabold mb-4"
+          className="font-bold mb-5 max-w-3xl"
           style={{
-            fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
+            fontSize: 'clamp(2.25rem, 5vw, 3.5rem)',
             letterSpacing: '-0.02em',
-            lineHeight: 1.05,
-            color: '#111827',
+            lineHeight: 1.1,
+            color: '#FFFFFF',
           }}
         >
-          {lang === 'fr' ? (
-            <>
-              {t.heroEnhanced.titleFind}{' '}
-              <span style={{ color: '#16a34a' }}>
-                {t.heroEnhanced.titleEverything}
-              </span>{' '}
-              {t.heroEnhanced.titleIn} Cameroun
-            </>
-          ) : (
-            <>
-              {t.heroEnhanced.titleFind}{' '}
-              <span style={{ color: '#16a34a' }}>
-                {t.heroEnhanced.titleEverything}
-              </span>{' '}
-              {t.heroEnhanced.titleIn} Cameroon
-            </>
-          )}
+          {t.heroEnhanced.titleFind}{' '}
+          <span className="text-[#FEF3C7]">{t.heroEnhanced.titleEverything}</span>{' '}
+          {t.heroEnhanced.titleIn} {lang === 'fr' ? 'Cameroun' : 'Cameroon'}
         </h1>
 
-        {/* Subheadline */}
-        <p
-          className="mb-8 max-w-[560px] mx-auto"
-          style={{ fontSize: '18px', color: '#6b7280', letterSpacing: '-0.01em', lineHeight: 1.6 }}
-        >
+        {/* Subtitle */}
+        <p className="mb-10 max-w-xl text-[17px] leading-[1.7] text-white/60">
           {t.heroEnhanced.subtitle}
         </p>
 
         {/* Category tabs */}
-        <div className="flex items-center justify-center gap-2 mb-6 flex-wrap">
+        <div className="flex items-center gap-2 mb-6 flex-wrap">
           {CATEGORIES.map((cat) => {
             const isActive = activeCategory === cat.id
+            const Icon = cat.icon
             return (
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
-                className="flex items-center gap-2 px-4 py-2 text-[14px] font-semibold rounded-full transition-all duration-200"
-                style={
+                className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
                   isActive
-                    ? {
-                        background: cat.bg,
-                        color: '#ffffff',
-                        boxShadow: `0 4px 14px ${cat.color}40`,
-                        transform: 'translateY(-1px)',
-                      }
-                    : {
-                        background: cat.lightBg,
-                        color: cat.textColor,
-                        border: `1.5px solid ${cat.color}30`,
-                      }
-                }
+                    ? 'bg-white text-[#0D3D24]'
+                    : 'bg-white/10 text-white border border-white/15 hover:bg-white/15'
+                }`}
               >
-                <span className="text-base">{cat.icon}</span>
+                <Icon className="w-4 h-4" />
                 <span>{lang === 'fr' ? cat.labelFr : cat.labelEn}</span>
               </button>
             )
@@ -188,14 +89,9 @@ export function HeroEnhanced() {
         </div>
 
         {/* Search bar */}
-        <div className="max-w-[640px] mx-auto">
-          <div
-            className="flex items-center gap-3 bg-white rounded-2xl px-5 py-3.5"
-            style={{
-              boxShadow: `0 1px 3px rgba(0,0,0,0.05), 0 8px 24px rgba(0,0,0,0.04), 0 0 0 1.5px ${activeCat.color}25`,
-            }}
-          >
-            <span className="text-xl flex-shrink-0">{activeCat.icon}</span>
+        <div className="max-w-[600px]">
+          <div className="flex items-center gap-3 bg-white rounded-xl px-4 py-3 shadow-[0_4px_16px_rgba(0,0,0,0.06),0_1px_4px_rgba(0,0,0,0.04)]">
+            <Search className="w-5 h-5 text-[#7A7A73] flex-shrink-0" />
             <input
               type="text"
               value={query}
@@ -203,39 +99,29 @@ export function HeroEnhanced() {
               onKeyDown={handleKeyDown}
               placeholder={
                 lang === 'fr'
-                  ? `Rechercher ${activeCat.labelFr.toLowerCase()} à Douala, Yaoundé...`
-                  : `Search ${activeCat.labelEn.toLowerCase()} in Douala, Yaoundé...`
+                  ? `Rechercher ${activeCat.labelFr.toLowerCase()} \u00e0 Douala, Yaound\u00e9...`
+                  : `Search ${activeCat.labelEn.toLowerCase()} in Douala, Yaound\u00e9...`
               }
-              className="flex-1 bg-transparent text-[15px] outline-none placeholder:text-gray-400"
-              style={{ color: '#111827', letterSpacing: '-0.01em' }}
+              className="flex-1 bg-transparent text-[15px] text-[#1A1A18] outline-none placeholder:text-[#ADADAA]"
             />
             <button
               onClick={handleSearch}
-              className="flex items-center gap-2 px-5 py-2.5 text-white text-[14px] font-semibold rounded-xl flex-shrink-0 transition-all duration-200"
-              style={{
-                background: activeCat.bg,
-                boxShadow: `0 4px 14px ${activeCat.color}40`,
-              }}
+              className="flex items-center gap-2 px-5 py-2 bg-[#1B5E3B] hover:bg-[#0D3D24] text-white text-sm font-semibold rounded-lg flex-shrink-0 transition-all duration-150 active:scale-[0.98]"
             >
-              <Search className="w-4 h-4" />
               {lang === 'fr' ? 'Rechercher' : 'Search'}
             </button>
           </div>
 
           {/* Popular cities */}
-          <div className="flex items-center justify-center gap-2 mt-4 flex-wrap">
-            <span className="text-[12px] text-gray-400 font-medium">
+          <div className="flex items-center gap-2 mt-4 flex-wrap">
+            <span className="text-[12px] text-white/40 font-medium">
               {t.heroEnhanced.popularCities}
             </span>
             {CITIES.map((city) => (
               <button
                 key={city}
                 onClick={() => router.push(`${activeCat.href}?city=${encodeURIComponent(city)}`)}
-                className="text-[12px] font-semibold transition-colors px-2 py-0.5 rounded-full"
-                style={{
-                  color: activeCat.color,
-                  background: activeCat.lightBg,
-                }}
+                className="text-[12px] font-medium text-white/70 hover:text-white bg-white/10 hover:bg-white/15 px-2.5 py-0.5 rounded-full transition-colors duration-150"
               >
                 {city}
               </button>
@@ -244,22 +130,21 @@ export function HeroEnhanced() {
         </div>
 
         {/* Stats row */}
-        <div className="flex items-center justify-center gap-8 mt-10 flex-wrap">
+        <div className="flex items-center gap-6 mt-12 flex-wrap">
           {[
-            { value: '10K+', label: lang === 'fr' ? 'Annonces' : 'Listings', color: '#16a34a', bg: '#f0fdf4' },
-            { value: '5K+', label: lang === 'fr' ? 'Utilisateurs' : 'Users', color: '#0ea5e9', bg: '#f0f9ff' },
-            { value: '50+', label: lang === 'fr' ? 'Villes' : 'Cities', color: '#d97706', bg: '#fffbeb' },
-            { value: '100%', label: lang === 'fr' ? 'Gratuit' : 'Free', color: '#8b5cf6', bg: '#f5f3ff' },
+            { value: '10K+', label: lang === 'fr' ? 'Annonces' : 'Listings' },
+            { value: '5K+', label: lang === 'fr' ? 'Utilisateurs' : 'Users' },
+            { value: '50+', label: lang === 'fr' ? 'Villes' : 'Cities' },
+            { value: '100%', label: lang === 'fr' ? 'Gratuit' : 'Free' },
           ].map((stat) => (
             <div
               key={stat.label}
-              className="flex flex-col items-center px-4 py-2 rounded-2xl"
-              style={{ background: stat.bg }}
+              className="flex flex-col items-center px-4 py-2 rounded-xl bg-white/8"
             >
-              <span className="text-[22px] font-bold" style={{ color: stat.color, letterSpacing: '-0.03em' }}>
+              <span className="text-xl font-bold text-white tracking-[-0.02em]">
                 {stat.value}
               </span>
-              <span className="text-[11px] font-medium" style={{ color: stat.color + 'cc' }}>
+              <span className="text-[11px] font-medium text-white/50">
                 {stat.label}
               </span>
             </div>
