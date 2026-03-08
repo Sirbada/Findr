@@ -11,9 +11,9 @@ export function HowItWorks() {
       icon: Search,
       title: t.howItWorksSimple.step1Title,
       description: t.howItWorksSimple.step1Desc,
-      color: 'from-emerald-500 to-emerald-600',
-      bgColor: 'bg-emerald-50',
-      borderColor: 'border-emerald-200',
+      color: 'from-green-500 to-green-600',
+      bgColor: 'bg-green-50',
+      borderColor: 'border-green-200',
     },
     {
       icon: MessageCircle,
@@ -82,14 +82,14 @@ export function HowItWorks() {
                   </div>
 
                   {/* Content */}
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-emerald-700 transition-colors">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-green-700 transition-colors">
                     {step.title}
                   </h3>
 
                   <p className="text-gray-600 leading-relaxed">{step.description}</p>
 
                   {/* Hover effect */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-emerald-600/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-green-600/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
               </div>
             )
@@ -98,8 +98,8 @@ export function HowItWorks() {
 
         {/* Call to action */}
         <div className="text-center mt-16 animate-slide-up" style={{ animationDelay: '0.6s' }}>
-          <div className="inline-flex items-center space-x-2 bg-emerald-50 text-emerald-700 px-6 py-3 rounded-full text-sm font-medium border border-emerald-200">
-            <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+          <div className="inline-flex items-center space-x-2 bg-green-50 text-green-700 px-6 py-3 rounded-full text-sm font-medium border border-green-200">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
             <span>{t.howItWorksSimple.badge}</span>
           </div>
         </div>

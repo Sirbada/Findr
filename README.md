@@ -21,7 +21,7 @@
 | 🔒 **Escrow Payments** | Secure hold/release with 2% Findr fee |
 | 🪪 **ID Verification** | Upload national ID → admin approves → "Vérifié" badge |
 | ⚡ **Offline-first PWA** | Full browsing without internet, background sync |
-| ☀️ **Nature+Sun Design** | Apple/Tesla-inspired UI with vibrant green & gold palette |
+| ☀️ **Nature+Sun Design v2** | Apple/Tesla/Airbnb-inspired light-only UI — green `#16a34a` + gold palette |
 
 ---
 
@@ -78,7 +78,7 @@
 - 📱 **PWA** — Install prompt, service worker, offline support
 - 🌍 **Diaspora Mode** — EUR/USD/XAF pricing + "Envoyer à la famille"
 - 📍 **Landmark Location** — Cameroon-specific location input
-- 🎨 **Nature+Sun Design** — Vibrant green/gold/sky/coral color system
+- 🎨 **Nature+Sun Design v2** — Light-only, `#16a34a` green + gold + sky + coral, Apple-smooth motion
 - 🌐 **FR/EN** translations
 - 📊 **Data-Saver Mode** — Compressed images, reduced bandwidth
 - 🔔 **Push Notifications** (ready)
@@ -251,6 +251,52 @@ npx playwright test
 
 ---
 
+## 🎨 Design System v2 — March 2026
+
+Complete frontend overhaul fixing a broken UI (invisible text, faded elements, missing hover effects) and migrating to a new design system.
+
+### Root Cause
+**Tailwind CSS v4** ignores `tailwind.config.ts` by default — requires an explicit `@config` directive in `globals.css`. Without it, all custom colors, animations, and utilities were silently missing.
+
+### 7 Infrastructure Bugs Fixed
+
+| Bug | Fix |
+|-----|-----|
+| Tailwind v4 config not loaded | Added `@config "../../tailwind.config.ts"` to `globals.css` |
+| Geist font variables undefined | Removed broken `@theme inline` font overrides |
+| `.hover-lift` class missing | Added CSS utility with `translateY(-4px)` on hover |
+| Animation flash on page load | Changed fill-mode `forwards` → `both` |
+| Dynamic class interpolation broken | Replaced `group-hover:${color}` with static classes |
+| Hero text hardcoded in French | Wired `t.heroEnhanced.*` translation keys |
+| Dark mode applied unwanted styles | Removed `@media (prefers-color-scheme: dark)` block |
+
+### Color Palette Migration
+
+| Token | Old (emerald) | New (green) |
+|-------|--------------|-------------|
+| Primary | `#059669` | `#16a34a` |
+| Primary Light | `#10b981` | `#22c55e` |
+| Primary Deep | `#047857` | `#15803d` |
+| Soft Background | `#ecfdf5` | `#dcfce7` |
+| Text Primary | `#1a1a1a` | `#111827` |
+| Text Secondary | `#4b5563` | `#6b7280` |
+| Surface | `#fafaf9` | `#f9fafb` |
+
+### Design Philosophy
+Apple precision + Tesla boldness + Airbnb warmth. Light-only, no dark mode. Inter font family. Rounded corners (12-24px). Subtle shadows with green-tinted CTA glow.
+
+### Files Modified (15)
+
+| Category | Files |
+|----------|-------|
+| Config | `globals.css`, `tailwind.config.ts` |
+| UI Components | `Button.tsx`, `Card.tsx`, `GlassHeader.tsx` |
+| Layout | `Header.tsx`, `Footer.tsx` |
+| Home Sections | `HeroEnhanced.tsx`, `CategoriesEnhanced.tsx`, `StatsCounter.tsx`, `HowItWorks.tsx`, `Testimonials.tsx`, `TrustedBy.tsx` |
+| App | `layout.tsx`, `InstallPrompt.tsx` |
+
+---
+
 ## 🗺️ Roadmap to Live
 
 ### ✅ Done (code complete)
@@ -269,6 +315,7 @@ npx playwright test
 - [x] PWA (offline, install prompt, push notifications)
 - [x] Admin panel + analytics
 - [x] Pro/agent portal
+- [x] Design System v2 — Tailwind v4 fix, color migration, animation fixes (15 files)
 
 ### 🔧 To Configure Before Launch
 - [ ] Run all 16 SQL migrations in Supabase dashboard
