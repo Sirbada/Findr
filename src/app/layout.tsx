@@ -6,7 +6,7 @@ import { Providers } from './providers'
 const inter = Inter({ subsets: ['latin'] })
 
 export const viewport: Viewport = {
-  themeColor: '#059669',
+  themeColor: '#1B5E3B',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
@@ -79,7 +79,7 @@ export const metadata: Metadata = {
       { url: '/icons/icon-180x180.png', sizes: '180x180', type: 'image/png' },
     ],
     other: [
-      { rel: 'mask-icon', url: '/icons/safari-pinned-tab.svg', color: '#059669' },
+      { rel: 'mask-icon', url: '/icons/safari-pinned-tab.svg', color: '#1B5E3B' },
     ],
   },
   appleWebApp: {
@@ -104,7 +104,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="Findr" />
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="msapplication-TileColor" content="#059669" />
+        <meta name="msapplication-TileColor" content="#1B5E3B" />
         <meta name="msapplication-tap-highlight" content="no" />
         
         {/* Splash screens for iOS */}
@@ -129,14 +129,7 @@ export default function RootLayout({
             __html: `
               if ('serviceWorker' in navigator) {
                 window.addEventListener('load', function() {
-                  navigator.serviceWorker.register('/sw.js').then(
-                    function(registration) {
-                      console.log('ServiceWorker registration successful');
-                    },
-                    function(err) {
-                      console.log('ServiceWorker registration failed: ', err);
-                    }
-                  );
+                  navigator.serviceWorker.register('/sw.js').catch(function() {});
                 });
               }
             `,

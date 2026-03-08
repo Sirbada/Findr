@@ -120,13 +120,8 @@ class MockOrangeMoneyService {
       if (tx && tx.status === 'PENDING') {
         tx.status = 'SUCCESSFUL'
         this.transactions.set(transactionId, tx)
-        console.log(`[DEMO] Orange Money payment ${transactionId} completed`)
       }
     }, 5000)
-
-    console.log(`[DEMO] Orange Money USSD sent to ${request.phone}`)
-    console.log(`[DEMO] Amount: ${request.amount} XAF`)
-    console.log(`[DEMO] Transaction: ${transactionId}`)
 
     return {
       success: true,

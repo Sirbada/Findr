@@ -1,488 +1,553 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { Suspense, useState, useEffect, useCallback } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { 
-  Search, Calendar, MapPin, Fuel, Settings2, Users, 
-  Heart, CheckCircle, Car, ChevronDown, Filter
+import {
+  Search, MapPin, Fuel, Settings2, Users,
+  Heart, CheckCircle, Car, X, ArrowUpDown, SlidersHorizontal
 } from 'lucide-react'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
-import { Button } from '@/components/ui/Button'
-import { getListings, Listing } from '@/lib/supabase/queries'
+import { getVehicles, Vehicle } from '@/lib/supabase/queries'
 import { useTranslation } from '@/lib/i18n/context'
 
 function formatPrice(price: number): string {
   return new Intl.NumberFormat('fr-FR').format(price)
 }
 
-export default function CarsPage() {
+type SortOption = 'newest' | 'price_asc' | 'price_desc' | 'popular'
+
+function CarsPageInner() {
   const { t, lang } = useTranslation()
-  const [listings, setListings] = useState<Listing[]>([])
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
+  const [listings, setListings] = useState<Vehicle[]>([])
   const [loading, setLoading] = useState(true)
-  
-  // Filters
-  const [selectedCity, setSelectedCity] = useState('all')
-  const [selectedBrand, setSelectedBrand] = useState('all')
-  const [selectedFuel, setSelectedFuel] = useState('all')
-  const [selectedDuree, setSelectedDuree] = useState('all')
-  const [rentalType, setRentalType] = useState<'rent' | 'buy'>('rent')
-  const [sortBy, setSortBy] = useState('newest')
+  const [showFilters, setShowFilters] = useState(false)
+  const [rentalType, setRentalType] = useState<'rent' | 'buy'>((searchParams.get('mode') as 'rent' | 'buy') || 'rent')
 
-  // Translated content
-  const content = {
-    cities: [
-      { value: 'all', label: lang === 'fr' ? 'Toutes les villes' : 'All cities' },
-      { value: 'Douala', label: 'Douala' },
-      { value: 'Yaoundé', label: 'Yaoundé' },
-      { value: 'Kribi', label: 'Kribi' },
-      { value: 'Bafoussam', label: 'Bafoussam' },
-      { value: 'Limbe', label: 'Limbe' },
-    ],
-    carBrands: [
-      { value: 'all', label: lang === 'fr' ? 'Toutes les marques' : 'All brands' },
-      { value: 'Toyota', label: 'Toyota' },
-      { value: 'Mercedes', label: 'Mercedes' },
-      { value: 'BMW', label: 'BMW' },
-      { value: 'Honda', label: 'Honda' },
-      { value: 'Nissan', label: 'Nissan' },
-      { value: 'Hyundai', label: 'Hyundai' },
-      { value: 'Kia', label: 'Kia' },
-    ],
-    fuelTypes: [
-      { value: 'all', label: lang === 'fr' ? 'Tous' : 'All' },
-      { value: 'petrol', label: t.fuelTypes.essence },
-      { value: 'diesel', label: t.fuelTypes.diesel },
-      { value: 'electric', label: t.fuelTypes.electric },
-      { value: 'hybrid', label: t.fuelTypes.hybrid },
-    ],
-    heroTitle: lang === 'fr' ? 'La bonne affaire auto, sans mauvaise surprise' : 'The right car deal, without bad surprises',
-    heroSubtitle: lang === 'fr' ? 'Véhicules inspectés, prix transparents — Douala, Yaoundé et partout au Cameroun' : 'Inspected vehicles, transparent prices — Douala, Yaoundé and throughout Cameroon',
-    rent: lang === 'fr' ? 'Louer' : 'Rent',
-    buy: lang === 'fr' ? 'Acheter' : 'Buy',
-    pickupLocation: lang === 'fr' ? 'Lieu de prise en charge' : 'Pickup location',
-    startDate: lang === 'fr' ? 'Date de début' : 'Start date',
-    endDate: lang === 'fr' ? 'Date de fin' : 'End date',
-    brand: lang === 'fr' ? 'Marque' : 'Brand',
-    fuel: lang === 'fr' ? 'Carburant' : 'Fuel',
-    duree: lang === 'fr' ? 'Durée' : 'Duration',
-    dureeOptions: lang === 'fr' ? [
-      { value: 'all', label: 'Tous' },
-      { value: '1-day', label: '1 jour' },
-      { value: '1-week', label: '1 semaine' },
-      { value: '1-month', label: '1 mois' },
-      { value: '3-months', label: '3 mois' },
-      { value: '6-months', label: '6 mois' },
-      { value: '1-year', label: '1 an' },
-      { value: 'long-term', label: 'Long terme (1 an+)' },
-    ] : [
-      { value: 'all', label: 'All' },
-      { value: '1-day', label: '1 day' },
-      { value: '1-week', label: '1 week' },
-      { value: '1-month', label: '1 month' },
-      { value: '3-months', label: '3 months' },
-      { value: '6-months', label: '6 months' },
-      { value: '1-year', label: '1 year' },
-      { value: 'long-term', label: 'Long term (1+ year)' },
-    ],
-    search: t.hero.search,
-    categories: lang === 'fr' ? [
-      { icon: '🚗', label: 'Économique', desc: 'Dès 15 000 XAF/jour' },
-      { icon: '🚙', label: 'SUV', desc: 'Dès 35 000 XAF/jour' },
-      { icon: '🚐', label: 'Minibus', desc: 'Dès 50 000 XAF/jour' },
-      { icon: '✨', label: 'Premium', desc: 'Dès 75 000 XAF/jour' },
-      { icon: '👨‍✈️', label: 'Avec chauffeur', desc: 'Service VIP' },
-    ] : [
-      { icon: '🚗', label: 'Economy', desc: 'From 15,000 XAF/day' },
-      { icon: '🚙', label: 'SUV', desc: 'From 35,000 XAF/day' },
-      { icon: '🚐', label: 'Minibus', desc: 'From 50,000 XAF/day' },
-      { icon: '✨', label: 'Premium', desc: 'From 75,000 XAF/day' },
-      { icon: '👨‍✈️', label: 'With driver', desc: 'VIP Service' },
-    ],
-    resultsFound: (count: number) => lang === 'fr' 
-      ? `${count} véhicule${count > 1 ? 's' : ''} disponible${count > 1 ? 's' : ''}`
-      : `${count} ${count === 1 ? 'vehicle' : 'vehicles'} available`,
-    allCameroon: lang === 'fr' ? 'Tout le Cameroun' : 'All Cameroon',
-    moreFilters: lang === 'fr' ? 'Plus de filtres' : 'More filters',
-    pro: 'Pro',
-    view: lang === 'fr' ? 'Voir' : 'View',
-    auto: 'Auto',
-    manual: lang === 'fr' ? 'Manuel' : 'Manual',
-    seats: lang === 'fr' ? 'places' : 'seats',
-    noResults: lang === 'fr' ? 'Aucun véhicule trouvé' : 'No vehicles found',
-    tryDifferent: lang === 'fr' ? 'Essayez de modifier vos critères de recherche' : 'Try adjusting your search criteria',
-    sortOptions: lang === 'fr' ? [
-      { value: 'newest', label: 'Plus récent' },
-      { value: 'price-low', label: 'Prix croissant' },
-      { value: 'price-high', label: 'Prix décroissant' },
-      { value: 'year-new', label: 'Plus récent (année)' },
-      { value: 'popular', label: 'Plus populaire' },
-    ] : [
-      { value: 'newest', label: 'Newest' },
-      { value: 'price-low', label: 'Price: Low to High' },
-      { value: 'price-high', label: 'Price: High to Low' },
-      { value: 'year-new', label: 'Newest Year' },
-      { value: 'popular', label: 'Most Popular' },
-    ],
-  }
+  const [selectedCity, setSelectedCity] = useState(searchParams.get('city') || 'all')
+  const [selectedBrand, setSelectedBrand] = useState(searchParams.get('brand') || 'all')
+  const [selectedFuel, setSelectedFuel] = useState(searchParams.get('fuel') || 'all')
+  const [selectedTransmission, setSelectedTransmission] = useState(searchParams.get('transmission') || 'all')
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '')
+  const [minPrice, setMinPrice] = useState(searchParams.get('minPrice') || '')
+  const [maxPrice, setMaxPrice] = useState(searchParams.get('maxPrice') || '')
+  const [sortBy, setSortBy] = useState<SortOption>((searchParams.get('sort') as SortOption) || 'newest')
+  const [minSeats, setMinSeats] = useState(searchParams.get('minSeats') || 'all')
 
-  // Get fuel type label
-  const getFuelType = (fuel: string | null) => {
-    if (!fuel) return ''
-    const fuelItem = content.fuelTypes.find(f => f.value === fuel)
-    return fuelItem?.label || fuel
-  }
+  const syncToUrl = useCallback(() => {
+    const params = new URLSearchParams()
+    if (selectedCity !== 'all') params.set('city', selectedCity)
+    if (selectedBrand !== 'all') params.set('brand', selectedBrand)
+    if (selectedFuel !== 'all') params.set('fuel', selectedFuel)
+    if (selectedTransmission !== 'all') params.set('transmission', selectedTransmission)
+    if (rentalType !== 'rent') params.set('mode', rentalType)
+    if (searchQuery) params.set('q', searchQuery)
+    if (minPrice) params.set('minPrice', minPrice)
+    if (maxPrice) params.set('maxPrice', maxPrice)
+    if (sortBy !== 'newest') params.set('sort', sortBy)
+    if (minSeats !== 'all') params.set('minSeats', minSeats)
+    const qs = params.toString()
+    router.replace(qs ? `?${qs}` : '/cars', { scroll: false })
+  }, [selectedCity, selectedBrand, selectedFuel, selectedTransmission, rentalType, searchQuery, minPrice, maxPrice, sortBy, minSeats, router])
+
+  useEffect(() => { syncToUrl() }, [syncToUrl])
+
+  const cities = [
+    { value: 'all', label: lang === 'fr' ? 'Toutes les villes' : 'All cities' },
+    { value: 'Douala', label: 'Douala' },
+    { value: 'Yaoundé', label: 'Yaoundé' },
+    { value: 'Kribi', label: 'Kribi' },
+    { value: 'Bafoussam', label: 'Bafoussam' },
+    { value: 'Limbe', label: 'Limbe' },
+  ]
+
+  const brands = [
+    { value: 'all', label: lang === 'fr' ? 'Toutes les marques' : 'All brands' },
+    { value: 'Toyota', label: 'Toyota' },
+    { value: 'Mercedes', label: 'Mercedes' },
+    { value: 'BMW', label: 'BMW' },
+    { value: 'Honda', label: 'Honda' },
+    { value: 'Nissan', label: 'Nissan' },
+    { value: 'Hyundai', label: 'Hyundai' },
+    { value: 'Kia', label: 'Kia' },
+  ]
+
+  const fuelTypes = [
+    { value: 'all', label: lang === 'fr' ? 'Tous' : 'All' },
+    { value: 'petrol', label: lang === 'fr' ? 'Essence' : 'Petrol' },
+    { value: 'diesel', label: 'Diesel' },
+    { value: 'electric', label: lang === 'fr' ? 'Électrique' : 'Electric' },
+    { value: 'hybrid', label: lang === 'fr' ? 'Hybride' : 'Hybrid' },
+  ]
+
+  const transmissions = [
+    { value: 'all', label: lang === 'fr' ? 'Toutes' : 'All' },
+    { value: 'automatic', label: lang === 'fr' ? 'Automatique' : 'Automatic' },
+    { value: 'manual', label: lang === 'fr' ? 'Manuel' : 'Manual' },
+  ]
+
+  const sortOptions = [
+    { value: 'newest', label: lang === 'fr' ? 'Plus récents' : 'Newest' },
+    { value: 'price_asc', label: lang === 'fr' ? 'Prix croissant' : 'Price ↑' },
+    { value: 'price_desc', label: lang === 'fr' ? 'Prix décroissant' : 'Price ↓' },
+    { value: 'popular', label: lang === 'fr' ? 'Populaires' : 'Popular' },
+  ]
+
+  const seatOptions = [
+    { value: 'all', label: lang === 'fr' ? 'Tous' : 'Any' },
+    { value: '2', label: '2+' },
+    { value: '4', label: '4+' },
+    { value: '5', label: '5+' },
+    { value: '7', label: '7+' },
+  ]
 
   useEffect(() => {
-    async function fetchListings() {
-      const data = await getListings({ category: 'cars' })
-      setListings(data)
-      setLoading(false)
-    }
-    fetchListings()
+    getVehicles().then(data => { setListings(data); setLoading(false) })
   }, [])
 
-  // Filter and sort listings
-  const filteredAndSortedListings = (() => {
-    let filtered = listings.filter(listing => {
+  const filteredListings = listings
+    .filter(listing => {
       if (selectedCity !== 'all' && listing.city !== selectedCity) return false
-      if (selectedBrand !== 'all' && listing.car_brand !== selectedBrand) return false
+      if (selectedBrand !== 'all' && listing.brand !== selectedBrand) return false
       if (selectedFuel !== 'all' && listing.fuel_type !== selectedFuel) return false
-      
-      // Filter by rental type
-      if (rentalType === 'rent' && !listing.price_per_day) return false
-      if (rentalType === 'buy' && listing.price_per_day) return false
-
-      // Durée filter - based on created date
-      if (selectedDuree !== 'all') {
-        const now = new Date()
-        const listingDate = new Date(listing.created_at)
-        const diffMs = now.getTime() - listingDate.getTime()
-        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
-        
-        if (selectedDuree === '1-day' && diffDays > 1) return false
-        if (selectedDuree === '1-week' && diffDays > 7) return false
-        if (selectedDuree === '1-month' && diffDays > 30) return false
-        if (selectedDuree === '3-months' && diffDays > 90) return false
-        if (selectedDuree === '6-months' && diffDays > 180) return false
-        if (selectedDuree === '1-year' && diffDays > 365) return false
-        if (selectedDuree === 'long-term' && diffDays <= 365) return false
-      }
-      
+      if (selectedTransmission !== 'all' && listing.transmission !== selectedTransmission) return false
+      if (minSeats !== 'all' && (listing.seats === null || listing.seats < parseInt(minSeats))) return false
+      if (searchQuery &&
+          !listing.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
+          !listing.brand?.toLowerCase().includes(searchQuery.toLowerCase()) &&
+          !listing.model?.toLowerCase().includes(searchQuery.toLowerCase()) &&
+          !listing.city.toLowerCase().includes(searchQuery.toLowerCase())) return false
+      const price = listing.price_per_day
+      if (minPrice && price < parseInt(minPrice)) return false
+      if (maxPrice && price > parseInt(maxPrice)) return false
       return true
     })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case 'price_asc': return a.price_per_day - b.price_per_day
+        case 'price_desc': return b.price_per_day - a.price_per_day
+        case 'popular': return b.views - a.views
+        default: return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      }
+    })
 
-    // Sort listings
-    switch (sortBy) {
-      case 'price-low':
-        return filtered.sort((a, b) => {
-          const priceA = rentalType === 'rent' ? (a.price_per_day || 0) : a.price
-          const priceB = rentalType === 'rent' ? (b.price_per_day || 0) : b.price
-          return priceA - priceB
-        })
-      case 'price-high':
-        return filtered.sort((a, b) => {
-          const priceA = rentalType === 'rent' ? (a.price_per_day || 0) : a.price
-          const priceB = rentalType === 'rent' ? (b.price_per_day || 0) : b.price
-          return priceB - priceA
-        })
-      case 'popular':
-        return filtered.sort((a, b) => b.views - a.views)
-      case 'year-new':
-        return filtered.sort((a, b) => (b.car_year || 0) - (a.car_year || 0))
-      case 'newest':
-      default:
-        return filtered.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-    }
-  })()
+  const hasActiveFilters = selectedCity !== 'all' || selectedBrand !== 'all' ||
+    selectedFuel !== 'all' || selectedTransmission !== 'all' || searchQuery ||
+    minPrice || maxPrice || minSeats !== 'all'
+
+  const clearAll = () => {
+    setSelectedCity('all'); setSelectedBrand('all'); setSelectedFuel('all')
+    setSelectedTransmission('all'); setSearchQuery(''); setMinPrice('')
+    setMaxPrice(''); setSortBy('newest'); setMinSeats('all')
+  }
+
+  const getFuelLabel = (fuel: string | null) => {
+    if (!fuel) return ''
+    return fuelTypes.find(f => f.value === fuel)?.label || fuel
+  }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-white">
       <Header />
-      
-      {/* Hero Search */}
-      <div className="bg-gradient-to-r from-zinc-800 to-zinc-900 py-16 min-h-[280px] flex items-center text-white">
-        <div className="max-w-6xl mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
-            {content.heroTitle}
-          </h1>
-          <p className="text-xl font-light text-gray-200 mb-12 max-w-2xl">
-            {content.heroSubtitle}
-          </p>
-          
-          {/* Rent/Buy Toggle */}
-          <div className="flex gap-3 mb-8">
+
+      {/* Page header — Sky blue gradient */}
+      <div
+        style={{
+          background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 40%, #fafaf9 100%)',
+          borderBottom: '1px solid #bae6fd',
+        }}
+      >
+        <div className="max-w-[1200px] mx-auto px-6 py-8">
+          <div className="flex items-center gap-3 mb-5">
+            <div
+              className="w-10 h-10 rounded-2xl flex items-center justify-center text-xl"
+              style={{ background: 'linear-gradient(135deg, #0ea5e9, #38bdf8)' }}
+            >
+              🚗
+            </div>
+            <div>
+              <h1
+                className="font-bold"
+                style={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.03em', lineHeight: 1.1, color: '#0c4a6e' }}
+              >
+                {lang === 'fr' ? 'Véhicules au Cameroun' : 'Vehicles in Cameroon'}
+              </h1>
+              <p className="text-[13px] font-medium" style={{ color: '#0ea5e9' }}>
+                {lang === 'fr' ? 'Location et vente de voitures vérifiées' : 'Verified car rentals and sales'}
+              </p>
+            </div>
+          </div>
+
+          {/* Rent / Buy toggle */}
+          <div className="flex items-center gap-1 mb-5 bg-[#f5f5f7] rounded-xl p-1 w-fit">
             <button
               onClick={() => setRentalType('rent')}
-              className={`px-8 py-3 rounded-full font-medium transition-all duration-300 ${
+              className={`px-5 py-2 text-[14px] font-medium rounded-lg transition-all ${
                 rentalType === 'rent'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-white text-[#1d1d1f] shadow-sm'
+                  : 'text-[#6e6e73] hover:text-[#1d1d1f]'
               }`}
+              style={{ letterSpacing: '-0.01em' }}
             >
-              {content.rent}
+              🚗 {lang === 'fr' ? 'Louer' : 'Rent'}
             </button>
             <button
               onClick={() => setRentalType('buy')}
-              className={`px-8 py-3 rounded-full font-medium transition-all duration-300 ${
+              className={`px-5 py-2 text-[14px] font-medium rounded-lg transition-all ${
                 rentalType === 'buy'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-white text-[#1d1d1f] shadow-sm'
+                  : 'text-[#6e6e73] hover:text-[#1d1d1f]'
               }`}
+              style={{ letterSpacing: '-0.01em' }}
             >
-              {content.buy}
+              🏷️ {lang === 'fr' ? 'Acheter' : 'Buy'}
             </button>
           </div>
-          
-          {/* Search Bar */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
-              {/* Location */}
+
+          {/* Search row */}
+          <div className="flex flex-col md:flex-row gap-3">
+            {/* Search */}
+            <div className="flex-1 relative">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#86868b]" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={lang === 'fr' ? 'Rechercher un véhicule...' : 'Search for a vehicle...'}
+                className="w-full pl-10 pr-4 py-2.5 bg-[#f5f5f7] text-[#1d1d1f] text-[14px] rounded-xl border border-transparent focus:border-[#059669] focus:bg-white focus:ring-2 focus:ring-[#059669]/15 outline-none transition-all"
+                style={{ letterSpacing: '-0.01em' }}
+              />
+              {searchQuery && (
+                <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2">
+                  <X className="w-3.5 h-3.5 text-[#86868b]" />
+                </button>
+              )}
+            </div>
+
+            {/* City */}
+            <select
+              value={selectedCity}
+              onChange={(e) => setSelectedCity(e.target.value)}
+              className="px-4 py-2.5 bg-[#f5f5f7] text-[#1d1d1f] text-[14px] rounded-xl border border-transparent focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/15 outline-none appearance-none cursor-pointer min-w-[160px]"
+              style={{ letterSpacing: '-0.01em' }}
+            >
+              {cities.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
+            </select>
+
+            {/* Brand */}
+            <select
+              value={selectedBrand}
+              onChange={(e) => setSelectedBrand(e.target.value)}
+              className="px-4 py-2.5 bg-[#f5f5f7] text-[#1d1d1f] text-[14px] rounded-xl border border-transparent focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/15 outline-none appearance-none cursor-pointer min-w-[160px]"
+              style={{ letterSpacing: '-0.01em' }}
+            >
+              {brands.map(b => <option key={b.value} value={b.value}>{b.label}</option>)}
+            </select>
+
+            {/* Filters toggle */}
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className={`flex items-center gap-2 px-4 py-2.5 text-[14px] font-medium rounded-xl border transition-all ${
+                showFilters
+                  ? 'bg-[#1d1d1f] text-white border-[#1d1d1f]'
+                  : 'bg-[#f5f5f7] text-[#1d1d1f] border-transparent hover:bg-[#e8e8ed]'
+              }`}
+              style={{ letterSpacing: '-0.01em' }}
+            >
+              <SlidersHorizontal className="w-4 h-4" />
+              {lang === 'fr' ? 'Filtres' : 'Filters'}
+              {hasActiveFilters && <span className="w-1.5 h-1.5 bg-[#059669] rounded-full" />}
+            </button>
+          </div>
+
+          {/* Advanced filters */}
+          {showFilters && (
+            <div className="mt-4 pt-4 border-t border-black/[0.06] grid grid-cols-2 md:grid-cols-4 gap-4">
+              {/* Fuel */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {content.pickupLocation}
+                <label className="block text-[11px] font-medium text-[#86868b] uppercase tracking-[0.04em] mb-2">
+                  {lang === 'fr' ? 'Carburant' : 'Fuel'}
                 </label>
                 <select
-                  value={selectedCity}
-                  onChange={(e) => setSelectedCity(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white"
+                  value={selectedFuel}
+                  onChange={(e) => setSelectedFuel(e.target.value)}
+                  className="w-full px-3 py-2 bg-[#f5f5f7] text-[#1d1d1f] text-[13px] rounded-lg border border-transparent focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/15 outline-none"
                 >
-                  {content.cities.map(city => (
-                    <option key={city.value} value={city.value}>{city.label}</option>
-                  ))}
+                  {fuelTypes.map(f => <option key={f.value} value={f.value}>{f.label}</option>)}
                 </select>
               </div>
-              
-              {rentalType === 'rent' && (
-                <>
-                  {/* Date From */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      {content.startDate}
-                    </label>
-                    <input
-                      type="date"
-                      className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white"
-                    />
-                  </div>
-                  
-                  {/* Date To */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      {content.endDate}
-                    </label>
-                    <input
-                      type="date"
-                      className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white"
-                    />
-                  </div>
-                </>
-              )}
-              
-              {rentalType === 'buy' && (
-                <>
-                  {/* Brand */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      {content.brand}
-                    </label>
-                    <select
-                      value={selectedBrand}
-                      onChange={(e) => setSelectedBrand(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white"
-                    >
-                      {content.carBrands.map(brand => (
-                        <option key={brand.value} value={brand.value}>{brand.label}</option>
-                      ))}
-                    </select>
-                  </div>
-                  
-                  {/* Fuel */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      {content.fuel}
-                    </label>
-                    <select
-                      value={selectedFuel}
-                      onChange={(e) => setSelectedFuel(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white"
-                    >
-                      {content.fuelTypes.map(fuel => (
-                        <option key={fuel.value} value={fuel.value}>{fuel.label}</option>
-                      ))}
-                    </select>
-                  </div>
 
-                  {/* Durée */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{content.duree}</label>
-                    <select
-                      value={selectedDuree}
-                      onChange={(e) => setSelectedDuree(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white"
+              {/* Transmission */}
+              <div>
+                <label className="block text-[11px] font-medium text-[#86868b] uppercase tracking-[0.04em] mb-2">
+                  {lang === 'fr' ? 'Transmission' : 'Transmission'}
+                </label>
+                <div className="flex gap-1">
+                  {transmissions.map(opt => (
+                    <button
+                      key={opt.value}
+                      onClick={() => setSelectedTransmission(opt.value)}
+                      className={`flex-1 py-2 text-[12px] font-medium rounded-lg transition-all ${
+                        selectedTransmission === opt.value
+                          ? 'bg-[#1d1d1f] text-white'
+                          : 'bg-[#f5f5f7] text-[#1d1d1f] hover:bg-[#e8e8ed]'
+                      }`}
                     >
-                      {content.dureeOptions.map(duree => (
-                        <option key={duree.value} value={duree.value}>{duree.label}</option>
-                      ))}
-                    </select>
-                  </div>
-                </>
-              )}
-              
-              {/* Search Button */}
-              <div className="flex items-end">
-                <Button size="lg" className="w-full bg-blue-600 hover:bg-blue-700 rounded-2xl py-3 font-medium hover:scale-[1.02] transition-all duration-300">
-                  <Search className="w-5 h-5 mr-3" />
-                  {content.search}
-                </Button>
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Min price */}
+              <div>
+                <label className="block text-[11px] font-medium text-[#86868b] uppercase tracking-[0.04em] mb-2">
+                  {lang === 'fr' ? 'Prix min (XAF/j)' : 'Min price (XAF/d)'}
+                </label>
+                <input
+                  type="number"
+                  value={minPrice}
+                  onChange={(e) => setMinPrice(e.target.value)}
+                  placeholder="0"
+                  className="w-full px-3 py-2 bg-[#f5f5f7] text-[#1d1d1f] text-[13px] rounded-lg border border-transparent focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/15 outline-none"
+                />
+              </div>
+
+              {/* Seats */}
+              <div>
+                <label className="block text-[11px] font-medium text-[#86868b] uppercase tracking-[0.04em] mb-2">
+                  {lang === 'fr' ? 'Places min' : 'Min seats'}
+                </label>
+                <div className="flex gap-1">
+                  {seatOptions.map(opt => (
+                    <button
+                      key={opt.value}
+                      onClick={() => setMinSeats(opt.value)}
+                      className={`flex-1 py-2 text-[11px] font-medium rounded-lg transition-all ${
+                        minSeats === opt.value
+                          ? 'bg-[#1d1d1f] text-white'
+                          : 'bg-[#f5f5f7] text-[#1d1d1f] hover:bg-[#e8e8ed]'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
+          )}
+
+          {/* Active filter chips */}
+          {hasActiveFilters && (
+            <div className="flex flex-wrap gap-2 mt-4 items-center">
+              {searchQuery && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#f5f5f7] text-[#1d1d1f] text-[12px] font-medium rounded-full">
+                  🔍 {searchQuery}
+                  <button onClick={() => setSearchQuery('')}><X className="w-3 h-3 text-[#86868b]" /></button>
+                </span>
+              )}
+              {selectedCity !== 'all' && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#f5f5f7] text-[#1d1d1f] text-[12px] font-medium rounded-full">
+                  📍 {selectedCity}
+                  <button onClick={() => setSelectedCity('all')}><X className="w-3 h-3 text-[#86868b]" /></button>
+                </span>
+              )}
+              {selectedBrand !== 'all' && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#f5f5f7] text-[#1d1d1f] text-[12px] font-medium rounded-full">
+                  🚘 {selectedBrand}
+                  <button onClick={() => setSelectedBrand('all')}><X className="w-3 h-3 text-[#86868b]" /></button>
+                </span>
+              )}
+              {selectedFuel !== 'all' && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#f5f5f7] text-[#1d1d1f] text-[12px] font-medium rounded-full">
+                  ⛽ {fuelTypes.find(f => f.value === selectedFuel)?.label}
+                  <button onClick={() => setSelectedFuel('all')}><X className="w-3 h-3 text-[#86868b]" /></button>
+                </span>
+              )}
+              {selectedTransmission !== 'all' && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#f5f5f7] text-[#1d1d1f] text-[12px] font-medium rounded-full">
+                  ⚙️ {transmissions.find(t => t.value === selectedTransmission)?.label}
+                  <button onClick={() => setSelectedTransmission('all')}><X className="w-3 h-3 text-[#86868b]" /></button>
+                </span>
+              )}
+              {(minPrice || maxPrice) && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#f5f5f7] text-[#1d1d1f] text-[12px] font-medium rounded-full">
+                  💰 {minPrice ? formatPrice(parseInt(minPrice)) : '0'} – {maxPrice ? `${formatPrice(parseInt(maxPrice))} XAF` : '∞'}
+                  <button onClick={() => { setMinPrice(''); setMaxPrice('') }}><X className="w-3 h-3 text-[#86868b]" /></button>
+                </span>
+              )}
+              <button onClick={clearAll} className="text-[12px] text-[#059669] hover:text-[#047857] font-medium ml-auto">
+                {lang === 'fr' ? 'Tout effacer' : 'Clear all'}
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Quick Categories removed for Apple clean style */}
-
       {/* Results */}
-      <main className="flex-1 py-8">
-        <div className="max-w-6xl mx-auto px-4">
-          {/* Results Header */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+      <main className="flex-1 bg-[#f5f5f7]">
+        <div className="max-w-[1200px] mx-auto px-6 py-8">
+          {/* Results bar */}
+          <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-xl font-semibold text-gray-900">
-                {content.resultsFound(filteredAndSortedListings.length)}
-              </h2>
-              <p className="text-sm text-gray-500">
-                {selectedCity !== 'all' ? selectedCity : content.allCameroon}
+              <p className="text-[15px] font-semibold text-[#1d1d1f]" style={{ letterSpacing: '-0.02em' }}>
+                {loading ? '...' : `${filteredListings.length} ${lang === 'fr' ? (filteredListings.length > 1 ? 'véhicules' : 'véhicule') : (filteredListings.length === 1 ? 'vehicle' : 'vehicles')}`}
+              </p>
+              <p className="text-[13px] text-[#86868b]">
+                {selectedCity !== 'all' ? selectedCity : lang === 'fr' ? 'Tout le Cameroun' : 'All Cameroon'}
               </p>
             </div>
-            
-            <Button variant="outline" size="sm">
-              <Filter className="w-4 h-4 mr-2" />
-              {content.moreFilters}
-            </Button>
+            <div className="flex items-center gap-2">
+              <ArrowUpDown className="w-3.5 h-3.5 text-[#86868b]" />
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as SortOption)}
+                className="text-[13px] text-[#1d1d1f] bg-transparent border-none outline-none cursor-pointer font-medium"
+                style={{ letterSpacing: '-0.01em' }}
+              >
+                {sortOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+              </select>
+            </div>
           </div>
 
-          {/* Listings Grid - Mobile.de Style */}
+          {/* Grid */}
           {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {[1,2,3,4,5,6].map(i => (
-                <div key={i} className="animate-pulse">
-                  <div className="bg-gray-200 rounded-xl h-48 mb-3"></div>
-                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                <div key={i} className="bg-white rounded-2xl overflow-hidden">
+                  <div className="skeleton h-52" />
+                  <div className="p-4 space-y-2">
+                    <div className="skeleton h-4 w-3/4" />
+                    <div className="skeleton h-3 w-1/2" />
+                    <div className="skeleton h-5 w-1/3 mt-3" />
+                  </div>
                 </div>
               ))}
             </div>
+          ) : filteredListings.length === 0 ? (
+            <div className="text-center py-20">
+              <div className="w-16 h-16 bg-[#f5f5f7] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Car className="w-7 h-7 text-[#86868b]" />
+              </div>
+              <h3 className="text-[17px] font-semibold text-[#1d1d1f] mb-2" style={{ letterSpacing: '-0.02em' }}>
+                {lang === 'fr' ? 'Aucun véhicule trouvé' : 'No vehicles found'}
+              </h3>
+              <p className="text-[14px] text-[#86868b] mb-4">
+                {lang === 'fr' ? 'Essayez de modifier vos critères de recherche' : 'Try adjusting your search criteria'}
+              </p>
+              {hasActiveFilters && (
+                <button onClick={clearAll} className="text-[14px] text-[#059669] font-medium hover:text-[#047857]">
+                  {lang === 'fr' ? 'Effacer les filtres' : 'Clear filters'}
+                </button>
+              )}
+            </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredAndSortedListings.map((listing) => (
-                <Link 
-                  key={listing.id} 
-                  href={`/cars/${listing.id}`}
-                  className="group"
-                >
-                  <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-300 border border-gray-100">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredListings.map((listing) => (
+                <Link key={listing.id} href={`/cars/${listing.id}`} className="group">
+                  <div
+                    className="bg-white rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
+                    style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04)' }}
+                  >
                     {/* Image */}
-                    <div className="relative h-48 overflow-hidden">
+                    <div className="relative h-52 overflow-hidden">
                       {listing.images?.[0] ? (
                         <img
                           src={listing.images[0]}
                           alt={listing.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                       ) : (
-                        <div className="w-full h-full bg-gray-200 flex flex-col items-center justify-center">
-                          <svg className="w-12 h-12 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                          <span className="text-gray-500 text-sm font-medium">Aucune photo</span>
+                        <div className="w-full h-full bg-[#f5f5f7] flex items-center justify-center">
+                          <Car className="w-10 h-10 text-[#c7c7cc]" />
                         </div>
                       )}
-                      
-                      {/* Favorite Button */}
-                      <button 
-                        className="absolute top-3 right-3 p-2 bg-white/80 rounded-full hover:bg-white transition-colors"
-                        onClick={(e) => { e.preventDefault(); }}
+
+                      {/* Favorite */}
+                      <button
+                        className="absolute top-3 right-3 w-8 h-8 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-all shadow-sm"
+                        onClick={(e) => e.preventDefault()}
                       >
-                        <Heart className="w-4 h-4 text-gray-600" />
+                        <Heart className="w-3.5 h-3.5 text-[#1d1d1f]" />
                       </button>
-                      
-                      {/* Badges */}
-                      <div className="absolute top-3 left-3 flex gap-2">
-                        {listing.is_verified && (
-                          <span className="bg-green-600 text-white text-xs font-medium px-2 py-1 rounded-full flex items-center gap-1">
+
+                      {/* Verified badge */}
+                      {listing.is_verified && (
+                        <div className="absolute top-3 left-3">
+                          <span className="flex items-center gap-1 px-2 py-0.5 bg-white/90 backdrop-blur-sm text-[#059669] text-[11px] font-semibold rounded-full">
                             <CheckCircle className="w-3 h-3" />
-                            Vérifié ✓
+                            Pro
                           </span>
-                        )}
-                      </div>
+                        </div>
+                      )}
                     </div>
-                    
+
                     {/* Content */}
                     <div className="p-4">
-                      {/* Price prominant */}
-                      <div className="mb-3">
-                        {listing.price_per_day ? (
-                          <>
-                            <span className="text-xl font-bold text-blue-600">
-                              {formatPrice(listing.price_per_day)}
-                            </span>
-                            <span className="text-gray-500 text-sm"> XAF{t.listings.perDay}</span>
-                          </>
-                        ) : (
-                          <>
-                            <span className="text-xl font-bold text-blue-600">
-                              {formatPrice(listing.price)}
-                            </span>
-                            <span className="text-gray-500 text-sm"> XAF</span>
-                          </>
-                        )}
-                      </div>
-                      
-                      {/* Brand & Model */}
+                      {/* Brand + year */}
                       <div className="flex items-center gap-2 mb-1">
-                        {listing.car_brand && (
-                          <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
-                            {listing.car_brand}
+                        {listing.brand && (
+                          <span className="px-2 py-0.5 bg-[#f5f5f7] text-[#059669] text-[11px] font-semibold rounded-full">
+                            {listing.brand}
                           </span>
                         )}
-                        {listing.car_year && (
-                          <span className="text-xs text-gray-500">{listing.car_year}</span>
+                        {listing.year && (
+                          <span className="text-[12px] text-[#86868b]">{listing.year}</span>
                         )}
                       </div>
-                      
-                      <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors mb-2">
+
+                      <h3
+                        className="font-semibold text-[#1d1d1f] mb-1 group-hover:text-[#059669] transition-colors"
+                        style={{ fontSize: '15px', letterSpacing: '-0.02em' }}
+                      >
                         {listing.title}
                       </h3>
-                      
-                      {/* Ort/Quartier unter Titel */}
-                      <div className="flex items-center text-gray-500 text-sm mb-3">
-                        <MapPin className="w-4 h-4 mr-1" />
-                        <span>{listing.neighborhood ? `${listing.neighborhood}, ` : ''}{listing.city}</span>
+
+                      <div className="flex items-center gap-1 text-[#86868b] text-[13px] mb-3">
+                        <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+                        <span>{listing.city}</span>
                       </div>
-                      
-                      {/* Features - Mobile.de Style */}
-                      <div className="flex flex-wrap gap-3 text-xs text-gray-600 mb-4">
+
+                      {/* Specs */}
+                      <div className="flex flex-wrap gap-3 text-[12px] text-[#6e6e73] mb-4">
                         {listing.fuel_type && (
                           <span className="flex items-center gap-1">
-                            <Fuel className="w-3 h-3" />
-                            {getFuelType(listing.fuel_type)}
+                            <Fuel className="w-3.5 h-3.5" />
+                            {getFuelLabel(listing.fuel_type)}
                           </span>
                         )}
                         {listing.transmission && (
                           <span className="flex items-center gap-1">
-                            <Settings2 className="w-3 h-3" />
-                            {listing.transmission === 'automatic' ? content.auto : content.manual}
+                            <Settings2 className="w-3.5 h-3.5" />
+                            {listing.transmission === 'automatic' ? (lang === 'fr' ? 'Auto' : 'Auto') : (lang === 'fr' ? 'Manuel' : 'Manual')}
                           </span>
                         )}
                         {listing.seats && (
                           <span className="flex items-center gap-1">
-                            <Users className="w-3 h-3" />
-                            {listing.seats} {content.seats}
+                            <Users className="w-3.5 h-3.5" />
+                            {listing.seats} {lang === 'fr' ? 'places' : 'seats'}
                           </span>
                         )}
+                      </div>
+
+                      {/* Price */}
+                      <div className="flex items-center justify-between pt-3 border-t border-[#e0f2fe]">
+                        <div>
+                          <span className="font-bold" style={{ fontSize: '17px', letterSpacing: '-0.02em', color: '#0ea5e9' }}>
+                            {formatPrice(listing.price_per_day)}
+                          </span>
+                          <span className="text-[12px] ml-1" style={{ color: '#6b7280' }}>XAF/{lang === 'fr' ? 'jour' : 'day'}</span>
+                        </div>
+                        <span
+                          className="px-3 py-1.5 text-white text-[12px] font-semibold rounded-full transition-all"
+                          style={{ background: 'linear-gradient(135deg, #0ea5e9, #38bdf8)' }}
+                        >
+                          {lang === 'fr' ? 'Voir' : 'View'}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -490,37 +555,22 @@ export default function CarsPage() {
               ))}
             </div>
           )}
-
-          {/* No Results - Empty State */}
-          {!loading && filteredAndSortedListings.length === 0 && (
-            <div className="text-center py-16">
-              {/* CSS-only car illustration */}
-              <div className="relative w-24 h-24 mx-auto mb-8">
-                <div className="absolute inset-0 bg-gradient-to-b from-blue-100 to-blue-200 rounded-2xl"></div>
-                <div className="absolute top-6 left-3 w-18 h-8 bg-white rounded-lg shadow-sm flex items-center justify-center">
-                  <Car className="w-8 h-5 text-gray-400" />
-                </div>
-                <div className="absolute bottom-2 right-2 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold">+</div>
-              </div>
-              
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                Soyez le premier à publier dans cette catégorie!
-              </h3>
-              <p className="text-gray-600 mb-6 max-w-md mx-auto">
-                Aucun véhicule ne correspond à vos critères. Partagez votre auto et trouvez vos premiers clients.
-              </p>
-              
-              <Link href="/dashboard/new">
-                <Button size="lg" className="bg-blue-600 hover:bg-blue-700 px-8">
-                  Publier une annonce →
-                </Button>
-              </Link>
-            </div>
-          )}
         </div>
       </main>
 
       <Footer />
     </div>
+  )
+}
+
+export default function CarsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="w-8 h-8 border-2 border-[#059669] border-t-transparent rounded-full animate-spin" />
+      </div>
+    }>
+      <CarsPageInner />
+    </Suspense>
   )
 }

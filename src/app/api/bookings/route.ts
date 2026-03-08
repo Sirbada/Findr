@@ -1,220 +1,132 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
+import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
+import { checkRateLimit } from '@/lib/security/validation'
 
-export async function POST(request: NextRequest) {
-  try {
-    const supabase = await createClient()
-    
-    // Get current user (tenant)
-    const { data: { user }, error: userError } = await supabase.auth.getUser()
-    
-    if (userError || !user) {
-      return NextResponse.json(
-        { success: false, error: 'Authentication required' },
-        { status: 401 }
-      )
-    }
+const bookingSchema = z.object({
+  property_id: z.string().uuid().optional(),
+  vehicle_id: z.string().uuid().optional(),
+  start_date: z.string().min(1),
+  end_date: z.string().min(1),
+})
 
-    const body = await request.json()
-    const { 
-      listing_id, 
-      check_in, 
-      check_out,
-      duration_months,
-      tenant_message 
-    } = body
-
-    // Validate required fields
-    if (!listing_id || !check_in) {
-      return NextResponse.json(
-        { success: false, error: 'listing_id and check_in are required' },
-        { status: 400 }
-      )
-    }
-
-    // Fetch listing details and landlord info
-    const { data: listing, error: listingError } = await supabase
-      .from('listings')
-      .select(`
-        *,
-        profiles!listings_user_id_fkey (
-          id,
-          full_name
-        )
-      `)
-      .eq('id', listing_id)
-      .eq('status', 'active')
-      .single()
-
-    if (listingError || !listing) {
-      return NextResponse.json(
-        { success: false, error: 'Listing not found or not available' },
-        { status: 404 }
-      )
-    }
-
-    if (listing.user_id === user.id) {
-      return NextResponse.json(
-        { success: false, error: 'You cannot book your own listing' },
-        { status: 400 }
-      )
-    }
-
-    // Calculate financial details
-    const monthlyRent = listing.price
-    const depositAmount = monthlyRent * (listing.deposit_months || 2)
-    const serviceFee = Math.ceil(monthlyRent * 0.05) // 5% service fee
-    const totalAmount = monthlyRent + depositAmount + serviceFee
-
-    // Create booking
-    const bookingData = {
-      listing_id,
-      tenant_id: user.id,
-      landlord_id: listing.user_id,
-      check_in,
-      check_out: check_out || null,
-      duration_months: duration_months || 1,
-      monthly_rent: monthlyRent,
-      deposit_amount: depositAmount,
-      service_fee: serviceFee,
-      total_amount: totalAmount,
-      tenant_message: tenant_message || null,
-      status: 'pending' as const,
-      deposit_status: 'pending' as const
-    }
-
-    const { data: booking, error: bookingError } = await supabase
-      .from('bookings')
-      .insert([bookingData])
-      .select(`
-        *,
-        listings (
-          title,
-          images,
-          city,
-          neighborhood
-        ),
-        tenant:profiles!bookings_tenant_id_fkey (
-          id,
-          full_name,
-          phone
-        ),
-        landlord:profiles!bookings_landlord_id_fkey (
-          id,
-          full_name,
-          phone
-        )
-      `)
-      .single()
-
-    if (bookingError) {
-      console.error('Error creating booking:', bookingError)
-      return NextResponse.json(
-        { success: false, error: 'Failed to create booking' },
-        { status: 500 }
-      )
-    }
-
-    // TODO: Send notification to landlord about new booking request
-    // TODO: Send confirmation email/SMS to tenant
-
-    return NextResponse.json({
-      success: true,
-      data: booking,
-      message: 'Booking request submitted successfully. The landlord will review your request.'
-    }, { status: 201 })
-
-  } catch (error) {
-    console.error('Create booking API error:', error)
-    
-    return NextResponse.json(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    )
-  }
+function isValidRange(start: string, end: string) {
+  const s = new Date(start)
+  const e = new Date(end)
+  return !Number.isNaN(s.getTime()) && !Number.isNaN(e.getTime()) && s < e
 }
 
-export async function GET(request: NextRequest) {
-  try {
-    const supabase = await createClient()
-    
-    // Get current user
-    const { data: { user }, error: userError } = await supabase.auth.getUser()
-    
-    if (userError || !user) {
-      return NextResponse.json(
-        { success: false, error: 'Authentication required' },
-        { status: 401 }
-      )
-    }
-
-    const { searchParams } = new URL(request.url)
-    const role = searchParams.get('role') // 'tenant' or 'landlord'
-    const status = searchParams.get('status')
-    const limit = parseInt(searchParams.get('limit') || '20')
-
-    let query = supabase
-      .from('bookings')
-      .select(`
-        *,
-        listings (
-          id,
-          title,
-          images,
-          city,
-          neighborhood,
-          housing_type
-        ),
-        tenant:profiles!bookings_tenant_id_fkey (
-          id,
-          full_name,
-          phone
-        ),
-        landlord:profiles!bookings_landlord_id_fkey (
-          id,
-          full_name,
-          phone
-        )
-      `)
-      .order('created_at', { ascending: false })
-      .limit(limit)
-
-    // Filter by role
-    if (role === 'tenant') {
-      query = query.eq('tenant_id', user.id)
-    } else if (role === 'landlord') {
-      query = query.eq('landlord_id', user.id)
-    } else {
-      // Default: show all bookings where user is involved
-      query = query.or(`tenant_id.eq.${user.id},landlord_id.eq.${user.id}`)
-    }
-
-    // Filter by status
-    if (status) {
-      query = query.eq('status', status)
-    }
-
-    const { data: bookings, error: bookingsError } = await query
-
-    if (bookingsError) {
-      console.error('Error fetching bookings:', bookingsError)
-      return NextResponse.json(
-        { success: false, error: 'Failed to fetch bookings' },
-        { status: 500 }
-      )
-    }
-
-    return NextResponse.json({
-      success: true,
-      data: bookings || []
-    })
-
-  } catch (error) {
-    console.error('Get bookings API error:', error)
-    
-    return NextResponse.json(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    )
+export async function POST(request: Request) {
+  const rate = checkRateLimit(`bookings:${request.headers.get('x-forwarded-for') || 'local'}`, 8, 60_000)
+  if (!rate.allowed) {
+    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 })
   }
+
+  const body = await request.json().catch(() => null)
+  const parsed = bookingSchema.safeParse(body)
+  if (!parsed.success) {
+    return NextResponse.json({ error: 'Invalid payload' }, { status: 400 })
+  }
+
+  const { property_id, vehicle_id, start_date, end_date } = parsed.data
+  if ((property_id && vehicle_id) || (!property_id && !vehicle_id)) {
+    return NextResponse.json({ error: 'Invalid listing target' }, { status: 400 })
+  }
+  if (!isValidRange(start_date, end_date)) {
+    return NextResponse.json({ error: 'Invalid date range' }, { status: 400 })
+  }
+
+  const supabase = await createClient()
+  const authClient: any = (supabase as any).auth
+  const sessionData = authClient.getSession
+    ? await authClient.getSession()
+    : await authClient.getUser()
+  const user = sessionData?.data?.session?.user || sessionData?.data?.user
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  let availabilityQuery = supabase
+    .from('availability')
+    .select('start_date,end_date')
+    .lte('start_date', end_date)
+    .gte('end_date', start_date)
+
+  if (property_id) {
+    availabilityQuery = availabilityQuery.eq('property_id', property_id)
+  } else {
+    availabilityQuery = availabilityQuery.eq('vehicle_id', vehicle_id as string)
+  }
+
+  const { data: overlaps } = await availabilityQuery
+  if (overlaps && overlaps.length > 0) {
+    return NextResponse.json({ 
+      error: 'Dates unavailable', 
+      conflicts: overlaps.map((o: any) => ({ start_date: o.start_date, end_date: o.end_date }))
+    }, { status: 409 })
+  }
+
+  let unitPrice = 0
+  let currency = 'XAF'
+  if (property_id) {
+    const { data: pricing, error: pricingError } = await supabase
+      .from('properties')
+      .select('price_per_night,currency')
+      .eq('id', property_id)
+      .single()
+    if (pricingError || !pricing) {
+      return NextResponse.json({ error: 'Listing not found' }, { status: 404 })
+    }
+    unitPrice = pricing.price_per_night
+    currency = pricing.currency || 'XAF'
+  } else {
+    const { data: pricing, error: pricingError } = await supabase
+      .from('vehicles')
+      .select('price_per_day,currency')
+      .eq('id', vehicle_id as string)
+      .single()
+    if (pricingError || !pricing) {
+      return NextResponse.json({ error: 'Listing not found' }, { status: 404 })
+    }
+    unitPrice = pricing.price_per_day
+    currency = pricing.currency || 'XAF'
+  }
+
+  const nights = Math.max(1, Math.ceil((new Date(end_date).getTime() - new Date(start_date).getTime()) / (1000 * 60 * 60 * 24)))
+  const total_price = unitPrice * nights
+
+  const { data: booking, error: bookingError } = await supabase
+    .from('bookings')
+    .insert({
+      user_id: user.id,
+      property_id: property_id || null,
+      vehicle_id: vehicle_id || null,
+      start_date,
+      end_date,
+      status: 'pending',
+      total_price,
+      currency,
+    })
+    .select('id')
+    .single()
+
+  if (bookingError) {
+    return NextResponse.json({ error: 'Booking failed' }, { status: 500 })
+  }
+
+  const { error: availabilityError } = await supabase.from('availability').insert({
+    property_id: property_id || null,
+    vehicle_id: vehicle_id || null,
+    start_date,
+    end_date,
+    is_blocked: true,
+    booking_id: booking.id,
+    created_by: user.id,
+  })
+
+  if (availabilityError) {
+    return NextResponse.json({ error: 'Availability lock failed' }, { status: 409 })
+  }
+
+  return NextResponse.json({ booking_id: booking.id, total_price }, { status: 201 })
 }

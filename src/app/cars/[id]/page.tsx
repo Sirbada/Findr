@@ -3,17 +3,24 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { 
+import {
   ArrowLeft, MapPin, Fuel, Settings2, Users, Calendar,
   Heart, Share2, CheckCircle, Phone, MessageSquare, User,
-  Car, Shield, ChevronLeft, ChevronRight, Star
+  Car, Shield, ChevronLeft, ChevronRight, Star, Tag
 } from 'lucide-react'
+import { z } from 'zod'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { Button } from '@/components/ui/Button'
-import { getListing, Listing } from '@/lib/supabase/queries'
+import { DatePicker } from '@/components/ui/DatePicker'
+import { getVehicle, Vehicle } from '@/lib/supabase/queries'
 import { useTranslation } from '@/lib/i18n/context'
 import { WhatsAppButton, WhatsAppFloatingButton } from '@/components/ui/WhatsAppButton'
+import { MakeOfferModal } from '@/components/ui/MakeOfferModal'
+import { useAuth } from '@/lib/auth/context'
+import { ContactSellerButton } from '@/components/ui/ContactSellerButton'
+import { useDiaspora } from '@/lib/diaspora/context'
+import { EscrowButton } from '@/components/ui/EscrowButton'
 
 function formatPrice(price: number): string {
   return new Intl.NumberFormat('fr-FR').format(price)
@@ -22,15 +29,67 @@ function formatPrice(price: number): string {
 export default function CarDetailPage() {
   const params = useParams()
   const { t, lang } = useTranslation()
-  const [listing, setListing] = useState<Listing | null>(null)
+  const { user } = useAuth()
+  const { isDiasporaMode, convertPrice } = useDiaspora()
+  const [listing, setListing] = useState<Vehicle | null>(null)
   const [loading, setLoading] = useState(true)
   const [currentImage, setCurrentImage] = useState(0)
-  const [selectedDays, setSelectedDays] = useState(1)
+  const [showOffer, setShowOffer] = useState(false)
+  const [startDate, setStartDate] = useState('')
+  const [endDate, setEndDate] = useState('')
+  const [bookingStatus, setBookingStatus] = useState('')
+  const [bookingLoading, setBookingLoading] = useState(false)
+  const [bookingConflicts, setBookingConflicts] = useState<Array<{ start_date: string; end_date: string }>>([])
+  const [bookingStep, setBookingStep] = useState<'idle' | 'requested' | 'confirm' | 'done'>('idle')
+
+  const bookingSchema = z.object({
+    startDate: z.string().min(1),
+    endDate: z.string().min(1),
+  })
+
+  const daysBetween = (start: string, end: string) => {
+    const s = new Date(start)
+    const e = new Date(end)
+    const diff = Math.max(0, e.getTime() - s.getTime())
+    return Math.max(1, Math.ceil(diff / (1000 * 60 * 60 * 24)))
+  }
+
+  const handleBooking = async () => {
+    setBookingStatus('')
+    const parsed = bookingSchema.safeParse({ startDate, endDate })
+    if (!parsed.success || !listing) {
+      setBookingStatus('Sélectionnez des dates valides.')
+      return
+    }
+    setBookingLoading(true)
+    setBookingStep('requested')
+    const res = await fetch('/api/bookings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        vehicle_id: listing.id,
+        start_date: startDate,
+        end_date: endDate,
+      }),
+    })
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({}))
+      setBookingStatus(error.error || 'Erreur de réservation. Réessayez.')
+      setBookingConflicts(error.conflicts || [])
+      setBookingStep('idle')
+      setBookingLoading(false)
+      return
+    }
+    setBookingStatus('Réservation créée. Confirmez sur votre téléphone.')
+    setBookingConflicts([])
+    setBookingStep('confirm')
+    setBookingLoading(false)
+  }
 
   useEffect(() => {
     async function fetchListing() {
       if (params.id) {
-        const data = await getListing(params.id as string)
+        const data = await getVehicle(params.id as string)
         setListing(data)
       }
       setLoading(false)
@@ -101,15 +160,27 @@ export default function CarDetailPage() {
 
   if (!listing) {
     return (
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col bg-[color:var(--background)]">
         <Header />
-        <main className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">{content.notFound}</h1>
-            <p className="text-gray-500 mb-4">{t.listings.notFoundDesc}</p>
-            <Link href="/cars">
-              <Button>{content.viewAll}</Button>
-            </Link>
+        <main className="flex-1 flex items-center justify-center px-4">
+          <div className="text-center max-w-md">
+            <div className="w-24 h-24 bg-[color:var(--green-50)] rounded-full flex items-center justify-center mx-auto mb-6">
+              <Car className="w-12 h-12 text-[color:var(--green-300)]" />
+            </div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-3">{content.notFound}</h1>
+            <p className="text-gray-500 mb-8 text-lg">{t.listings.notFoundDesc}</p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <button
+                onClick={() => window.history.back()}
+                className="flex items-center justify-center gap-2 px-5 py-3 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50 transition-colors font-medium"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                {t.listings.backToResults}
+              </button>
+              <Link href="/cars">
+                <Button className="w-full sm:w-auto px-5 py-3">{content.viewAll}</Button>
+              </Link>
+            </div>
           </div>
         </main>
       </div>
@@ -118,17 +189,18 @@ export default function CarDetailPage() {
 
   const images = listing.images?.length ? listing.images : ['https://images.unsplash.com/photo-1568844293986-8c1a5c14e3f7?w=800']
   const pricePerDay = listing.price_per_day || 35000
-  const totalPrice = pricePerDay * selectedDays
+  const rentalDays = startDate && endDate ? daysBetween(startDate, endDate) : 1
+  const totalPrice = pricePerDay * rentalDays
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-[color:var(--background)]">
       <Header />
       
       <main className="flex-1">
         {/* Breadcrumb */}
-        <div className="bg-white border-b">
+        <div className="bg-white/90 border-b backdrop-blur-sm">
           <div className="max-w-6xl mx-auto px-4 py-3">
-            <Link href="/cars" className="flex items-center text-sm text-gray-600 hover:text-blue-600">
+            <Link href="/cars" className="flex items-center text-sm text-gray-600 hover:text-[color:var(--green-700)]">
               <ArrowLeft className="w-4 h-4 mr-2" />
               {t.listings.backToResults}
             </Link>
@@ -140,7 +212,7 @@ export default function CarDetailPage() {
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-6">
               {/* Image Gallery - Sixt Style */}
-              <div className="bg-white rounded-2xl overflow-hidden shadow-sm">
+              <div className="bg-white rounded-3xl overflow-hidden shadow-[var(--shadow-soft-sm)]">
                 <div className="relative h-[300px] md:h-[400px]">
                   <img
                     src={images[currentImage]}
@@ -153,13 +225,13 @@ export default function CarDetailPage() {
                     <>
                       <button 
                         onClick={() => setCurrentImage(prev => prev > 0 ? prev - 1 : images.length - 1)}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-white rounded-full shadow-lg hover:bg-gray-100"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-white rounded-full shadow-[var(--shadow-soft-sm)] hover:bg-gray-100"
                       >
                         <ChevronLeft className="w-5 h-5" />
                       </button>
                       <button 
                         onClick={() => setCurrentImage(prev => prev < images.length - 1 ? prev + 1 : 0)}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-white rounded-full shadow-lg hover:bg-gray-100"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-white rounded-full shadow-[var(--shadow-soft-sm)] hover:bg-gray-100"
                       >
                         <ChevronRight className="w-5 h-5" />
                       </button>
@@ -169,7 +241,7 @@ export default function CarDetailPage() {
                   {/* Badges */}
                   <div className="absolute top-4 left-4 flex gap-2">
                     {listing.is_verified && (
-                      <span className="bg-green-600 text-white text-xs font-medium px-3 py-1 rounded-full flex items-center gap-1">
+                      <span className="bg-[color:var(--green-600)] text-white text-xs font-medium px-3 py-1 rounded-full flex items-center gap-1">
                         <CheckCircle className="w-3 h-3" />
                         {content.verifiedPro}
                       </span>
@@ -190,7 +262,7 @@ export default function CarDetailPage() {
                         key={idx}
                         onClick={() => setCurrentImage(idx)}
                         className={`flex-shrink-0 w-20 h-14 rounded-lg overflow-hidden border-2 ${
-                          currentImage === idx ? 'border-blue-500' : 'border-transparent'
+                          currentImage === idx ? 'border-[color:var(--green-500)]' : 'border-transparent'
                         }`}
                       >
                         <img src={img} alt="" className="w-full h-full object-cover" />
@@ -201,17 +273,17 @@ export default function CarDetailPage() {
               </div>
 
               {/* Title & Info */}
-              <div className="bg-white rounded-xl shadow-sm p-6">
+              <div className="bg-white rounded-3xl shadow-[var(--shadow-soft-sm)] p-6">
                 <div className="flex items-start justify-between gap-4 mb-4">
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      {listing.car_brand && (
-                        <span className="bg-blue-100 text-blue-700 text-sm font-medium px-3 py-1 rounded-full">
-                          {listing.car_brand}
+                      {listing.brand && (
+                        <span className="bg-[color:var(--green-50)] text-[color:var(--green-700)] text-sm font-medium px-3 py-1 rounded-full">
+                          {listing.brand}
                         </span>
                       )}
-                      {listing.car_year && (
-                        <span className="text-gray-500">{listing.car_year}</span>
+                      {listing.year && (
+                        <span className="text-gray-500">{listing.year}</span>
                       )}
                     </div>
                     <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
@@ -235,31 +307,31 @@ export default function CarDetailPage() {
 
                 {/* Specifications */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="bg-gray-50 rounded-xl p-4 text-center">
-                    <Fuel className="w-6 h-6 mx-auto mb-2 text-blue-600" />
+                  <div className="bg-[color:var(--green-50)] rounded-2xl p-4 text-center">
+                    <Fuel className="w-6 h-6 mx-auto mb-2 text-[color:var(--green-600)]" />
                     <p className="text-sm text-gray-500">{content.fuel}</p>
                     <p className="font-semibold">{getFuelType(listing.fuel_type)}</p>
                   </div>
-                  <div className="bg-gray-50 rounded-xl p-4 text-center">
-                    <Settings2 className="w-6 h-6 mx-auto mb-2 text-blue-600" />
+                  <div className="bg-[color:var(--green-50)] rounded-2xl p-4 text-center">
+                    <Settings2 className="w-6 h-6 mx-auto mb-2 text-[color:var(--green-600)]" />
                     <p className="text-sm text-gray-500">{content.transmission}</p>
                     <p className="font-semibold">{getTransmission(listing.transmission)}</p>
                   </div>
-                  <div className="bg-gray-50 rounded-xl p-4 text-center">
-                    <Users className="w-6 h-6 mx-auto mb-2 text-blue-600" />
+                  <div className="bg-[color:var(--green-50)] rounded-2xl p-4 text-center">
+                    <Users className="w-6 h-6 mx-auto mb-2 text-[color:var(--green-600)]" />
                     <p className="text-sm text-gray-500">{content.seats}</p>
                     <p className="font-semibold">{listing.seats || 5}</p>
                   </div>
-                  <div className="bg-gray-50 rounded-xl p-4 text-center">
-                    <Calendar className="w-6 h-6 mx-auto mb-2 text-blue-600" />
+                  <div className="bg-[color:var(--green-50)] rounded-2xl p-4 text-center">
+                    <Calendar className="w-6 h-6 mx-auto mb-2 text-[color:var(--green-600)]" />
                     <p className="text-sm text-gray-500">{content.year}</p>
-                    <p className="font-semibold">{listing.car_year || 'N/A'}</p>
+                    <p className="font-semibold">{listing.year || 'N/A'}</p>
                   </div>
                 </div>
               </div>
 
               {/* Description */}
-              <div className="bg-white rounded-xl shadow-sm p-6">
+              <div className="bg-white rounded-3xl shadow-[var(--shadow-soft-sm)] p-6">
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">{content.description}</h2>
                 <p className="text-gray-600 whitespace-pre-line">
                   {listing.description || content.noDescription}
@@ -267,7 +339,7 @@ export default function CarDetailPage() {
               </div>
 
               {/* Included - Sixt Style */}
-              <div className="bg-white rounded-xl shadow-sm p-6">
+              <div className="bg-white rounded-3xl shadow-[var(--shadow-soft-sm)] p-6">
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">{content.included}</h2>
                 <div className="grid grid-cols-2 gap-4">
                   {content.includedItems.map((item, idx) => (
@@ -282,44 +354,42 @@ export default function CarDetailPage() {
 
             {/* Sidebar - Booking Card */}
             <div className="lg:col-span-1">
-              <div className="sticky top-24 bg-white rounded-xl shadow-lg p-6">
+              <div className="sticky top-24 bg-white rounded-3xl shadow-[var(--shadow-soft)] p-6">
                 {/* Price */}
                 <div className="text-center mb-6 pb-6 border-b">
-                  <span className="text-4xl font-bold text-blue-600">
+                  <span className="text-4xl font-bold text-[color:var(--green-700)]">
                     {formatPrice(pricePerDay)}
                   </span>
                   <span className="text-gray-500"> XAF{content.perDay}</span>
                 </div>
 
-                {/* Duration Selector */}
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {content.duration}
-                  </label>
-                  <div className="flex items-center">
-                    <button 
-                      onClick={() => setSelectedDays(Math.max(1, selectedDays - 1))}
-                      className="px-4 py-2 border rounded-l-lg hover:bg-gray-50"
-                    >
-                      -
-                    </button>
-                    <div className="flex-1 text-center py-2 border-t border-b font-medium">
-                      {selectedDays} {selectedDays > 1 ? content.days : content.day}
-                    </div>
-                    <button 
-                      onClick={() => setSelectedDays(selectedDays + 1)}
-                      className="px-4 py-2 border rounded-r-lg hover:bg-gray-50"
-                    >
-                      +
-                    </button>
+                {/* Date Range */}
+                <div className="mb-6 space-y-3">
+                  <DatePicker
+                    label={lang === 'fr' ? 'Début' : 'Start'}
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                  />
+                  <DatePicker
+                    label={lang === 'fr' ? 'Fin' : 'End'}
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                  />
+                </div>
+
+                <div className="mb-4 rounded-2xl bg-[color:var(--green-50)] px-4 py-3 text-xs text-[color:var(--green-700)]">
+                  <div className="flex items-center justify-between">
+                    <span className={bookingStep === 'requested' ? 'font-semibold' : ''}>1. Demande</span>
+                    <span className={bookingStep === 'confirm' ? 'font-semibold' : ''}>2. Confirmer (USSD)</span>
+                    <span className={bookingStep === 'done' ? 'font-semibold' : ''}>3. Terminé</span>
                   </div>
                 </div>
 
                 {/* Total */}
-                <div className="bg-blue-50 rounded-lg p-4 mb-6">
+                <div className="bg-[color:var(--green-50)] rounded-2xl p-4 mb-6">
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">{content.total}</span>
-                    <span className="text-2xl font-bold text-blue-600">
+                    <span className="text-2xl font-bold text-[color:var(--green-700)]">
                       {formatPrice(totalPrice)} XAF
                     </span>
                   </div>
@@ -327,9 +397,50 @@ export default function CarDetailPage() {
 
                 {/* CTA Buttons - WhatsApp Priority */}
                 <div className="space-y-3">
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700" size="lg">
-                    {content.bookNow}
+                  <Button className="w-full" size="lg" onClick={handleBooking} disabled={bookingLoading}>
+                    {bookingLoading ? '...' : content.bookNow}
                   </Button>
+                  {bookingStatus && (
+                    <p className="text-xs text-[color:var(--green-700)]">{bookingStatus}</p>
+                  )}
+                  {bookingConflicts.length > 0 && (
+                    <div className="text-xs text-red-600">
+                      Dates indisponibles :
+                      {bookingConflicts.map((c, idx) => (
+                        <div key={idx}>
+                          {c.start_date} → {c.end_date}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {/* Make an Offer - only for logged-in non-sellers */}
+                  {user && user.id !== listing.owner_id && (
+                    <button
+                      onClick={() => setShowOffer(true)}
+                      className="w-full flex items-center justify-center gap-2 py-3 px-4 border-2 border-green-600 text-green-700 rounded-xl font-medium hover:bg-green-50 transition-colors"
+                    >
+                      <Tag className="w-4 h-4" />
+                      {lang === 'fr' ? 'Faire une offre' : 'Make an Offer'}
+                    </button>
+                  )}
+                  {/* Escrow Payment - only for logged-in non-sellers */}
+                  {user && user.id !== listing.owner_id && listing.owner_id && (
+                    <EscrowButton
+                      listingId={listing.id}
+                      listingType="cars"
+                      sellerId={listing.owner_id}
+                      amount={pricePerDay}
+                      listingTitle={listing.title}
+                    />
+                  )}
+                  <ContactSellerButton
+                    listingId={listing.id}
+                    listingType="cars"
+                    sellerId={listing.owner_id || ''}
+                    sellerPhone={(listing as any).owner_phone || (listing as any).phone}
+                    listingTitle={listing.title}
+                    className="w-full"
+                  />
                   <WhatsAppButton
                     phone="+237 6 99 00 00 00"
                     listingTitle={listing.title}
@@ -337,15 +448,32 @@ export default function CarDetailPage() {
                     variant="outline"
                     size="lg"
                   />
+                  {/* Send to Family - Diaspora Feature */}
+                  {(() => {
+                    const url = typeof window !== 'undefined' ? window.location.href : `https://findr.cm/cars/${listing.id}`
+                    const xafPrice = `${formatPrice(pricePerDay)} XAF/jour`
+                    const convertedPrice = isDiasporaMode ? ` (${convertPrice(pricePerDay).formatted})` : ''
+                    const msg = `Regarde cette annonce sur Findr: ${listing.title} - ${xafPrice}${convertedPrice} - ${url}`
+                    return (
+                      <a
+                        href={`https://wa.me/?text=${encodeURIComponent(msg)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full flex items-center justify-center gap-2 py-3 px-4 border-2 border-green-200 text-green-700 bg-green-50 rounded-xl font-medium hover:bg-green-100 transition-colors text-sm"
+                      >
+                        📤 Envoyer à la famille
+                      </a>
+                    )
+                  })()}
                 </div>
 
                 {/* Owner Info */}
                 <div className="mt-6 pt-6 border-t">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                      <Car className="w-6 h-6 text-blue-600" />
+                    <div className="w-12 h-12 bg-[color:var(--green-50)] rounded-full flex items-center justify-center">
+                      <Car className="w-6 h-6 text-[color:var(--green-600)]" />
                     </div>
-                    <div>
+                    <div className="flex-1">
                       <p className="font-medium text-gray-900">{content.proOwner}</p>
                       <div className="flex items-center gap-1 text-sm text-gray-500">
                         <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
@@ -353,6 +481,15 @@ export default function CarDetailPage() {
                       </div>
                     </div>
                   </div>
+                  {listing.owner_id && (
+                    <Link
+                      href={`/profile/${listing.owner_id}`}
+                      className="mt-3 flex items-center justify-center gap-2 w-full py-2 px-4 border border-gray-200 rounded-xl text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    >
+                      <User className="w-4 h-4" />
+                      Voir le profil
+                    </Link>
+                  )}
                 </div>
 
                 {/* Trust badges */}
@@ -368,20 +505,25 @@ export default function CarDetailPage() {
         </div>
       </main>
 
-      {/* Sticky WhatsApp Button - Mobile */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 p-4 bg-white border-t shadow-lg md:hidden">
-        <a
-          href={`https://wa.me/237699000000?text=${encodeURIComponent(`Bonjour, je suis intéressé par votre véhicule "${listing.title}" sur Findr.`)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="w-full bg-green-500 hover:bg-green-600 text-white py-4 px-6 rounded-xl font-semibold text-lg flex items-center justify-center gap-2 transition-colors"
-          style={{backgroundColor: '#25D366'}}
-        >
-          💬 Contacter via WhatsApp
-        </a>
-      </div>
-
       <Footer />
+
+      {/* Floating WhatsApp Button (Mobile) */}
+      <WhatsAppFloatingButton
+        phone="+237 6 99 00 00 00"
+        listingTitle={listing.title}
+        listingType="cars"
+      />
+
+      {/* Make an Offer Modal */}
+      <MakeOfferModal
+        isOpen={showOffer}
+        onClose={() => setShowOffer(false)}
+        listingId={listing.id}
+        listingType="cars"
+        sellerId={listing.owner_id || ''}
+        askingPrice={listing.price_per_day}
+        listingTitle={listing.title}
+      />
     </div>
   )
 }

@@ -128,13 +128,8 @@ class MockMTNMoMoService {
       if (tx && tx.status === 'PENDING') {
         tx.status = 'SUCCESSFUL'
         this.transactions.set(referenceId, tx)
-        console.log(`[DEMO] MTN MoMo payment ${referenceId} completed`)
       }
     }, 6000)
-
-    console.log(`[DEMO] MTN MoMo USSD sent to ${request.phone}`)
-    console.log(`[DEMO] Amount: ${request.amount} XAF`)
-    console.log(`[DEMO] Reference: ${referenceId}`)
 
     return {
       success: true,

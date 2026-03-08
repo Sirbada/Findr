@@ -1,543 +1,536 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { Suspense, useState, useEffect, useCallback } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { 
-  Search, SlidersHorizontal, MapPin, Bed, Bath, Square, 
-  Heart, CheckCircle, X, ChevronDown, Grid, List, Map
+import {
+  Search, MapPin, Bed, Bath, Square,
+  Heart, CheckCircle, X, Grid, List, ArrowUpDown,
+  SlidersHorizontal, Sparkles
 } from 'lucide-react'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
-import { Button } from '@/components/ui/Button'
-import { getListings, Listing } from '@/lib/supabase/queries'
+import { getProperties, Property } from '@/lib/supabase/queries'
 import { useTranslation } from '@/lib/i18n/context'
-import { NEIGHBORHOODS, getNeighborhoodsByCity } from '@/lib/data/neighborhoods'
+import { getNeighborhoodsByCity } from '@/lib/data/neighborhoods'
 
 function formatPrice(price: number): string {
   return new Intl.NumberFormat('fr-FR').format(price)
 }
 
-export default function HousingPage() {
+type SortOption = 'newest' | 'price_asc' | 'price_desc' | 'popular'
+
+function HousingPageInner() {
   const { t, lang } = useTranslation()
-  const [listings, setListings] = useState<Listing[]>([])
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
+  const [listings, setListings] = useState<Property[]>([])
   const [loading, setLoading] = useState(true)
   const [view, setView] = useState<'grid' | 'list'>('grid')
   const [showFilters, setShowFilters] = useState(false)
-  
-  // Filters
-  const [selectedCity, setSelectedCity] = useState('all')
-  const [selectedNeighborhood, setSelectedNeighborhood] = useState('all')
-  const [selectedType, setSelectedType] = useState('all')
-  const [selectedPrice, setSelectedPrice] = useState('all')
-  const [selectedDuree, setSelectedDuree] = useState('all')
-  const [searchQuery, setSearchQuery] = useState('')
-  const [sortBy, setSortBy] = useState('newest')
 
-  // Get neighborhoods for selected city
-  const availableNeighborhoods = selectedCity !== 'all' 
-    ? getNeighborhoodsByCity(selectedCity) 
-    : []
+  const [selectedCity, setSelectedCity] = useState(searchParams.get('city') || 'all')
+  const [selectedNeighborhood, setSelectedNeighborhood] = useState(searchParams.get('neighborhood') || 'all')
+  const [selectedType, setSelectedType] = useState(searchParams.get('type') || 'all')
+  const [selectedPrice, setSelectedPrice] = useState(searchParams.get('price') || 'all')
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '')
+  const [minBedrooms, setMinBedrooms] = useState(searchParams.get('minBedrooms') || 'all')
+  const [minBathrooms, setMinBathrooms] = useState(searchParams.get('minBathrooms') || 'all')
+  const [minPrice, setMinPrice] = useState(searchParams.get('minPrice') || '')
+  const [maxPrice, setMaxPrice] = useState(searchParams.get('maxPrice') || '')
+  const [sortBy, setSortBy] = useState<SortOption>((searchParams.get('sort') as SortOption) || 'newest')
 
-  // Reset neighborhood when city changes
-  useEffect(() => {
-    setSelectedNeighborhood('all')
-  }, [selectedCity])
+  const availableNeighborhoods = selectedCity !== 'all' ? getNeighborhoodsByCity(selectedCity) : []
 
-  // Translated content
-  const content = {
-    cities: [
-      { value: 'all', label: lang === 'fr' ? 'Toutes les villes' : 'All cities' },
-      { value: 'Douala', label: 'Douala' },
-      { value: 'Yaoundé', label: 'Yaoundé' },
-      { value: 'Kribi', label: 'Kribi' },
-      { value: 'Bafoussam', label: 'Bafoussam' },
-      { value: 'Bamenda', label: 'Bamenda' },
-      { value: 'Limbe', label: 'Limbe' },
-    ],
-    propertyTypes: [
-      { value: 'all', label: lang === 'fr' ? 'Tous les types' : 'All types' },
-      { value: 'apartment', label: t.housingTypes.apartment },
-      { value: 'house', label: t.housingTypes.house },
-      { value: 'studio', label: t.housingTypes.studio },
-      { value: 'room', label: t.housingTypes.room },
-      { value: 'land', label: t.housingTypes.land },
-    ],
-    priceRanges: lang === 'fr' ? [
-      { value: 'all', label: 'Tous les prix' },
-      { value: '0-50000', label: 'Moins de 50 000 XAF' },
-      { value: '50000-100000', label: '50 000 - 100 000 XAF' },
-      { value: '100000-200000', label: '100 000 - 200 000 XAF' },
-      { value: '200000-500000', label: '200 000 - 500 000 XAF' },
-      { value: '500000+', label: 'Plus de 500 000 XAF' },
-    ] : [
-      { value: 'all', label: 'All prices' },
-      { value: '0-50000', label: 'Under 50,000 XAF' },
-      { value: '50000-100000', label: '50,000 - 100,000 XAF' },
-      { value: '100000-200000', label: '100,000 - 200,000 XAF' },
-      { value: '200000-500000', label: '200,000 - 500,000 XAF' },
-      { value: '500000+', label: 'Over 500,000 XAF' },
-    ],
-    dureeOptions: lang === 'fr' ? [
-      { value: 'all', label: 'Tous' },
-      { value: '1-day', label: '1 jour' },
-      { value: '1-week', label: '1 semaine' },
-      { value: '1-month', label: '1 mois' },
-      { value: '3-months', label: '3 mois' },
-      { value: '6-months', label: '6 mois' },
-      { value: '1-year', label: '1 an' },
-      { value: 'long-term', label: 'Long terme (1 an+)' },
-    ] : [
-      { value: 'all', label: 'All' },
-      { value: '1-day', label: '1 day' },
-      { value: '1-week', label: '1 week' },
-      { value: '1-month', label: '1 month' },
-      { value: '3-months', label: '3 months' },
-      { value: '6-months', label: '6 months' },
-      { value: '1-year', label: '1 year' },
-      { value: 'long-term', label: 'Long term (1+ year)' },
-    ],
-    heroTitle: lang === 'fr' ? 'Votre prochain chez-vous vous attend' : 'Your next home awaits you',
-    heroSubtitle: lang === 'fr' ? 'Appartements, maisons et villas vérifiés — sans arnaques, sans stress' : 'Verified apartments, houses and villas — no scams, no stress',
-    city: lang === 'fr' ? 'Ville' : 'City',
-    neighborhood: lang === 'fr' ? 'Quartier' : 'Neighborhood',
-    allNeighborhoods: lang === 'fr' ? 'Tous les quartiers' : 'All neighborhoods',
-    selectCityFirst: lang === 'fr' ? 'Sélectionnez une ville' : 'Select a city first',
-    propertyType: lang === 'fr' ? 'Type de bien' : 'Property type',
-    budget: 'Budget',
-    duree: lang === 'fr' ? 'Durée' : 'Duration',
-    search: t.hero.search,
-    resultsFound: (count: number) => lang === 'fr' 
-      ? `${count} logement${count > 1 ? 's' : ''} trouvé${count > 1 ? 's' : ''}`
-      : `${count} ${count === 1 ? 'property' : 'properties'} found`,
-    sortBy: lang === 'fr' ? 'Trier par' : 'Sort by',
-    sortOptions: lang === 'fr' ? [
-      { value: 'newest', label: 'Plus récent' },
-      { value: 'price-low', label: 'Prix croissant' },
-      { value: 'price-high', label: 'Prix décroissant' },
-      { value: 'popular', label: 'Plus populaire' },
-    ] : [
-      { value: 'newest', label: 'Newest' },
-      { value: 'price-low', label: 'Price: Low to High' },
-      { value: 'price-high', label: 'Price: High to Low' },
-      { value: 'popular', label: 'Most Popular' },
-    ],
-    allCameroon: lang === 'fr' ? 'Tout le Cameroun' : 'All Cameroon',
-    filters: lang === 'fr' ? 'Filtres' : 'Filters',
-    featured: t.listings.featured,
-    verified: t.listings.verified,
-    furnished: t.detail.furnished,
-    noResults: t.listings.noResults,
-    tryDifferent: lang === 'fr' ? 'Essayez de modifier vos critères de recherche' : 'Try adjusting your search criteria',
-  }
+  useEffect(() => { setSelectedNeighborhood('all') }, [selectedCity])
 
-  // Get housing type label
-  const getHousingType = (type: string | null) => {
-    if (!type) return lang === 'fr' ? 'Logement' : 'Property'
-    const types = content.propertyTypes.find(t => t.value === type)
-    return types?.label || type
-  }
+  const syncToUrl = useCallback(() => {
+    const params = new URLSearchParams()
+    if (selectedCity !== 'all') params.set('city', selectedCity)
+    if (selectedNeighborhood !== 'all') params.set('neighborhood', selectedNeighborhood)
+    if (selectedType !== 'all') params.set('type', selectedType)
+    if (selectedPrice !== 'all') params.set('price', selectedPrice)
+    if (searchQuery) params.set('q', searchQuery)
+    if (minBedrooms !== 'all') params.set('minBedrooms', minBedrooms)
+    if (minBathrooms !== 'all') params.set('minBathrooms', minBathrooms)
+    if (minPrice) params.set('minPrice', minPrice)
+    if (maxPrice) params.set('maxPrice', maxPrice)
+    if (sortBy !== 'newest') params.set('sort', sortBy)
+    const qs = params.toString()
+    router.replace(qs ? `?${qs}` : '/housing', { scroll: false })
+  }, [selectedCity, selectedNeighborhood, selectedType, selectedPrice, searchQuery, minBedrooms, minBathrooms, minPrice, maxPrice, sortBy, router])
+
+  useEffect(() => { syncToUrl() }, [syncToUrl])
+
+  const cities = [
+    { value: 'all', label: lang === 'fr' ? 'Toutes les villes' : 'All cities' },
+    { value: 'Douala', label: 'Douala' },
+    { value: 'Yaoundé', label: 'Yaoundé' },
+    { value: 'Kribi', label: 'Kribi' },
+    { value: 'Bafoussam', label: 'Bafoussam' },
+    { value: 'Bamenda', label: 'Bamenda' },
+    { value: 'Limbe', label: 'Limbe' },
+  ]
+
+  const propertyTypes = [
+    { value: 'all', label: lang === 'fr' ? 'Tous les types' : 'All types' },
+    { value: 'apartment', label: lang === 'fr' ? 'Appartement' : 'Apartment' },
+    { value: 'villa', label: 'Villa' },
+    { value: 'studio', label: 'Studio' },
+    { value: 'hotel_room', label: lang === 'fr' ? 'Hôtel' : 'Hotel' },
+    { value: 'guest_house', label: lang === 'fr' ? "Maison d'hôte" : 'Guest house' },
+    { value: 'compound', label: 'Compound' },
+  ]
+
+  const sortOptions = [
+    { value: 'newest', label: lang === 'fr' ? 'Plus récents' : 'Newest' },
+    { value: 'price_asc', label: lang === 'fr' ? 'Prix croissant' : 'Price ↑' },
+    { value: 'price_desc', label: lang === 'fr' ? 'Prix décroissant' : 'Price ↓' },
+    { value: 'popular', label: lang === 'fr' ? 'Populaires' : 'Popular' },
+  ]
+
+  const bedroomOptions = [
+    { value: 'all', label: lang === 'fr' ? 'Toutes' : 'Any' },
+    { value: '1', label: '1+' },
+    { value: '2', label: '2+' },
+    { value: '3', label: '3+' },
+    { value: '4', label: '4+' },
+  ]
 
   useEffect(() => {
-    async function fetchListings() {
-      const data = await getListings({ category: 'housing' })
-      setListings(data)
-      setLoading(false)
-    }
-    fetchListings()
+    getProperties().then(data => { setListings(data); setLoading(false) })
   }, [])
 
-  // Filter and sort listings
-  const filteredAndSortedListings = (() => {
-    let filtered = listings.filter(listing => {
+  const filteredListings = listings
+    .filter(listing => {
       if (selectedCity !== 'all' && listing.city !== selectedCity) return false
       if (selectedNeighborhood !== 'all' && listing.neighborhood?.toLowerCase() !== selectedNeighborhood) return false
-      if (selectedType !== 'all' && listing.housing_type !== selectedType) return false
-      if (searchQuery && !listing.title.toLowerCase().includes(searchQuery.toLowerCase()) && 
-          !listing.description?.toLowerCase().includes(searchQuery.toLowerCase())) return false
-      
-      // Price filter
-      if (selectedPrice !== 'all') {
-        const price = listing.price
+      if (selectedType !== 'all' && listing.property_type !== selectedType) return false
+      if (searchQuery && !listing.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
+          !listing.description?.toLowerCase().includes(searchQuery.toLowerCase()) &&
+          !listing.city.toLowerCase().includes(searchQuery.toLowerCase())) return false
+      if (minBedrooms !== 'all' && (listing.bedrooms === null || listing.bedrooms < parseInt(minBedrooms))) return false
+      if (minBathrooms !== 'all' && (listing.bathrooms === null || listing.bathrooms < parseInt(minBathrooms))) return false
+      const price = listing.price_per_night
+      if (minPrice && price < parseInt(minPrice)) return false
+      if (maxPrice && price > parseInt(maxPrice)) return false
+      if (!minPrice && !maxPrice && selectedPrice !== 'all') {
         if (selectedPrice === '0-50000' && price > 50000) return false
         if (selectedPrice === '50000-100000' && (price < 50000 || price > 100000)) return false
         if (selectedPrice === '100000-200000' && (price < 100000 || price > 200000)) return false
         if (selectedPrice === '200000-500000' && (price < 200000 || price > 500000)) return false
         if (selectedPrice === '500000+' && price < 500000) return false
       }
-
-      // Durée filter - based on created date
-      if (selectedDuree !== 'all') {
-        const now = new Date()
-        const listingDate = new Date(listing.created_at)
-        const diffMs = now.getTime() - listingDate.getTime()
-        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
-        
-        if (selectedDuree === '1-day' && diffDays > 1) return false
-        if (selectedDuree === '1-week' && diffDays > 7) return false
-        if (selectedDuree === '1-month' && diffDays > 30) return false
-        if (selectedDuree === '3-months' && diffDays > 90) return false
-        if (selectedDuree === '6-months' && diffDays > 180) return false
-        if (selectedDuree === '1-year' && diffDays > 365) return false
-        if (selectedDuree === 'long-term' && diffDays <= 365) return false
-      }
-      
       return true
     })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case 'price_asc': return a.price_per_night - b.price_per_night
+        case 'price_desc': return b.price_per_night - a.price_per_night
+        case 'popular': return b.views - a.views
+        default: return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      }
+    })
 
-    // Sort listings
-    switch (sortBy) {
-      case 'price-low':
-        return filtered.sort((a, b) => a.price - b.price)
-      case 'price-high':
-        return filtered.sort((a, b) => b.price - a.price)
-      case 'popular':
-        return filtered.sort((a, b) => b.views - a.views)
-      case 'newest':
-      default:
-        return filtered.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-    }
-  })()
+  const hasActiveFilters = selectedCity !== 'all' || selectedNeighborhood !== 'all' ||
+    selectedType !== 'all' || selectedPrice !== 'all' || searchQuery ||
+    minBedrooms !== 'all' || minBathrooms !== 'all' || minPrice || maxPrice
+
+  const clearAll = () => {
+    setSelectedCity('all'); setSelectedNeighborhood('all'); setSelectedType('all')
+    setSelectedPrice('all'); setSearchQuery(''); setMinBedrooms('all')
+    setMinBathrooms('all'); setMinPrice(''); setMaxPrice(''); setSortBy('newest')
+  }
+
+  const getTypeLabel = (type: string | null) => {
+    if (!type) return lang === 'fr' ? 'Logement' : 'Property'
+    return propertyTypes.find(t => t.value === type)?.label || type
+  }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-white">
       <Header />
-      
-      {/* Hero Search */}
-      <div className="bg-gradient-to-r from-slate-800 to-slate-900 py-16 min-h-[280px] flex items-center text-white">
-        <div className="max-w-6xl mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
-            {content.heroTitle}
-          </h1>
-          <p className="text-xl font-light text-gray-200 mb-12 max-w-2xl">
-            {content.heroSubtitle}
-          </p>
-          
-          {/* Search Bar */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
-              {/* City */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">{content.city}</label>
-                <select
-                  value={selectedCity}
-                  onChange={(e) => setSelectedCity(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white"
-                >
-                  {content.cities.map(city => (
-                    <option key={city.value} value={city.value}>{city.label}</option>
-                  ))}
-                </select>
-              </div>
 
-              {/* Neighborhood (Quartier) */}
+      {/* Page header — Nature green gradient */}
+      <div
+        style={{
+          background: 'linear-gradient(135deg, #ecfdf5 0%, #d1fae5 40%, #fafaf9 100%)',
+          borderBottom: '1px solid #a7f3d0',
+        }}
+      >
+        <div className="max-w-[1200px] mx-auto px-6 py-8">
+          <div className="flex items-center gap-3 mb-2">
+            <div
+              className="w-10 h-10 rounded-2xl flex items-center justify-center text-xl"
+              style={{ background: 'linear-gradient(135deg, #059669, #10b981)' }}
+            >
+              🏠
+            </div>
+            <div>
+              <h1
+                className="font-bold"
+                style={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.03em', lineHeight: 1.1, color: '#064e3b' }}
+              >
+                {lang === 'fr' ? 'Immobilier au Cameroun' : 'Housing in Cameroon'}
+              </h1>
+              <p className="text-[13px] font-medium" style={{ color: '#059669' }}>
+                {lang === 'fr' ? 'Appartements, villas, studios et plus' : 'Apartments, villas, studios and more'}
+              </p>
+            </div>
+          </div>
+          <div className="mt-5" />
+
+          {/* Search row */}
+          <div className="flex flex-col md:flex-row gap-3">
+            {/* Search input */}
+            <div className="flex-1 relative">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#86868b]" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={lang === 'fr' ? 'Rechercher un logement...' : 'Search for a property...'}
+                className="w-full pl-10 pr-4 py-2.5 bg-[#f5f5f7] text-[#1d1d1f] text-[14px] rounded-xl border border-transparent focus:border-[#059669] focus:bg-white focus:ring-2 focus:ring-[#059669]/15 outline-none transition-all"
+                style={{ letterSpacing: '-0.01em' }}
+              />
+              {searchQuery && (
+                <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2">
+                  <X className="w-3.5 h-3.5 text-[#86868b]" />
+                </button>
+              )}
+            </div>
+
+            {/* City */}
+            <select
+              value={selectedCity}
+              onChange={(e) => setSelectedCity(e.target.value)}
+              className="px-4 py-2.5 bg-[#f5f5f7] text-[#1d1d1f] text-[14px] rounded-xl border border-transparent focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/15 outline-none appearance-none cursor-pointer min-w-[160px]"
+              style={{ letterSpacing: '-0.01em' }}
+            >
+              {cities.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
+            </select>
+
+            {/* Type */}
+            <select
+              value={selectedType}
+              onChange={(e) => setSelectedType(e.target.value)}
+              className="px-4 py-2.5 bg-[#f5f5f7] text-[#1d1d1f] text-[14px] rounded-xl border border-transparent focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/15 outline-none appearance-none cursor-pointer min-w-[160px]"
+              style={{ letterSpacing: '-0.01em' }}
+            >
+              {propertyTypes.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+            </select>
+
+            {/* Filters toggle */}
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className={`flex items-center gap-2 px-4 py-2.5 text-[14px] font-medium rounded-xl border transition-all ${
+                showFilters
+                  ? 'bg-[#1d1d1f] text-white border-[#1d1d1f]'
+                  : 'bg-[#f5f5f7] text-[#1d1d1f] border-transparent hover:bg-[#e8e8ed]'
+              }`}
+              style={{ letterSpacing: '-0.01em' }}
+            >
+              <SlidersHorizontal className="w-4 h-4" />
+              {lang === 'fr' ? 'Filtres' : 'Filters'}
+              {hasActiveFilters && (
+                <span className="w-1.5 h-1.5 bg-[#059669] rounded-full" />
+              )}
+            </button>
+          </div>
+
+          {/* Advanced filters */}
+          {showFilters && (
+            <div className="mt-4 pt-4 border-t border-black/[0.06] grid grid-cols-2 md:grid-cols-4 gap-4">
+              {/* Neighborhood */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {content.neighborhood}
+                <label className="block text-[11px] font-medium text-[#86868b] uppercase tracking-[0.04em] mb-2">
+                  {lang === 'fr' ? 'Quartier' : 'Neighborhood'}
                 </label>
                 <select
                   value={selectedNeighborhood}
                   onChange={(e) => setSelectedNeighborhood(e.target.value)}
                   disabled={selectedCity === 'all'}
-                  className={`w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 ${
-                    selectedCity === 'all' ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-50 hover:bg-white'
-                  }`}
+                  className="w-full px-3 py-2 bg-[#f5f5f7] text-[#1d1d1f] text-[13px] rounded-lg border border-transparent focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/15 outline-none disabled:opacity-40 disabled:cursor-not-allowed"
                 >
-                  <option value="all">
-                    {selectedCity === 'all' ? content.selectCityFirst : content.allNeighborhoods}
-                  </option>
-                  {availableNeighborhoods.map(n => (
-                    <option key={n.value} value={n.value}>{n.label}</option>
-                  ))}
-                </select>
-              </div>
-              
-              {/* Type */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">{content.propertyType}</label>
-                <select
-                  value={selectedType}
-                  onChange={(e) => setSelectedType(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white"
-                >
-                  {content.propertyTypes.map(type => (
-                    <option key={type.value} value={type.value}>{type.label}</option>
-                  ))}
-                </select>
-              </div>
-              
-              {/* Price */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">{content.budget}</label>
-                <select
-                  value={selectedPrice}
-                  onChange={(e) => setSelectedPrice(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white"
-                >
-                  {content.priceRanges.map(range => (
-                    <option key={range.value} value={range.value}>{range.label}</option>
-                  ))}
+                  <option value="all">{selectedCity === 'all' ? (lang === 'fr' ? 'Sélectionnez une ville' : 'Select a city') : (lang === 'fr' ? 'Tous les quartiers' : 'All neighborhoods')}</option>
+                  {availableNeighborhoods.map(n => <option key={n.value} value={n.value}>{n.label}</option>)}
                 </select>
               </div>
 
-              {/* Durée */}
+              {/* Min price */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">{content.duree}</label>
-                <select
-                  value={selectedDuree}
-                  onChange={(e) => setSelectedDuree(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white"
-                >
-                  {content.dureeOptions.map(duree => (
-                    <option key={duree.value} value={duree.value}>{duree.label}</option>
-                  ))}
-                </select>
+                <label className="block text-[11px] font-medium text-[#86868b] uppercase tracking-[0.04em] mb-2">
+                  {lang === 'fr' ? 'Prix min (XAF)' : 'Min price (XAF)'}
+                </label>
+                <input
+                  type="number"
+                  value={minPrice}
+                  onChange={(e) => { setMinPrice(e.target.value); setSelectedPrice('all') }}
+                  placeholder="0"
+                  className="w-full px-3 py-2 bg-[#f5f5f7] text-[#1d1d1f] text-[13px] rounded-lg border border-transparent focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/15 outline-none"
+                />
               </div>
-              
-              {/* Search Button */}
-              <div className="flex items-end">
-                <Button size="lg" className="w-full bg-blue-600 hover:bg-blue-700 rounded-2xl py-3 font-medium hover:scale-[1.02] transition-all duration-300">
-                  <Search className="w-5 h-5 mr-3" />
-                  {content.search}
-                </Button>
+
+              {/* Max price */}
+              <div>
+                <label className="block text-[11px] font-medium text-[#86868b] uppercase tracking-[0.04em] mb-2">
+                  {lang === 'fr' ? 'Prix max (XAF)' : 'Max price (XAF)'}
+                </label>
+                <input
+                  type="number"
+                  value={maxPrice}
+                  onChange={(e) => { setMaxPrice(e.target.value); setSelectedPrice('all') }}
+                  placeholder="∞"
+                  className="w-full px-3 py-2 bg-[#f5f5f7] text-[#1d1d1f] text-[13px] rounded-lg border border-transparent focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/15 outline-none"
+                />
+              </div>
+
+              {/* Bedrooms */}
+              <div>
+                <label className="block text-[11px] font-medium text-[#86868b] uppercase tracking-[0.04em] mb-2">
+                  {lang === 'fr' ? 'Chambres min' : 'Min bedrooms'}
+                </label>
+                <div className="flex gap-1">
+                  {bedroomOptions.map(opt => (
+                    <button
+                      key={opt.value}
+                      onClick={() => setMinBedrooms(opt.value)}
+                      className={`flex-1 py-2 text-[12px] font-medium rounded-lg transition-all ${
+                        minBedrooms === opt.value
+                          ? 'bg-[#1d1d1f] text-white'
+                          : 'bg-[#f5f5f7] text-[#1d1d1f] hover:bg-[#e8e8ed]'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
+          )}
 
-            {/* Active Filters Tags */}
-            {(selectedCity !== 'all' || selectedNeighborhood !== 'all' || selectedType !== 'all' || selectedPrice !== 'all' || selectedDuree !== 'all') && (
-              <div className="flex flex-wrap gap-3 mt-6 pt-6 border-t border-gray-100">
-                {selectedCity !== 'all' && (
-                  <span className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
-                    {selectedCity}
-                    <button onClick={() => setSelectedCity('all')} className="hover:text-gray-900 transition-colors">
-                      <X className="w-4 h-4" />
-                    </button>
-                  </span>
-                )}
-                {selectedNeighborhood !== 'all' && (
-                  <span className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
-                    {availableNeighborhoods.find(n => n.value === selectedNeighborhood)?.label}
-                    <button onClick={() => setSelectedNeighborhood('all')} className="hover:text-gray-900 transition-colors">
-                      <X className="w-4 h-4" />
-                    </button>
-                  </span>
-                )}
-                {selectedType !== 'all' && (
-                  <span className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
-                    {content.propertyTypes.find(t => t.value === selectedType)?.label}
-                    <button onClick={() => setSelectedType('all')} className="hover:text-gray-900 transition-colors">
-                      <X className="w-4 h-4" />
-                    </button>
-                  </span>
-                )}
-                {selectedPrice !== 'all' && (
-                  <span className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
-                    {content.priceRanges.find(r => r.value === selectedPrice)?.label}
-                    <button onClick={() => setSelectedPrice('all')} className="hover:text-gray-900 transition-colors">
-                      <X className="w-4 h-4" />
-                    </button>
-                  </span>
-                )}
-                {selectedDuree !== 'all' && (
-                  <span className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
-                    {content.dureeOptions.find(d => d.value === selectedDuree)?.label}
-                    <button onClick={() => setSelectedDuree('all')} className="hover:text-gray-900 transition-colors">
-                      <X className="w-4 h-4" />
-                    </button>
-                  </span>
-                )}
-              </div>
-            )}
-          </div>
+          {/* Active filter chips */}
+          {hasActiveFilters && (
+            <div className="flex flex-wrap gap-2 mt-4 items-center">
+              {searchQuery && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#f5f5f7] text-[#1d1d1f] text-[12px] font-medium rounded-full">
+                  🔍 {searchQuery}
+                  <button onClick={() => setSearchQuery('')}><X className="w-3 h-3 text-[#86868b]" /></button>
+                </span>
+              )}
+              {selectedCity !== 'all' && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#f5f5f7] text-[#1d1d1f] text-[12px] font-medium rounded-full">
+                  📍 {selectedCity}
+                  <button onClick={() => setSelectedCity('all')}><X className="w-3 h-3 text-[#86868b]" /></button>
+                </span>
+              )}
+              {selectedType !== 'all' && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#f5f5f7] text-[#1d1d1f] text-[12px] font-medium rounded-full">
+                  🏠 {propertyTypes.find(t => t.value === selectedType)?.label}
+                  <button onClick={() => setSelectedType('all')}><X className="w-3 h-3 text-[#86868b]" /></button>
+                </span>
+              )}
+              {(minPrice || maxPrice) && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#f5f5f7] text-[#1d1d1f] text-[12px] font-medium rounded-full">
+                  💰 {minPrice ? formatPrice(parseInt(minPrice)) : '0'} – {maxPrice ? `${formatPrice(parseInt(maxPrice))} XAF` : '∞'}
+                  <button onClick={() => { setMinPrice(''); setMaxPrice('') }}><X className="w-3 h-3 text-[#86868b]" /></button>
+                </span>
+              )}
+              {minBedrooms !== 'all' && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#f5f5f7] text-[#1d1d1f] text-[12px] font-medium rounded-full">
+                  🛏 {minBedrooms}+
+                  <button onClick={() => setMinBedrooms('all')}><X className="w-3 h-3 text-[#86868b]" /></button>
+                </span>
+              )}
+              <button onClick={clearAll} className="text-[12px] text-[#059669] hover:text-[#047857] font-medium ml-auto">
+                {lang === 'fr' ? 'Tout effacer' : 'Clear all'}
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
       {/* Results */}
-      <main className="flex-1 py-8">
-        <div className="max-w-6xl mx-auto px-4">
-          {/* Results Header */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+      <main className="flex-1 bg-[#f5f5f7]">
+        <div className="max-w-[1200px] mx-auto px-6 py-8">
+          {/* Results bar */}
+          <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-xl font-semibold text-gray-900">
-                {content.resultsFound(filteredAndSortedListings.length)}
-              </h2>
-              <p className="text-sm text-gray-500">
-                {selectedNeighborhood !== 'all' 
-                  ? `${availableNeighborhoods.find(n => n.value === selectedNeighborhood)?.label}, ${selectedCity}`
-                  : selectedCity !== 'all' 
-                    ? selectedCity 
-                    : content.allCameroon}
+              <p className="text-[15px] font-semibold text-[#1d1d1f]" style={{ letterSpacing: '-0.02em' }}>
+                {loading ? '...' : `${filteredListings.length} ${lang === 'fr' ? (filteredListings.length > 1 ? 'logements' : 'logement') : (filteredListings.length === 1 ? 'property' : 'properties')}`}
+              </p>
+              <p className="text-[13px] text-[#86868b]">
+                {selectedCity !== 'all' ? selectedCity : lang === 'fr' ? 'Tout le Cameroun' : 'All Cameroon'}
               </p>
             </div>
-            
             <div className="flex items-center gap-3">
-              {/* Sort Dropdown */}
-              <div className="relative">
+              {/* Sort */}
+              <div className="flex items-center gap-2">
+                <ArrowUpDown className="w-3.5 h-3.5 text-[#86868b]" />
                 <select
                   value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="pl-3 pr-8 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
+                  onChange={(e) => setSortBy(e.target.value as SortOption)}
+                  className="text-[13px] text-[#1d1d1f] bg-transparent border-none outline-none cursor-pointer font-medium"
+                  style={{ letterSpacing: '-0.01em' }}
                 >
-                  {content.sortOptions.map(option => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
+                  {sortOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                 </select>
-                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
               </div>
-
-              {/* View Toggle */}
-              <div className="flex bg-gray-100 rounded-lg p-1">
+              {/* View toggle */}
+              <div className="flex bg-white rounded-lg p-0.5 shadow-sm border border-black/[0.06]">
                 <button
                   onClick={() => setView('grid')}
-                  className={`p-2 rounded transition-colors ${view === 'grid' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-600 hover:text-gray-900'}`}
+                  className={`p-1.5 rounded-md transition-all ${view === 'grid' ? 'bg-[#1d1d1f] text-white shadow-sm' : 'text-[#86868b] hover:text-[#1d1d1f]'}`}
                 >
-                  <Grid className="w-4 h-4" />
+                  <Grid className="w-3.5 h-3.5" />
                 </button>
                 <button
                   onClick={() => setView('list')}
-                  className={`p-2 rounded transition-colors ${view === 'list' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-600 hover:text-gray-900'}`}
+                  className={`p-1.5 rounded-md transition-all ${view === 'list' ? 'bg-[#1d1d1f] text-white shadow-sm' : 'text-[#86868b] hover:text-[#1d1d1f]'}`}
                 >
-                  <List className="w-4 h-4" />
+                  <List className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Listings Grid */}
+          {/* Grid */}
           {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className={`grid gap-4 ${view === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'}`}>
               {[1,2,3,4,5,6].map(i => (
-                <div key={i} className="animate-pulse">
-                  <div className="bg-gray-200 rounded-xl h-48 mb-3"></div>
-                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                <div key={i} className="bg-white rounded-2xl overflow-hidden">
+                  <div className="skeleton h-52" />
+                  <div className="p-4 space-y-2">
+                    <div className="skeleton h-4 w-3/4" />
+                    <div className="skeleton h-3 w-1/2" />
+                    <div className="skeleton h-5 w-1/3 mt-3" />
+                  </div>
                 </div>
               ))}
             </div>
+          ) : filteredListings.length === 0 ? (
+            <div className="text-center py-20">
+              <div className="w-16 h-16 bg-[#f5f5f7] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <MapPin className="w-7 h-7 text-[#86868b]" />
+              </div>
+              <h3 className="text-[17px] font-semibold text-[#1d1d1f] mb-2" style={{ letterSpacing: '-0.02em' }}>
+                {lang === 'fr' ? 'Aucun logement trouvé' : 'No properties found'}
+              </h3>
+              <p className="text-[14px] text-[#86868b] mb-4">
+                {lang === 'fr' ? 'Essayez de modifier vos critères de recherche' : 'Try adjusting your search criteria'}
+              </p>
+              {hasActiveFilters && (
+                <button onClick={clearAll} className="text-[14px] text-[#059669] font-medium hover:text-[#047857]">
+                  {lang === 'fr' ? 'Effacer les filtres' : 'Clear filters'}
+                </button>
+              )}
+            </div>
           ) : (
-            <div className={`grid gap-6 ${
-              view === 'grid' 
-                ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' 
-                : 'grid-cols-1'
-            }`}>
-              {filteredAndSortedListings.map((listing) => (
-                <Link 
-                  key={listing.id} 
+            <div className={`grid gap-4 ${view === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'}`}>
+              {filteredListings.map((listing) => (
+                <Link
+                  key={listing.id}
                   href={`/housing/${listing.id}`}
-                  className={`group ${view === 'list' ? 'flex gap-4' : ''}`}
+                  className={`group ${view === 'list' ? 'flex gap-0' : ''}`}
                 >
-                  <div className={`bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-300 border border-gray-100 ${
-                    view === 'list' ? 'flex flex-1' : ''
-                  }`}>
+                  <div className={`bg-white rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 ${view === 'list' ? 'flex flex-1' : ''}`}
+                    style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04)' }}
+                  >
                     {/* Image */}
-                    <div className={`relative overflow-hidden ${
-                      view === 'list' ? 'w-72 flex-shrink-0' : 'h-48'
-                    }`}>
+                    <div className={`relative overflow-hidden ${view === 'list' ? 'w-64 flex-shrink-0' : 'h-52'}`}>
                       {listing.images?.[0] ? (
                         <img
                           src={listing.images[0]}
                           alt={listing.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                       ) : (
-                        <div className="w-full h-full bg-gray-200 flex flex-col items-center justify-center">
-                          <svg className="w-12 h-12 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                          <span className="text-gray-500 text-sm font-medium">Aucune photo</span>
+                        <div className="w-full h-full bg-[#f5f5f7] flex items-center justify-center">
+                          <MapPin className="w-8 h-8 text-[#c7c7cc]" />
                         </div>
                       )}
-                      
-                      {/* Favorite Button */}
-                      <button 
-                        className="absolute top-3 right-3 p-2 bg-white/80 rounded-full hover:bg-white transition-colors"
-                        onClick={(e) => { e.preventDefault(); }}
+
+                      {/* Favorite */}
+                      <button
+                        className="absolute top-3 right-3 w-8 h-8 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-all shadow-sm"
+                        onClick={(e) => e.preventDefault()}
                       >
-                        <Heart className="w-4 h-4 text-gray-600" />
+                        <Heart className="w-3.5 h-3.5 text-[#1d1d1f]" />
                       </button>
-                      
+
                       {/* Badges */}
-                      <div className="absolute top-3 left-3 flex gap-2">
+                      <div className="absolute top-3 left-3 flex gap-1.5">
                         {listing.is_featured && (
-                          <span className="bg-blue-600 text-white text-xs font-medium px-2 py-1 rounded">
-                            {content.featured}
+                          <span className="px-2 py-0.5 bg-[#059669] text-white text-[11px] font-semibold rounded-full">
+                            {lang === 'fr' ? 'Vedette' : 'Featured'}
                           </span>
                         )}
                         {listing.is_verified && (
-                          <span className="bg-green-600 text-white text-xs font-medium px-2 py-1 rounded-full flex items-center gap-1">
+                          <span className="flex items-center gap-1 px-2 py-0.5 bg-white/90 backdrop-blur-sm text-[#059669] text-[11px] font-semibold rounded-full">
                             <CheckCircle className="w-3 h-3" />
-                            Vérifié ✓
+                            {lang === 'fr' ? 'Vérifié' : 'Verified'}
                           </span>
                         )}
                       </div>
-                      
-                      {/* Type Badge */}
-                      <span className="absolute bottom-3 left-3 bg-black/60 text-white text-xs px-2 py-1 rounded">
-                        {getHousingType(listing.housing_type)}
+
+                      {/* Type */}
+                      <span className="absolute bottom-3 left-3 px-2 py-0.5 bg-black/50 backdrop-blur-sm text-white text-[11px] font-medium rounded-full">
+                        {getTypeLabel(listing.property_type)}
                       </span>
                     </div>
-                    
+
                     {/* Content */}
                     <div className="p-4 flex-1">
-                      {/* Price prominant */}
-                      <div className="mb-3">
-                        <span className="text-xl font-bold text-blue-600">
-                          {formatPrice(listing.price)} XAF
-                        </span>
-                        {listing.rental_period !== 'sale' && (
-                          <span className="text-gray-500 text-sm"> {t.listings.perMonth}</span>
-                        )}
-                      </div>
+                      <h3
+                        className="font-semibold text-[#1d1d1f] mb-1 line-clamp-1 group-hover:text-[#059669] transition-colors"
+                        style={{ fontSize: '15px', letterSpacing: '-0.02em' }}
+                      >
+                        {listing.title}
+                      </h3>
 
-                      <div className="flex items-start justify-between gap-2 mb-2">
-                        <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-1">
-                          {listing.title}
-                        </h3>
-                      </div>
-                      
-                      {/* Ort/Quartier unter Titel */}
-                      <div className="flex items-center text-gray-500 text-sm mb-3">
-                        <MapPin className="w-4 h-4 mr-1 flex-shrink-0" />
+                      <div className="flex items-center gap-1 text-[#86868b] text-[13px] mb-3">
+                        <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
                         <span className="truncate">
                           {listing.neighborhood ? `${listing.neighborhood}, ` : ''}{listing.city}
                         </span>
                       </div>
-                      
-                      {/* Features */}
-                      {(listing.rooms || listing.bathrooms || listing.surface_m2) && (
-                        <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
-                          {listing.rooms && (
+
+                      {(listing.bedrooms || listing.bathrooms || listing.surface_m2) && (
+                        <div className="flex items-center gap-3 text-[13px] text-[#6e6e73] mb-3">
+                          {listing.bedrooms && (
                             <span className="flex items-center gap-1">
-                              <Bed className="w-4 h-4" />
-                              {listing.rooms}
+                              <Bed className="w-3.5 h-3.5" />
+                              {listing.bedrooms}
                             </span>
                           )}
                           {listing.bathrooms && (
                             <span className="flex items-center gap-1">
-                              <Bath className="w-4 h-4" />
+                              <Bath className="w-3.5 h-3.5" />
                               {listing.bathrooms}
                             </span>
                           )}
                           {listing.surface_m2 && (
                             <span className="flex items-center gap-1">
-                              <Square className="w-4 h-4" />
+                              <Square className="w-3.5 h-3.5" />
                               {listing.surface_m2} m²
                             </span>
                           )}
                         </div>
                       )}
-                      
-                      {/* Additional Info */}
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          {listing.furnished && (
-                            <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                              {content.furnished}
-                            </span>
-                          )}
+
+                      <div className="flex items-center justify-between pt-3 border-t border-[#f0fdf4]">
+                        <div>
+                          <span className="font-bold" style={{ fontSize: '17px', letterSpacing: '-0.02em', color: '#059669' }}>
+                            {formatPrice(listing.price_per_night)}
+                          </span>
+                          <span className="text-[12px] ml-1" style={{ color: '#6b7280' }}>XAF/{lang === 'fr' ? 'nuit' : 'night'}</span>
                         </div>
+                        {listing.furnished && (
+                          <span className="px-2 py-0.5 text-[11px] font-semibold rounded-full" style={{ background: '#d1fae5', color: '#065f46' }}>
+                            {lang === 'fr' ? 'Meublé' : 'Furnished'}
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -545,37 +538,22 @@ export default function HousingPage() {
               ))}
             </div>
           )}
-
-          {/* No Results - Empty State */}
-          {!loading && filteredAndSortedListings.length === 0 && (
-            <div className="text-center py-16">
-              {/* CSS-only illustration */}
-              <div className="relative w-24 h-24 mx-auto mb-8">
-                <div className="absolute inset-0 bg-gradient-to-b from-blue-100 to-blue-200 rounded-2xl"></div>
-                <div className="absolute top-4 left-4 w-16 h-12 bg-white rounded-lg shadow-sm flex items-center justify-center">
-                  <div className="w-8 h-6 bg-gray-200 rounded"></div>
-                </div>
-                <div className="absolute bottom-2 right-2 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold">+</div>
-              </div>
-              
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                Soyez le premier à publier dans cette catégorie!
-              </h3>
-              <p className="text-gray-600 mb-6 max-w-md mx-auto">
-                Aucune annonce ne correspond à vos critères. Partagez votre bien et trouvez vos premiers clients.
-              </p>
-              
-              <Link href="/dashboard/new">
-                <Button size="lg" className="bg-blue-600 hover:bg-blue-700 px-8">
-                  Publier une annonce →
-                </Button>
-              </Link>
-            </div>
-          )}
         </div>
       </main>
 
       <Footer />
     </div>
+  )
+}
+
+export default function HousingPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="w-8 h-8 border-2 border-[#059669] border-t-transparent rounded-full animate-spin" />
+      </div>
+    }>
+      <HousingPageInner />
+    </Suspense>
   )
 }

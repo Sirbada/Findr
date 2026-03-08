@@ -1,144 +1,126 @@
 'use client'
 
 import { useState } from 'react'
-import { Search, MapPin, Home, Car } from 'lucide-react'
+import Link from 'next/link'
+import { Search, MapPin, Home, Car, Sparkles } from 'lucide-react'
 import { useTranslation } from '@/lib/i18n/context'
 import { Button } from '@/components/ui/Button'
-import Link from 'next/link'
+import { Card } from '@/components/ui/Card'
 
 export function Hero() {
-  const { t, lang } = useTranslation()
+  const { t } = useTranslation()
   const [activeTab, setActiveTab] = useState<'housing' | 'cars'>('housing')
-  const [subFilter, setSubFilter] = useState<string>('all')
   const [searchQuery, setSearchQuery] = useState('')
 
   return (
-    <section className="relative overflow-hidden">
-      {/* Clean Apple-style gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 to-black" />
+    <section className="relative overflow-hidden bg-[color:var(--background)]">
+      {/* Soft background */}
+      <div className="absolute inset-0">
+        <div className="absolute -top-32 left-[-10%] h-80 w-80 rounded-full bg-[color:var(--green-100)]/60 blur-3xl" />
+        <div className="absolute -bottom-40 right-[-10%] h-96 w-96 rounded-full bg-[color:var(--green-200)]/50 blur-3xl" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-white/40 to-transparent" />
+      </div>
 
-      <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-        <div className="text-center">
-          {/* Badge - Clean */}
-          <div className="inline-flex items-center bg-white/10 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm mb-6">
-            {lang === 'fr' ? 'Le marketplace du Cameroun' : 'Cameroon\'s marketplace'}
+      <div className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+        <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+          {/* Left copy */}
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full bg-[color:var(--green-50)] px-3 py-1 text-xs text-[color:var(--green-700)]">
+              <Sparkles className="h-3 w-3" />
+              {t.heroPremium.platformTagline}
+            </div>
+            <h1 className="mt-4 text-4xl font-semibold text-[color:var(--green-900)] md:text-5xl">
+              {t.heroPremium.headlineBook}
+            </h1>
+            <p className="mt-4 max-w-xl text-sm text-[color:var(--green-700)] md:text-base">
+              {t.heroPremium.taglineDesc}
+            </p>
+
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link href="/housing">
+                <Button size="lg">{t.heroPremium.exploreHousing}</Button>
+              </Link>
+              <Link href="/services">
+                <Button size="lg" variant="outline">{t.heroPremium.findPro}</Button>
+              </Link>
+            </div>
+
+            <div className="mt-8 flex flex-wrap gap-6 text-xs text-[color:var(--green-600)]">
+              <span>✓ {t.heroPremium.badgeSafe}</span>
+              <span>✓ {t.heroPremium.badgeLocal}</span>
+              <span>✓ {t.heroPremium.badgeSupport}</span>
+            </div>
           </div>
 
-          {/* Main headline */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
-            {lang === 'fr' ? (
-              <>Trouvez tout au <span className="text-yellow-400">Cameroun</span></>
-            ) : (
-              <>Find everything in <span className="text-yellow-400">Cameroon</span></>
-            )}
-          </h1>
-          
-          <p className="text-xl text-gray-100 mb-10 max-w-2xl mx-auto">
-            {lang === 'fr' 
-              ? 'Logements, véhicules, emplois et services — Douala, Yaoundé et partout au Cameroun'
-              : 'Housing, vehicles, jobs and services — Douala, Yaoundé and across Cameroon'}
-          </p>
-
-          {/* Search Card */}
-          <div className="bg-white rounded-2xl shadow-2xl p-2 max-w-3xl mx-auto">
-            {/* Tabs */}
-            <div className="flex mb-2">
+          {/* Right card */}
+          <Card variant="glass" className="p-5">
+            <div className="mb-4 flex rounded-2xl bg-white/80 p-1">
               <button
-                onClick={() => { setActiveTab('housing'); setSubFilter('all') }}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-medium transition-all ${
+                onClick={() => setActiveTab('housing')}
+                className={`flex-1 rounded-xl px-3 py-2 text-sm font-medium transition-all ${
                   activeTab === 'housing'
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-600 hover:bg-gray-100'
+                    ? 'bg-[color:var(--green-600)] text-white shadow-[var(--shadow-soft-sm)]'
+                    : 'text-[color:var(--green-700)]'
                 }`}
               >
-                <Home className="w-5 h-5" />
-                {lang === 'fr' ? 'Immobilier' : 'Real Estate'}
+                <div className="flex items-center justify-center gap-2">
+                  <Home className="h-4 w-4" />
+                  {t.nav.housing}
+                </div>
               </button>
               <button
-                onClick={() => { setActiveTab('cars'); setSubFilter('all') }}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-medium transition-all ${
+                onClick={() => setActiveTab('cars')}
+                className={`flex-1 rounded-xl px-3 py-2 text-sm font-medium transition-all ${
                   activeTab === 'cars'
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-600 hover:bg-gray-100'
+                    ? 'bg-[color:var(--green-600)] text-white shadow-[var(--shadow-soft-sm)]'
+                    : 'text-[color:var(--green-700)]'
                 }`}
               >
-                <Car className="w-5 h-5" />
-                {lang === 'fr' ? 'Automobile' : 'Vehicles'}
+                <div className="flex items-center justify-center gap-2">
+                  <Car className="h-4 w-4" />
+                  {t.nav.cars}
+                </div>
               </button>
             </div>
 
-            {/* Sub-filters */}
-            <div className="flex flex-wrap justify-center gap-2 mb-2 px-2">
-              {activeTab === 'housing' ? (
-                <>
-                  {[
-                    { key: 'all', fr: 'Tout', en: 'All' },
-                    { key: 'housing', fr: 'Logements', en: 'Housing' },
-                    { key: 'terrain', fr: 'Terrain', en: 'Land' },
-                  ].map(f => (
-                    <button key={f.key} onClick={() => setSubFilter(f.key)}
-                      className={`px-3 py-1 rounded-full text-sm font-medium transition-all ${subFilter === f.key ? 'bg-blue-100 text-blue-700' : 'text-gray-500 hover:bg-gray-100'}`}>
-                      {lang === 'fr' ? f.fr : f.en}
-                    </button>
-                  ))}
-                </>
-              ) : (
-                <>
-                  {[
-                    { key: 'all', fr: 'Tout', en: 'All' },
-                    { key: 'voitures', fr: 'Voitures', en: 'Cars' },
-                    { key: 'motos', fr: 'Motos', en: 'Motorcycles' },
-                    { key: 'camions', fr: 'Camions', en: 'Trucks' },
-                  ].map(f => (
-                    <button key={f.key} onClick={() => setSubFilter(f.key)}
-                      className={`px-3 py-1 rounded-full text-sm font-medium transition-all ${subFilter === f.key ? 'bg-blue-100 text-blue-700' : 'text-gray-500 hover:bg-gray-100'}`}>
-                      {lang === 'fr' ? f.fr : f.en}
-                    </button>
-                  ))}
-                </>
-              )}
+            <label className="text-xs font-medium text-[color:var(--green-700)]">
+              {t.heroPremium.whereSearch}
+            </label>
+            <div className="mt-2 flex items-center gap-2 rounded-2xl border border-[color:var(--green-100)] bg-white/80 px-3 py-3">
+              <MapPin className="h-4 w-4 text-[color:var(--green-500)]" />
+              <input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Douala, Yaoundé, Kribi..."
+                className="w-full bg-transparent text-sm text-[color:var(--green-900)] outline-none"
+              />
             </div>
 
-            {/* Search inputs */}
-            <div className="flex flex-col sm:flex-row gap-2 p-2">
-              <div className="flex-1 relative">
-                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder={lang === 'fr' ? 'Douala, Yaoundé, Kribi...' : 'Douala, Yaoundé, Kribi...'}
-                  className="w-full pl-12 pr-4 py-4 bg-gray-50 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
-                />
-              </div>
-              <Link href={searchQuery 
-                ? `/annonces?q=${encodeURIComponent(searchQuery)}${subFilter !== 'all' ? `&cat=${subFilter}` : ''}` 
-                : subFilter === 'terrain' ? '/terrain' 
-                : activeTab === 'housing' ? '/housing' : '/cars'
-              }>
-                <Button size="lg" className="w-full sm:w-auto px-8 py-4 text-lg">
-                  <Search className="w-5 h-5 mr-2" />
-                  {lang === 'fr' ? 'Rechercher' : 'Search'}
+            <div className="mt-4 flex flex-wrap gap-2">
+              {['Douala', 'Yaoundé', 'Kribi'].map((city) => (
+                <Link
+                  key={city}
+                  href={`/housing?city=${city}`}
+                  className="rounded-full bg-[color:var(--green-50)] px-3 py-1 text-xs text-[color:var(--green-700)]"
+                >
+                  {city}
+                </Link>
+              ))}
+            </div>
+
+            <div className="mt-5">
+              <Link href={activeTab === 'housing' ? '/housing' : '/cars'}>
+                <Button size="lg" className="w-full">
+                  <Search className="mr-2 h-4 w-4" />
+                  {t.hero.search}
                 </Button>
               </Link>
             </div>
-          </div>
 
-          {/* Stats removed - no fake numbers */}
-
-          {/* Popular cities */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <span className="text-gray-200 text-sm font-medium">{lang === 'fr' ? 'Villes populaires:' : 'Popular cities:'}</span>
-            {['Douala', 'Yaoundé', 'Kribi', 'Bafoussam'].map(city => (
-              <Link
-                key={city}
-                href={`/housing?city=${city}`}
-                className="text-white bg-white/15 hover:bg-white/25 px-4 py-1.5 rounded-full text-sm font-medium transition-colors"
-              >
-                {city}
-              </Link>
-            ))}
-          </div>
+            <div className="mt-4 rounded-2xl bg-[color:var(--green-50)] px-4 py-3 text-xs text-[color:var(--green-700)]">
+              {t.heroPremium.paymentHint}
+            </div>
+          </Card>
         </div>
       </div>
     </section>

@@ -138,10 +138,10 @@ export default function MessagesPage() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4">
+        <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <Link href="/dashboard" className="text-gray-600 hover:text-blue-600">
+              <Link href="/dashboard" className="text-gray-600 hover:text-[#1B5E3B]">
                 <ArrowLeft className="w-5 h-5" />
               </Link>
               <h1 className="text-xl font-semibold text-gray-900">Messages</h1>
@@ -150,7 +150,7 @@ export default function MessagesPage() {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <div className="flex h-[calc(100vh-80px)]">
           {/* Conversations List */}
           <div className={`w-full md:w-96 bg-white border-r flex flex-col ${selectedConversation ? 'hidden md:flex' : 'flex'}`}>
@@ -163,7 +163,7 @@ export default function MessagesPage() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Rechercher une conversation..."
-                  className="w-full pl-10 pr-4 py-2 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full pl-10 pr-4 py-2 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1B5E3B]"
                 />
               </div>
             </div>
@@ -175,13 +175,13 @@ export default function MessagesPage() {
                   key={conversation.id}
                   onClick={() => setSelectedConversation(conversation.id)}
                   className={`w-full p-4 flex gap-3 hover:bg-gray-50 transition-colors ${
-                    selectedConversation === conversation.id ? 'bg-blue-50' : ''
+                    selectedConversation === conversation.id ? 'bg-[#F0F9F4]' : ''
                   }`}
                 >
                   {/* Avatar */}
                   <div className="relative flex-shrink-0">
-                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                      <span className="text-blue-600 font-semibold">
+                    <div className="w-12 h-12 bg-[#E6F2EC] rounded-full flex items-center justify-center">
+                      <span className="text-[#1B5E3B] font-semibold">
                         {conversation.user.name.charAt(0)}
                       </span>
                     </div>
@@ -213,12 +213,12 @@ export default function MessagesPage() {
                     <div className="flex items-center justify-between">
                       <p className="text-sm text-gray-600 truncate">
                         {conversation.lastMessage.isMine && (
-                          <CheckCheck className={`inline w-4 h-4 mr-1 ${conversation.lastMessage.isRead ? 'text-blue-500' : 'text-gray-400'}`} />
+                          <CheckCheck className={`inline w-4 h-4 mr-1 ${conversation.lastMessage.isRead ? 'text-[#2D8A5F]' : 'text-gray-400'}`} />
                         )}
                         {conversation.lastMessage.text}
                       </p>
                       {conversation.unread > 0 && (
-                        <span className="ml-2 bg-blue-600 text-white text-xs px-2 py-0.5 rounded-full">
+                        <span className="ml-2 bg-[#1B5E3B] text-white text-xs px-2 py-0.5 rounded-full">
                           {conversation.unread}
                         </span>
                       )}
@@ -241,8 +241,8 @@ export default function MessagesPage() {
                   >
                     <ArrowLeft className="w-5 h-5" />
                   </button>
-                  <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                    <span className="text-blue-600 font-semibold">
+                  <div className="w-10 h-10 bg-[#E6F2EC] rounded-full flex items-center justify-center">
+                    <span className="text-[#1B5E3B] font-semibold">
                       {currentConversation.user.name.charAt(0)}
                     </span>
                   </div>
@@ -281,7 +281,7 @@ export default function MessagesPage() {
                     <p className="text-sm font-medium text-gray-900">
                       {currentConversation.listing.title}
                     </p>
-                    <Link href="#" className="text-xs text-blue-600 hover:underline">
+                    <Link href="#" className="text-xs text-[#1B5E3B] hover:underline">
                       Voir l'annonce →
                     </Link>
                   </div>
@@ -296,14 +296,14 @@ export default function MessagesPage() {
                     className={`flex ${message.isMine ? 'justify-end' : 'justify-start'}`}
                   >
                     <div
-                      className={`max-w-[70%] rounded-2xl px-4 py-2 ${
+                      className={`max-w-[70%] rounded-xl px-4 py-2 ${
                         message.isMine
-                          ? 'bg-blue-600 text-white rounded-br-md'
+                          ? 'bg-[#1B5E3B] text-white rounded-br-md'
                           : 'bg-white border rounded-bl-md'
                       }`}
                     >
                       <p className="text-sm">{message.text}</p>
-                      <p className={`text-xs mt-1 ${message.isMine ? 'text-blue-100' : 'text-gray-400'}`}>
+                      <p className={`text-xs mt-1 ${message.isMine ? 'text-white/70' : 'text-gray-400'}`}>
                         {message.time}
                         {message.isMine && <CheckCheck className="inline w-4 h-4 ml-1" />}
                       </p>
@@ -324,7 +324,7 @@ export default function MessagesPage() {
                     onChange={(e) => setNewMessage(e.target.value)}
                     onKeyPress={handleKeyPress}
                     placeholder="Écrivez votre message..."
-                    className="flex-1 px-4 py-2 bg-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="flex-1 px-4 py-2 bg-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-[#1B5E3B]"
                   />
                   <Button 
                     onClick={handleSendMessage}

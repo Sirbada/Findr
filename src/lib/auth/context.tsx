@@ -2,113 +2,129 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import type { User as SupabaseUser } from '@supabase/supabase-js'
 
-export interface User {
+type User = {
   id: string
-  email?: string
-  phone?: string
-  name?: string
-  avatar_url?: string
-  isVerified?: boolean
-  balance?: number
+  phone?: string | null
+  email?: string | null
+  user_metadata?: Record<string, any>
 }
 
 interface AuthContextType {
   user: User | null
-  supabaseUser: SupabaseUser | null
   loading: boolean
-  signUp: (email: string, password: string, fullName: string) => Promise<{ error?: string }>
-  signUpPhone: (phone: string, password: string, fullName: string) => Promise<{ error?: string }>
-  signIn: (email: string, password: string) => Promise<{ error?: string }>
+  signIn: () => Promise<void>
   signOut: () => Promise<void>
+  isAdmin: boolean
+  isSuperAdmin: boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-function mapUser(su: SupabaseUser | null): User | null {
-  if (!su) return null
-  return {
-    id: su.id,
-    email: su.email,
-    phone: su.phone,
-    name: su.user_metadata?.full_name || su.email?.split('@')[0] || 'Utilisateur',
-    avatar_url: su.user_metadata?.avatar_url,
-    isVerified: !!su.email_confirmed_at,
-    balance: 0,
-  }
-}
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [supabaseUser, setSupabaseUser] = useState<SupabaseUser | null>(null)
+  const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
-  const supabase = createClient()
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false)
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSupabaseUser(session?.user ?? null)
+    const supabase = createClient()
+    const authClient: any = (supabase as any).auth
+
+    const getSession = async () => {
+      const sessionData = authClient.getSession
+        ? await authClient.getSession()
+        : await authClient.getUser()
+      const sessionUser = sessionData?.data?.session?.user || sessionData?.data?.user
+      setUser(sessionUser ?? null)
+
+      if (sessionUser) {
+        const { data: roles } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', sessionUser.id)
+          .single()
+
+        if (roles) {
+          setIsAdmin(['admin', 'super_admin'].includes(roles.role))
+          setIsSuperAdmin(roles.role === 'super_admin')
+        }
+      }
+
       setLoading(false)
-    })
+    }
+
+    getSession()
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSupabaseUser(session?.user ?? null)
-      setLoading(false)
-    })
+    let unsubscribe: (() => void) | undefined
+    if (authClient.onAuthStateChange) {
+      const { data } = authClient.onAuthStateChange(async (_event: any, session: any) => {
+        const sessionUser = session?.user ?? null
+        setUser(sessionUser)
 
-    return () => subscription.unsubscribe()
+        if (sessionUser) {
+          const { data: roles } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', sessionUser.id)
+            .single()
+
+          if (roles) {
+            setIsAdmin(['admin', 'super_admin'].includes(roles.role))
+            setIsSuperAdmin(roles.role === 'super_admin')
+          }
+        } else {
+          setIsAdmin(false)
+          setIsSuperAdmin(false)
+        }
+      })
+      unsubscribe = data?.subscription?.unsubscribe
+    }
+
+    return () => { if (unsubscribe) unsubscribe() }
   }, [])
 
-  const signUp = async (email: string, password: string, fullName: string) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { full_name: fullName },
-        emailRedirectTo: `http://72.60.34.105:3002/auth/callback`,
-      },
-    })
-    if (error) return { error: error.message }
-    return {}
-  }
-
-  const signUpPhone = async (phone: string, password: string, fullName: string) => {
-    const { error } = await supabase.auth.signUp({
-      phone,
-      password,
-      options: {
-        data: { full_name: fullName },
-      },
-    })
-    if (error) return { error: error.message }
-    return {}
-  }
-
-  const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) return { error: error.message }
-    return {}
+  const signIn = async () => {
+    // Placeholder — actual implementation uses phone OTP flow at /login
   }
 
   const signOut = async () => {
-    await supabase.auth.signOut()
-    setSupabaseUser(null)
+    const supabase = createClient()
+    const authClient: any = (supabase as any).auth
+    if (authClient.signOut) await authClient.signOut()
   }
 
-  const user = mapUser(supabaseUser)
+  const value: AuthContextType = {
+    user,
+    loading,
+    signIn,
+    signOut,
+    isAdmin,
+    isSuperAdmin
+  }
 
   return (
-    <AuthContext.Provider value={{ user, supabaseUser, loading, signUp, signUpPhone, signIn, signOut }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   )
 }
 
-export function useAuth() {
+const defaultAuthContext: AuthContextType = {
+  user: null,
+  loading: true,
+  signIn: async () => {},
+  signOut: async () => {},
+  isAdmin: false,
+  isSuperAdmin: false,
+}
+
+export function useAuth(): AuthContextType {
   const context = useContext(AuthContext)
+  // Return safe defaults during SSR/prerender when provider is not present
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider')
+    return defaultAuthContext
   }
   return context
 }

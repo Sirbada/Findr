@@ -1,65 +1,95 @@
 'use client'
 
 import Link from 'next/link'
+import { useTranslation } from '@/lib/i18n/context'
 
 export function Footer() {
+  const { lang } = useTranslation()
+
+  const columns = [
+    {
+      title: lang === 'fr' ? 'Explorer' : 'Explore',
+      links: [
+        { href: '/housing', label: lang === 'fr' ? 'Immobilier' : 'Housing' },
+        { href: '/cars', label: lang === 'fr' ? 'V\u00e9hicules' : 'Vehicles' },
+        { href: '/terrain', label: lang === 'fr' ? 'Terrain' : 'Land' },
+        { href: '/emplois', label: lang === 'fr' ? 'Emplois' : 'Jobs' },
+        { href: '/services', label: 'Services' },
+      ],
+    },
+    {
+      title: lang === 'fr' ? 'Compte' : 'Account',
+      links: [
+        { href: '/login', label: lang === 'fr' ? 'Connexion' : 'Sign in' },
+        { href: '/signup', label: lang === 'fr' ? 'Inscription' : 'Sign up' },
+        { href: '/dashboard', label: lang === 'fr' ? 'Tableau de bord' : 'Dashboard' },
+        { href: '/dashboard/new', label: lang === 'fr' ? 'Publier une annonce' : 'Post a listing' },
+        { href: '/pro', label: lang === 'fr' ? 'Passer Pro' : 'Go Pro' },
+      ],
+    },
+    {
+      title: lang === 'fr' ? 'Aide' : 'Help',
+      links: [
+        { href: '/faq', label: 'FAQ' },
+        { href: '/cgu', label: lang === 'fr' ? 'Conditions d\'utilisation' : 'Terms of use' },
+        { href: '/mentions-legales', label: lang === 'fr' ? 'Mentions l\u00e9gales' : 'Legal' },
+      ],
+    },
+  ]
+
   return (
-    <footer className="bg-gray-900 text-white">
-      <div className="max-w-6xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-          {/* Findr */}
-          <div>
-            <Link href="/" className="flex items-center space-x-3 mb-4">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">F</span>
+    <footer className="bg-[#0D3D24]">
+      <div className="max-w-6xl mx-auto px-6 py-16">
+        {/* Top row */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+          {/* Brand */}
+          <div className="col-span-2 md:col-span-1">
+            <Link href="/" className="flex items-center gap-2 mb-4">
+              <div className="w-7 h-7 bg-white rounded-lg flex items-center justify-center">
+                <span className="text-[#0D3D24] font-bold text-sm">F</span>
               </div>
-              <span className="text-2xl font-bold">Findr</span>
+              <span className="font-semibold text-[15px] text-white tracking-[-0.02em]">Findr</span>
             </Link>
-            <p className="text-gray-300 leading-relaxed">
-              Le marketplace du Cameroun
+            <p className="text-[13px] text-white/50 leading-relaxed max-w-[200px]">
+              {lang === 'fr'
+                ? 'La plateforme de r\u00e9f\u00e9rence pour trouver tout au Cameroun.'
+                : 'The go-to platform to find everything in Cameroon.'}
             </p>
           </div>
 
-          {/* Catégories */}
-          <div>
-            <h3 className="font-semibold text-white mb-4">Catégories</h3>
-            <ul className="space-y-3 text-gray-300">
-              <li><Link href="/housing" className="hover:text-white transition-colors">Logement</Link></li>
-              <li><Link href="/cars" className="hover:text-white transition-colors">Véhicules</Link></li>
-              <li><Link href="/terrain" className="hover:text-white transition-colors">Terrains</Link></li>
-              <li><Link href="/annonces" className="hover:text-white transition-colors">Annonces</Link></li>
-            </ul>
-          </div>
-
-          {/* Contact */}
-          <div>
-            <h3 className="font-semibold text-white mb-4">Contact</h3>
-            <ul className="space-y-3 text-gray-300">
-              <li><Link href="/contact" className="hover:text-white transition-colors">Nous contacter</Link></li>
-              <li><Link href="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
-              <li><Link href="/terms" className="hover:text-white transition-colors">Conditions</Link></li>
-              <li><Link href="/privacy" className="hover:text-white transition-colors">Confidentialité</Link></li>
-            </ul>
-            
-            {/* Social Links */}
-            <div className="flex space-x-4 mt-6">
-              <a href="#" className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-gray-700 transition-colors">
-                <span className="text-blue-500 font-bold text-sm">f</span>
-              </a>
-              <a href="#" className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-gray-700 transition-colors">
-                <span className="text-pink-500 font-bold text-sm">ig</span>
-              </a>
-              <a href="#" className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-gray-700 transition-colors">
-                <span className="text-green-500 font-bold text-sm">wa</span>
-              </a>
+          {/* Nav columns */}
+          {columns.map((col) => (
+            <div key={col.title}>
+              <h3 className="text-[12px] font-semibold text-white/80 tracking-[0.08em] uppercase mb-4">
+                {col.title}
+              </h3>
+              <ul className="space-y-2.5">
+                {col.links.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="text-[13px] text-white/50 hover:text-white transition-colors duration-150"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
-          </div>
+          ))}
         </div>
 
-        <div className="border-t border-gray-800 mt-12 pt-8 text-center">
-          <p className="text-gray-400 text-sm">
-            © 2026 Findr. Tous droits réservés.
+        {/* Bottom row */}
+        <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-[12px] text-white/40">
+            Copyright \u00a9 {new Date().getFullYear()} Findr.{' '}
+            {lang === 'fr' ? 'Tous droits r\u00e9serv\u00e9s.' : 'All rights reserved.'}
           </p>
+          <div className="flex items-center gap-4">
+            <span className="text-[12px] text-white/40">
+              {lang === 'fr' ? 'Fait pour le Cameroun' : 'Made for Cameroon'}
+            </span>
+          </div>
         </div>
       </div>
     </footer>

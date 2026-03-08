@@ -1,5 +1,7 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { 
@@ -7,8 +9,10 @@ import {
   Search, MoreVertical, Check, X, Ban, Eye, Trash2, 
   ChevronDown, Filter, Download, Bell, LogOut,
   TrendingUp, AlertTriangle, Clock, CheckCircle,
-  DollarSign, PieChart, BarChart3, Calendar, ArrowUpRight, ArrowDownRight
+  DollarSign, PieChart, BarChart3, Calendar, ArrowUpRight, ArrowDownRight, UserCog
 } from 'lucide-react'
+import { z } from 'zod'
+import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/Button'
 import { 
   generateDemoTransactions, 
@@ -87,39 +91,100 @@ const recentUsers = [
   { id: '4', name: 'Paul Nkeng', email: 'paul@email.com', status: 'pending', listings: 1, joined: '2026-01-31' },
 ]
 
+const adminRoles = [
+  { id: 'sa1', name: 'Bada', email: 'bada@findr.cm', role: 'super_admin', scope: 'global' },
+  { id: 'a1', name: 'Marie Fotso', email: 'marie@email.com', role: 'admin', scope: 'global' },
+]
+
 // Generate demo transactions for revenue tracking
 const demoTransactions = generateDemoTransactions(75)
 
-type Tab = 'overview' | 'listings' | 'users' | 'reports' | 'revenue' | 'settings'
+type Tab = 'overview' | 'listings' | 'users' | 'reports' | 'revenue' | 'roles' | 'settings' | 'verifications'
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<Tab>('overview')
   const [searchQuery, setSearchQuery] = useState('')
+  const [roleForm, setRoleForm] = useState({ userId: '', role: 'admin' })
+  const [roleStatus, setRoleStatus] = useState('')
+  const [trustForm, setTrustForm] = useState({ userId: '', score: 85 })
+  const [trustStatus, setTrustStatus] = useState('')
+  const [verifications, setVerifications] = useState<any[]>([])
+  const [verificationsLoading, setVerificationsLoading] = useState(false)
+  const [verificationActionStatus, setVerificationActionStatus] = useState<Record<string, string>>({})
+
+  const roleSchema = z.object({
+    userId: z.string().uuid(),
+    role: z.enum(['admin', 'pro', 'user']),
+  })
+
+  const trustSchema = z.object({
+    userId: z.string().uuid(),
+    score: z.number().min(0).max(100),
+  })
+
+  const handleAssignRole = async () => {
+    setRoleStatus('')
+    const parsed = roleSchema.safeParse(roleForm)
+    if (!parsed.success) {
+      setRoleStatus('ID utilisateur invalide.')
+      return
+    }
+    const supabase = createClient()
+    const { error } = await supabase
+      .from('user_roles')
+      .upsert({ user_id: roleForm.userId, role: roleForm.role })
+    if (error) {
+      setRoleStatus('Accès refusé ou erreur réseau.')
+      return
+    }
+    setRoleStatus('Rôle mis à jour.')
+  }
+
+  const handleTrustUpdate = async () => {
+    setTrustStatus('')
+    const parsed = trustSchema.safeParse({
+      userId: trustForm.userId,
+      score: Number(trustForm.score),
+    })
+    if (!parsed.success) {
+      setTrustStatus('Entrée invalide.')
+      return
+    }
+    const supabase = createClient()
+    const { error } = await supabase
+      .from('trust_scores')
+      .upsert({ user_id: parsed.data.userId, score: parsed.data.score })
+    if (error) {
+      setTrustStatus('Accès refusé ou erreur réseau.')
+      return
+    }
+    setTrustStatus('Trust Score mis à jour.')
+  }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-[color:var(--background)]">
       {/* Top Bar */}
-      <header className="bg-white shadow-sm">
+      <header className="bg-[color:var(--glass)] backdrop-blur-md border-b border-white/40">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-[color:var(--green-600)] rounded-xl flex items-center justify-center shadow-[var(--shadow-soft-sm)]">
                 <span className="text-white font-bold">F</span>
               </div>
-              <span className="font-bold text-gray-900">Findr</span>
+              <span className="font-bold text-[color:var(--green-900)]">Findr</span>
             </Link>
-            <span className="bg-red-100 text-red-700 text-xs font-medium px-2 py-1 rounded">
+            <span className="bg-[color:var(--green-50)] text-[color:var(--green-700)] text-xs font-medium px-2 py-1 rounded-full">
               Admin Panel
             </span>
           </div>
           <div className="flex items-center gap-4">
-            <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+            <button className="relative p-2 text-[color:var(--green-700)] hover:bg-[color:var(--green-50)] rounded-lg">
               <Bell className="w-5 h-5" />
               <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
             </button>
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                <span className="text-blue-600 font-semibold text-sm">A</span>
+              <div className="w-8 h-8 bg-[color:var(--green-50)] rounded-full flex items-center justify-center">
+                <span className="text-[color:var(--green-700)] font-semibold text-sm">A</span>
               </div>
               <span className="text-sm font-medium">Admin</span>
             </div>
@@ -129,7 +194,7 @@ export default function AdminPage() {
 
       <div className="flex">
         {/* Sidebar */}
-        <aside className="w-64 bg-white shadow-sm min-h-[calc(100vh-56px)] p-4">
+        <aside className="w-64 bg-[color:var(--card)] shadow-sm min-h-[calc(100vh-56px)] p-4">
           <nav className="space-y-1">
             {[
               { id: 'overview', icon: LayoutDashboard, label: 'Vue d\'ensemble' },
@@ -137,15 +202,17 @@ export default function AdminPage() {
               { id: 'listings', icon: Home, label: 'Annonces', badge: stats.pendingReview },
               { id: 'users', icon: Users, label: 'Utilisateurs' },
               { id: 'reports', icon: Flag, label: 'Signalements', badge: stats.reportedContent },
+              { id: 'verifications', icon: Shield, label: 'Vérifications' },
+              { id: 'roles', icon: UserCog, label: 'Rôles & Admins' },
               { id: 'settings', icon: Settings, label: 'Paramètres' },
             ].map((item) => (
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id as Tab)}
-                className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-colors ${
+                className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-colors ${
                   activeTab === item.id
-                    ? 'bg-blue-50 text-blue-600'
-                    : 'text-gray-600 hover:bg-gray-50'
+                    ? 'bg-[color:var(--green-50)] text-[color:var(--green-700)]'
+                    : 'text-[color:var(--green-700)] hover:bg-[color:var(--green-50)]'
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -161,7 +228,7 @@ export default function AdminPage() {
             ))}
           </nav>
 
-          <div className="mt-8 p-4 bg-gray-50 rounded-lg">
+          <div className="mt-8 p-4 bg-[color:var(--green-50)] rounded-2xl">
             <p className="text-xs text-gray-500 mb-2">Connecté en tant que</p>
             <p className="font-medium text-gray-900">Super Admin</p>
             <button className="mt-3 flex items-center gap-2 text-sm text-red-600 hover:text-red-700">
@@ -196,8 +263,8 @@ export default function AdminPage() {
 
                 <div className="bg-white rounded-xl p-6 shadow-sm">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                      <Home className="w-6 h-6 text-blue-600" />
+                    <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
+                      <Home className="w-6 h-6 text-emerald-600" />
                     </div>
                     <span className="text-green-600 text-sm font-medium flex items-center">
                       <TrendingUp className="w-4 h-4 mr-1" />
@@ -311,17 +378,17 @@ export default function AdminPage() {
                         placeholder="Rechercher une annonce..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                       />
                     </div>
                   </div>
-                  <select className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                  <select className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500">
                     <option>Tous les statuts</option>
                     <option>En attente</option>
                     <option>Approuvé</option>
                     <option>Rejeté</option>
                   </select>
-                  <select className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                  <select className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500">
                     <option>Toutes les catégories</option>
                     <option>Immobilier</option>
                     <option>Véhicules</option>
@@ -353,7 +420,7 @@ export default function AdminPage() {
                         </td>
                         <td className="px-6 py-4">
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            listing.category === 'housing' ? 'bg-blue-100 text-blue-700' : 'bg-blue-100 text-blue-700'
+                            listing.category === 'housing' ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-700'
                           }`}>
                             {listing.category === 'housing' ? 'Immobilier' : 'Véhicule'}
                           </span>
@@ -404,7 +471,7 @@ export default function AdminPage() {
                     <input
                       type="text"
                       placeholder="Rechercher un utilisateur..."
-                      className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                      className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500"
                     />
                   </div>
                   <select className="px-4 py-2 border rounded-lg">
@@ -434,10 +501,10 @@ export default function AdminPage() {
                       <tr key={user.id} className="hover:bg-gray-50">
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                              <span className="text-blue-600 font-semibold">{user.name.charAt(0)}</span>
+                            <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
+                              <span className="text-emerald-600 font-semibold">{user.email?.charAt(0).toUpperCase() || "U"}</span>
                             </div>
-                            <span className="font-medium text-gray-900">{user.name}</span>
+                            <span className="font-medium text-gray-900">{user.email || "User"}</span>
                           </div>
                         </td>
                         <td className="px-6 py-4 text-gray-600">{user.email}</td>
@@ -513,6 +580,107 @@ export default function AdminPage() {
             </div>
           )}
 
+          {/* Roles Tab */}
+          {activeTab === 'roles' && (
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 mb-6">Rôles & Admins</h1>
+
+              <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+                <h2 className="font-semibold text-gray-900 mb-2">Super Admin</h2>
+                <p className="text-sm text-gray-500 mb-4">
+                  Le Super Admin peut nommer des admins avec des droits limités. Les admins ne peuvent pas gérer les rôles.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <Button size="sm">Nommer un admin</Button>
+                  <Button size="sm" variant="outline">Inviter par email</Button>
+                </div>
+                <div className="mt-4 grid gap-3 md:grid-cols-[1.2fr_1fr_auto]">
+                  <input
+                    value={roleForm.userId}
+                    onChange={(e) => setRoleForm({ ...roleForm, userId: e.target.value })}
+                    placeholder="ID utilisateur (UUID)"
+                    className="rounded-2xl border border-[color:var(--green-100)] bg-white/80 px-4 py-2 text-sm"
+                  />
+                  <select
+                    value={roleForm.role}
+                    onChange={(e) => setRoleForm({ ...roleForm, role: e.target.value })}
+                    className="rounded-2xl border border-[color:var(--green-100)] bg-white/80 px-4 py-2 text-sm"
+                  >
+                    <option value="admin">Admin</option>
+                    <option value="pro">Pro</option>
+                    <option value="user">User</option>
+                  </select>
+                  <Button size="sm" onClick={handleAssignRole}>
+                    Appliquer
+                  </Button>
+                </div>
+                {roleStatus && (
+                  <p className="mt-3 text-xs text-[color:var(--green-700)]">{roleStatus}</p>
+                )}
+              </div>
+
+              <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+                <div className="p-4 border-b flex items-center justify-between">
+                  <h2 className="font-semibold text-gray-900">Administrateurs</h2>
+                </div>
+                <div className="divide-y">
+                  {adminRoles.map((admin) => (
+                    <div key={admin.id} className="p-4 flex items-center justify-between">
+                      <div>
+                        <p className="font-medium text-gray-900">{admin.name}</p>
+                        <p className="text-sm text-gray-500">{admin.email}</p>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className={`text-xs px-2 py-1 rounded-full ${
+                          admin.role === 'super_admin'
+                            ? 'bg-emerald-100 text-emerald-700'
+                            : 'bg-blue-100 text-blue-700'
+                        }`}>
+                          {admin.role === 'super_admin' ? 'Super Admin' : 'Admin'}
+                        </span>
+                        <Button size="sm" variant="outline">
+                          Configurer les accès
+                        </Button>
+                        {admin.role !== 'super_admin' && (
+                          <Button size="sm" className="bg-red-600 hover:bg-red-700">
+                            Retirer
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-6 bg-white rounded-xl shadow-sm p-6">
+                <h2 className="font-semibold text-gray-900 mb-2">Trust Score (Admin)</h2>
+                <p className="text-sm text-gray-500 mb-4">
+                  Ajustez le score en cas de litige, fraude ou vérification manuelle.
+                </p>
+                <div className="grid gap-3 md:grid-cols-[1.2fr_auto_auto]">
+                  <input
+                    placeholder="ID utilisateur (UUID)"
+                    value={trustForm.userId}
+                    onChange={(e) => setTrustForm({ ...trustForm, userId: e.target.value })}
+                    className="rounded-2xl border border-[color:var(--green-100)] bg-white/80 px-4 py-2 text-sm"
+                  />
+                  <input
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={trustForm.score}
+                    onChange={(e) => setTrustForm({ ...trustForm, score: Number(e.target.value) })}
+                    className="rounded-2xl border border-[color:var(--green-100)] bg-white/80 px-4 py-2 text-sm"
+                  />
+                  <Button size="sm" onClick={handleTrustUpdate}>Mettre à jour</Button>
+                </div>
+                {trustStatus && (
+                  <p className="mt-3 text-xs text-[color:var(--green-700)]">{trustStatus}</p>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Revenue Tab */}
           {activeTab === 'revenue' && (
             <RevenueTab transactions={demoTransactions} />
@@ -529,15 +697,15 @@ export default function AdminPage() {
                   <div className="space-y-4">
                     <label className="flex items-center justify-between">
                       <span className="text-gray-700">Validation automatique des annonces</span>
-                      <input type="checkbox" className="w-5 h-5 text-blue-600 rounded" />
+                      <input type="checkbox" className="w-5 h-5 text-emerald-600 rounded" />
                     </label>
                     <label className="flex items-center justify-between">
                       <span className="text-gray-700">Filtrage des mots interdits</span>
-                      <input type="checkbox" className="w-5 h-5 text-blue-600 rounded" defaultChecked />
+                      <input type="checkbox" className="w-5 h-5 text-emerald-600 rounded" defaultChecked />
                     </label>
                     <label className="flex items-center justify-between">
                       <span className="text-gray-700">Détection automatique de spam</span>
-                      <input type="checkbox" className="w-5 h-5 text-blue-600 rounded" defaultChecked />
+                      <input type="checkbox" className="w-5 h-5 text-emerald-600 rounded" defaultChecked />
                     </label>
                   </div>
                 </div>
@@ -547,11 +715,11 @@ export default function AdminPage() {
                   <div className="space-y-4">
                     <label className="flex items-center justify-between">
                       <span className="text-gray-700">Nouvelle annonce en attente</span>
-                      <input type="checkbox" className="w-5 h-5 text-blue-600 rounded" defaultChecked />
+                      <input type="checkbox" className="w-5 h-5 text-emerald-600 rounded" defaultChecked />
                     </label>
                     <label className="flex items-center justify-between">
                       <span className="text-gray-700">Nouveau signalement</span>
-                      <input type="checkbox" className="w-5 h-5 text-blue-600 rounded" defaultChecked />
+                      <input type="checkbox" className="w-5 h-5 text-emerald-600 rounded" defaultChecked />
                     </label>
                   </div>
                 </div>
@@ -584,8 +752,235 @@ export default function AdminPage() {
               </div>
             </div>
           )}
+
+          {/* Verifications Tab */}
+          {activeTab === 'verifications' && (
+            <VerificationsTab
+              verifications={verifications}
+              loading={verificationsLoading}
+              actionStatus={verificationActionStatus}
+              onLoad={async () => {
+                setVerificationsLoading(true)
+                const supabase = createClient()
+                const { data } = await supabase
+                  .from('verification_requests')
+                  .select(`
+                    id,
+                    document_type,
+                    document_url,
+                    selfie_url,
+                    status,
+                    submitted_at,
+                    admin_notes,
+                    user_id,
+                    profiles:user_id (full_name, avatar_url)
+                  `)
+                  .order('submitted_at', { ascending: false })
+                setVerifications(data || [])
+                setVerificationsLoading(false)
+              }}
+              onAction={async (id: string, status: 'approved' | 'rejected', notes?: string) => {
+                setVerificationActionStatus(prev => ({ ...prev, [id]: 'loading' }))
+                const res = await fetch(`/api/verify/${id}`, {
+                  method: 'PATCH',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ status, admin_notes: notes }),
+                })
+                if (res.ok) {
+                  setVerificationActionStatus(prev => ({ ...prev, [id]: status }))
+                  setVerifications(prev =>
+                    prev.map(v => v.id === id ? { ...v, status } : v)
+                  )
+                } else {
+                  setVerificationActionStatus(prev => ({ ...prev, [id]: 'error' }))
+                }
+              }}
+            />
+          )}
         </main>
       </div>
+    </div>
+  )
+}
+
+// Verifications Tab Component
+function VerificationsTab({
+  verifications,
+  loading,
+  actionStatus,
+  onLoad,
+  onAction,
+}: {
+  verifications: any[]
+  loading: boolean
+  actionStatus: Record<string, string>
+  onLoad: () => void
+  onAction: (id: string, status: 'approved' | 'rejected', notes?: string) => void
+}) {
+  const [loaded, setLoaded] = useState(false)
+  const [rejectNotes, setRejectNotes] = useState<Record<string, string>>({})
+
+  if (!loaded) {
+    return (
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900 mb-6">Vérifications d'identité</h1>
+        <button
+          onClick={() => { onLoad(); setLoaded(true) }}
+          className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl transition-colors"
+        >
+          Charger les demandes
+        </button>
+      </div>
+    )
+  }
+
+  const docTypeLabels: Record<string, string> = {
+    national_id: 'CNI',
+    passport: 'Passeport',
+    drivers_license: 'Permis de conduire',
+  }
+
+  const statusColors: Record<string, string> = {
+    pending: 'bg-yellow-100 text-yellow-700',
+    approved: 'bg-green-100 text-green-700',
+    rejected: 'bg-red-100 text-red-700',
+  }
+
+  const statusLabels: Record<string, string> = {
+    pending: 'En attente',
+    approved: 'Approuvé',
+    rejected: 'Rejeté',
+  }
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold text-gray-900">Vérifications d'identité</h1>
+        <button
+          onClick={onLoad}
+          className="px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+        >
+          Actualiser
+        </button>
+      </div>
+
+      {loading ? (
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full" />
+        </div>
+      ) : verifications.length === 0 ? (
+        <div className="bg-white rounded-xl shadow-sm p-8 text-center">
+          <p className="text-gray-500">Aucune demande de vérification.</p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {verifications.map((v) => {
+            const profile = Array.isArray(v.profiles) ? v.profiles[0] : v.profiles
+            const userName = profile?.full_name || v.user_id?.slice(0, 8) + '...'
+            const status = actionStatus[v.id] || v.status
+            const isLoading = status === 'loading'
+
+            return (
+              <div key={v.id} className="bg-white rounded-xl shadow-sm p-6">
+                <div className="flex flex-col md:flex-row gap-6">
+                  {/* User Info */}
+                  <div className="flex items-start gap-3 flex-1">
+                    <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <span className="text-green-700 font-semibold text-sm">
+                        {userName.charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900">{userName}</p>
+                      <p className="text-sm text-gray-500">
+                        {docTypeLabels[v.document_type] || v.document_type}
+                      </p>
+                      <p className="text-xs text-gray-400 mt-1">
+                        Soumis le {new Date(v.submitted_at).toLocaleDateString('fr-FR', {
+                          year: 'numeric', month: 'long', day: 'numeric'
+                        })}
+                      </p>
+                      <span className={`inline-block mt-2 text-xs font-medium px-2 py-1 rounded-full ${statusColors[v.status] || 'bg-gray-100 text-gray-700'}`}>
+                        {statusLabels[v.status] || v.status}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Document Preview */}
+                  <div className="flex gap-3">
+                    {v.document_url && (
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Document</p>
+                        <a href={v.document_url} target="_blank" rel="noopener noreferrer">
+                          <img
+                            src={v.document_url}
+                            alt="Document"
+                            className="w-24 h-16 object-cover rounded-lg border border-gray-200 hover:opacity-80 transition-opacity"
+                          />
+                        </a>
+                      </div>
+                    )}
+                    {v.selfie_url && (
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Selfie</p>
+                        <a href={v.selfie_url} target="_blank" rel="noopener noreferrer">
+                          <img
+                            src={v.selfie_url}
+                            alt="Selfie"
+                            className="w-24 h-16 object-cover rounded-lg border border-gray-200 hover:opacity-80 transition-opacity"
+                          />
+                        </a>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Actions */}
+                  {v.status === 'pending' && (
+                    <div className="flex flex-col gap-2 min-w-[200px]">
+                      <input
+                        type="text"
+                        placeholder="Notes (optionnel)"
+                        value={rejectNotes[v.id] || ''}
+                        onChange={(e) => setRejectNotes(prev => ({ ...prev, [v.id]: e.target.value }))}
+                        className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => onAction(v.id, 'approved')}
+                          disabled={isLoading}
+                          className="flex-1 py-2 px-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-300 text-white text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-1"
+                        >
+                          <Check className="w-4 h-4" />
+                          Approuver
+                        </button>
+                        <button
+                          onClick={() => onAction(v.id, 'rejected', rejectNotes[v.id])}
+                          disabled={isLoading}
+                          className="flex-1 py-2 px-3 bg-red-600 hover:bg-red-700 disabled:bg-gray-300 text-white text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-1"
+                        >
+                          <X className="w-4 h-4" />
+                          Rejeter
+                        </button>
+                      </div>
+                      {actionStatus[v.id] === 'error' && (
+                        <p className="text-xs text-red-600">Erreur. Réessayez.</p>
+                      )}
+                    </div>
+                  )}
+
+                  {(status === 'approved' || status === 'rejected') && v.status !== 'pending' && (
+                    <div className="flex items-center">
+                      <span className={`text-sm font-medium px-3 py-1 rounded-full ${statusColors[status] || 'bg-gray-100 text-gray-700'}`}>
+                        {statusLabels[status] || status}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }
@@ -632,7 +1027,7 @@ function RevenueTab({ transactions }: { transactions: Transaction[] }) {
           <select 
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value as any)}
-            className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+            className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500"
           >
             <option value="all">Toutes catégories</option>
             <option value="housing">Immobilier</option>
@@ -647,18 +1042,18 @@ function RevenueTab({ transactions }: { transactions: Transaction[] }) {
 
       {/* Revenue Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white">
+        <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl p-6 text-white">
           <div className="flex items-center justify-between mb-4">
             <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
               <DollarSign className="w-6 h-6" />
             </div>
-            <span className={`flex items-center text-sm font-medium ${Number(revenueChange) >= 0 ? 'text-blue-100' : 'text-red-200'}`}>
+            <span className={`flex items-center text-sm font-medium ${Number(revenueChange) >= 0 ? 'text-emerald-100' : 'text-red-200'}`}>
               {Number(revenueChange) >= 0 ? <ArrowUpRight className="w-4 h-4 mr-1" /> : <ArrowDownRight className="w-4 h-4 mr-1" />}
               {revenueChange}%
             </span>
           </div>
           <p className="text-3xl font-bold">{formatCurrency(totalRevenue)}</p>
-          <p className="text-blue-100 text-sm mt-1">Revenus totaux (commissions)</p>
+          <p className="text-emerald-100 text-sm mt-1">Revenus totaux (commissions)</p>
         </div>
 
         <div className="bg-white rounded-xl p-6 shadow-sm">
@@ -673,8 +1068,8 @@ function RevenueTab({ transactions }: { transactions: Transaction[] }) {
 
         <div className="bg-white rounded-xl p-6 shadow-sm">
           <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-              <PieChart className="w-6 h-6 text-blue-600" />
+            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+              <PieChart className="w-6 h-6 text-purple-600" />
             </div>
           </div>
           <p className="text-3xl font-bold text-gray-900">{completedTransactions.length}</p>
@@ -683,8 +1078,8 @@ function RevenueTab({ transactions }: { transactions: Transaction[] }) {
 
         <div className="bg-white rounded-xl p-6 shadow-sm">
           <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-              <TrendingUp className="w-6 h-6 text-blue-600" />
+            <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
+              <TrendingUp className="w-6 h-6 text-orange-600" />
             </div>
           </div>
           <p className="text-3xl font-bold text-gray-900">{formatCurrency(Math.round(avgCommission))}</p>
@@ -705,7 +1100,7 @@ function RevenueTab({ transactions }: { transactions: Transaction[] }) {
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
                     <div 
-                      className="h-4 bg-blue-500 rounded"
+                      className="h-4 bg-emerald-500 rounded"
                       style={{ width: `${(month.totalRevenue / Math.max(...monthlyRevenue.map(m => m.totalRevenue))) * 100}%`, minWidth: '8px' }}
                     />
                     <span className="text-sm font-medium">{formatCurrency(month.totalRevenue)}</span>
@@ -741,14 +1136,14 @@ function RevenueTab({ transactions }: { transactions: Transaction[] }) {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-blue-500 rounded-full" />
+                    <div className="w-3 h-3 bg-orange-500 rounded-full" />
                     <span className="text-sm text-gray-600">Véhicules</span>
                   </div>
                   <span className="font-semibold">{formatCurrency(thisMonth.byCategory.cars.revenue)}</span>
                 </div>
                 <div className="w-full bg-gray-100 rounded-full h-2">
                   <div 
-                    className="bg-blue-500 h-2 rounded-full" 
+                    className="bg-orange-500 h-2 rounded-full" 
                     style={{ width: `${(thisMonth.byCategory.cars.revenue / thisMonth.totalRevenue) * 100}%` }}
                   />
                 </div>
@@ -758,7 +1153,7 @@ function RevenueTab({ transactions }: { transactions: Transaction[] }) {
               <div className="pt-4 border-t">
                 <div className="flex items-center justify-between">
                   <span className="text-gray-600">Total ce mois</span>
-                  <span className="text-xl font-bold text-blue-600">{formatCurrency(thisMonth.totalRevenue)}</span>
+                  <span className="text-xl font-bold text-emerald-600">{formatCurrency(thisMonth.totalRevenue)}</span>
                 </div>
               </div>
             </div>
@@ -791,12 +1186,12 @@ function RevenueTab({ transactions }: { transactions: Transaction[] }) {
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
                       <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                        tx.category === 'housing' ? 'bg-blue-100' : 'bg-blue-100'
+                        tx.category === 'housing' ? 'bg-blue-100' : 'bg-orange-100'
                       }`}>
                         {tx.category === 'housing' ? (
-                          <Home className={`w-4 h-4 ${tx.category === 'housing' ? 'text-blue-600' : 'text-blue-600'}`} />
+                          <Home className={`w-4 h-4 ${tx.category === 'housing' ? 'text-blue-600' : 'text-orange-600'}`} />
                         ) : (
-                          <Car className="w-4 h-4 text-blue-600" />
+                          <Car className="w-4 h-4 text-orange-600" />
                         )}
                       </div>
                       <span className="font-medium text-gray-900 text-sm">{tx.id}</span>
@@ -804,13 +1199,13 @@ function RevenueTab({ transactions }: { transactions: Transaction[] }) {
                   </td>
                   <td className="px-6 py-4">
                     <span className={`px-2 py-1 rounded text-xs font-medium ${
-                      tx.transactionType === 'rental' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'
+                      tx.transactionType === 'rental' ? 'bg-purple-100 text-purple-700' : 'bg-green-100 text-green-700'
                     }`}>
                       {tx.transactionType === 'rental' ? 'Location' : 'Vente'}
                     </span>
                   </td>
                   <td className="px-6 py-4 font-medium text-gray-900">{formatCurrency(tx.amount)}</td>
-                  <td className="px-6 py-4 text-blue-600 font-medium">{formatCurrency(tx.platformRevenue)}</td>
+                  <td className="px-6 py-4 text-emerald-600 font-medium">{formatCurrency(tx.platformRevenue)}</td>
                   <td className="px-6 py-4">
                     <span className={`px-2 py-1 rounded text-xs ${
                       tx.paymentMethod === 'orange_money' ? 'bg-orange-100 text-orange-700' :
@@ -846,10 +1241,10 @@ function RevenueTab({ transactions }: { transactions: Transaction[] }) {
         <h2 className="font-semibold text-gray-900 mb-4">Options Premium</h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {PREMIUM_LISTINGS.map((premium) => (
-            <div key={premium.id} className="border rounded-lg p-4 hover:border-blue-500 transition-colors">
+            <div key={premium.id} className="border rounded-lg p-4 hover:border-emerald-500 transition-colors">
               <div className="flex items-center justify-between mb-2">
                 <span className="font-medium text-gray-900">{premium.name}</span>
-                <span className="text-blue-600 font-bold">{formatCurrency(premium.price)}</span>
+                <span className="text-emerald-600 font-bold">{formatCurrency(premium.price)}</span>
               </div>
               <p className="text-sm text-gray-500">{premium.description}</p>
               <p className="text-xs text-gray-400 mt-2">Durée: {premium.duration} jours</p>
