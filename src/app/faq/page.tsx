@@ -48,7 +48,7 @@ const faqData = {
         id: 'housing-owner',
         icon: Home,
         title: 'Immobilier — Propriétaires',
-        color: 'emerald',
+        color: 'blue',
         questions: [
           {
             q: 'Pourquoi dois-je vérifier mon identité ?',
@@ -76,7 +76,7 @@ const faqData = {
         id: 'cars-renter',
         icon: Car,
         title: 'Véhicules — Locataires',
-        color: 'orange',
+        color: 'blue',
         questions: [
           {
             q: 'Comment être sûr que le véhicule est en bon état ?',
@@ -104,7 +104,7 @@ const faqData = {
         id: 'cars-owner',
         icon: Car,
         title: 'Véhicules — Propriétaires',
-        color: 'purple',
+        color: 'blue',
         questions: [
           {
             q: 'Comment rendre mon annonce plus visible ?',
@@ -230,7 +230,7 @@ const faqData = {
         id: 'housing-owner',
         icon: Home,
         title: 'Real Estate — Owners',
-        color: 'emerald',
+        color: 'blue',
         questions: [
           {
             q: 'Why do I need to verify my identity?',
@@ -254,7 +254,7 @@ const faqData = {
         id: 'cars-renter',
         icon: Car,
         title: 'Vehicles — Renters',
-        color: 'orange',
+        color: 'blue',
         questions: [
           {
             q: 'How can I be sure the vehicle is in good condition?',
@@ -278,7 +278,7 @@ const faqData = {
         id: 'cars-owner',
         icon: Car,
         title: 'Vehicles — Owners',
-        color: 'purple',
+        color: 'blue',
         questions: [
           {
             q: 'How can I make my listing more visible?',
@@ -340,9 +340,7 @@ const faqData = {
 
 const colorClasses = {
   blue: 'bg-blue-100 text-blue-600',
-  emerald: 'bg-emerald-100 text-emerald-600',
-  orange: 'bg-orange-100 text-orange-600',
-  purple: 'bg-purple-100 text-purple-600',
+  blue: 'bg-blue-100 text-blue-600',
   pink: 'bg-pink-100 text-pink-600',
   red: 'bg-red-100 text-red-600',
   gray: 'bg-gray-100 text-gray-600',
@@ -377,11 +375,11 @@ export default function FAQPage() {
       <Header />
       
       {/* Hero */}
-      <section className="bg-gradient-to-br from-emerald-600 to-teal-700 text-white py-16">
+      <section className="bg-gradient-to-br from-blue-600 to-blue-700 text-white py-16">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <HelpCircle className="w-16 h-16 mx-auto mb-6 opacity-80" />
           <h1 className="text-4xl font-bold mb-4">{t.title}</h1>
-          <p className="text-xl text-emerald-100">{t.subtitle}</p>
+          <p className="text-xl text-blue-100">{t.subtitle}</p>
         </div>
       </section>
 
@@ -395,7 +393,7 @@ export default function FAQPage() {
                 onClick={() => setActiveCategory(activeCategory === cat.id ? null : cat.id)}
                 className={`p-4 rounded-xl text-center transition-all ${
                   activeCategory === cat.id 
-                    ? 'bg-emerald-600 text-white shadow-lg scale-105' 
+                    ? 'bg-blue-600 text-white shadow-lg scale-105' 
                     : 'bg-white hover:shadow-md'
                 }`}
               >

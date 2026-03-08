@@ -287,7 +287,7 @@ export function SocialShare({ data, variant = 'button', className = '' }: Social
       <>
         <button
           onClick={handleNativeShare}
-          className={`p-2 text-gray-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-full transition-colors ${className}`}
+          className={`p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors ${className}`}
           aria-label={t.share}
         >
           <Share2 className="w-5 h-5" />
@@ -306,7 +306,7 @@ export function SocialShare({ data, variant = 'button', className = '' }: Social
       <>
         <button
           onClick={handleNativeShare}
-          className={`inline-flex items-center gap-2 px-4 py-2 border border-gray-300 hover:border-emerald-500 hover:bg-emerald-50 text-gray-700 rounded-lg transition-colors ${className}`}
+          className={`inline-flex items-center gap-2 px-4 py-2 border border-gray-300 hover:border-blue-500 hover:bg-blue-50 text-gray-700 rounded-lg transition-colors ${className}`}
         >
           <Share2 className="w-5 h-5" />
           <span className="font-medium">{t.share}</span>

@@ -38,8 +38,8 @@ export async function POST(request: Request) {
   const supabase = await createClient()
   if (parsed.data.status === 'SUCCESSFUL') {
     await supabase
-      .from('bookings')
-      .update({ status: 'confirmed' })
+      .from('listing_boosts')
+      .update({ status: 'active', activated_at: new Date().toISOString() })
       .eq('id', parsed.data.orderId)
   }
 
