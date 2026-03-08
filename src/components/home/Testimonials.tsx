@@ -106,7 +106,7 @@ export function Testimonials() {
   if (!mounted) return null
 
   return (
-    <section className="py-20 bg-gradient-to-br from-emerald-50 to-green-50 overflow-hidden">
+    <section className="py-20 bg-gradient-to-br from-green-50 to-green-50 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16 animate-slide-up">
@@ -123,7 +123,7 @@ export function Testimonials() {
           <div className="max-w-4xl mx-auto">
             <div className="relative bg-white rounded-3xl shadow-2xl p-8 md:p-12 border border-gray-100">
               {/* Quote icon */}
-              <div className="absolute top-6 left-6 text-emerald-500 opacity-20">
+              <div className="absolute top-6 left-6 text-green-500 opacity-20">
                 <Quote size={60} />
               </div>
 
@@ -145,7 +145,7 @@ export function Testimonials() {
                   <img
                     src={testimonials[currentIndex].avatar}
                     alt={testimonials[currentIndex].name}
-                    className="w-16 h-16 rounded-full object-cover mr-4 border-4 border-emerald-100"
+                    className="w-16 h-16 rounded-full object-cover mr-4 border-4 border-green-100"
                   />
                   <div className="text-center">
                     <div className="font-semibold text-lg text-gray-900">
@@ -186,7 +186,7 @@ export function Testimonials() {
                 <img
                   src={testimonial.avatar}
                   alt={testimonial.name}
-                  className="w-12 h-12 rounded-full object-cover mr-3 border-2 border-emerald-100"
+                  className="w-12 h-12 rounded-full object-cover mr-3 border-2 border-green-100"
                 />
                 <div>
                   <div className="font-semibold text-gray-900 text-sm">{testimonial.name}</div>
@@ -207,7 +207,7 @@ export function Testimonials() {
               onClick={() => setCurrentIndex(index)}
               className={`w-3 h-3 rounded-full transition-all duration-300 ${
                 index === currentIndex
-                  ? 'bg-emerald-600 scale-125'
+                  ? 'bg-green-600 scale-125'
                   : 'bg-gray-300 hover:bg-gray-400'
               }`}
             />

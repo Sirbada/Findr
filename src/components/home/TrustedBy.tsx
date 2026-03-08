@@ -24,7 +24,7 @@ export function TrustedBy() {
     },
     {
       name: 'BICEC',
-      logo: 'https://via.placeholder.com/120x60/059669/ffffff?text=BICEC',
+      logo: 'https://via.placeholder.com/120x60/16a34a/ffffff?text=BICEC',
       alt: 'BICEC'
     },
     {
@@ -34,7 +34,7 @@ export function TrustedBy() {
     },
     {
       name: 'Université de Yaoundé',
-      logo: 'https://via.placeholder.com/120x60/059669/ffffff?text=UY1',
+      logo: 'https://via.placeholder.com/120x60/16a34a/ffffff?text=UY1',
       alt: 'Université de Yaoundé I'
     }
   ]
@@ -86,8 +86,8 @@ export function TrustedBy() {
         {/* Additional trust indicators */}
         <div className="mt-16 grid md:grid-cols-3 gap-8">
           <div className="text-center animate-slide-up" style={{ animationDelay: '0.6s' }}>
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-emerald-100 rounded-full mb-4">
-              <svg className="w-6 h-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-green-100 rounded-full mb-4">
+              <svg className="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>

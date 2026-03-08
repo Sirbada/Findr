@@ -45,7 +45,7 @@ export function Footer() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="w-7 h-7 bg-[#059669] rounded-lg flex items-center justify-center">
+              <div className="w-7 h-7 bg-[#16a34a] rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">F</span>
               </div>
               <span className="font-semibold text-[15px] text-[#1d1d1f] tracking-[-0.02em]">Findr</span>

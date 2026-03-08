@@ -225,7 +225,7 @@ function CategorySection({
               </div>
             </div>
             <div className="p-4">
-              <h3 className={`font-semibold text-gray-900 text-sm mb-2 line-clamp-2 group-hover:${color} transition-colors`}>
+              <h3 className="font-semibold text-gray-900 text-sm mb-2 line-clamp-2 group-hover:text-green-600 transition-colors">
                 {listing.title}
               </h3>
               <div className="flex items-center text-gray-500 text-xs">
@@ -252,8 +252,8 @@ export function CategoriesEnhanced() {
       icon: Home,
       listings: demoHousingListings,
       href: '/housing',
-      color: 'text-emerald-600',
-      bgColor: 'bg-emerald-100'
+      color: 'text-green-600',
+      bgColor: 'bg-green-100'
     },
     {
       title: t.categories.cars,
@@ -261,8 +261,8 @@ export function CategoriesEnhanced() {
       icon: Car,
       listings: demoCarListings,
       href: '/cars',
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-100'
+      color: 'text-sky-600',
+      bgColor: 'bg-sky-100'
     },
     {
       title: t.emplois.name,
@@ -270,8 +270,8 @@ export function CategoriesEnhanced() {
       icon: Briefcase,
       listings: demoJobListings,
       href: '/emplois',
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-100'
+      color: 'text-violet-600',
+      bgColor: 'bg-violet-100'
     },
     {
       title: t.categoryGrid.servicesName,
@@ -279,8 +279,8 @@ export function CategoriesEnhanced() {
       icon: Wrench,
       listings: demoServiceListings,
       href: '/services',
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-100'
+      color: 'text-rose-600',
+      bgColor: 'bg-rose-100'
     }
   ]
 
@@ -329,7 +329,7 @@ export function CategoriesEnhanced() {
             </p>
             <Link
               href="/publish"
-              className="bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700 transition-colors font-medium"
+              className="bg-green-600 text-white px-6 py-3 rounded-xl hover:bg-green-700 transition-all duration-200 font-semibold shadow-[0_4px_14px_rgba(22,163,74,0.35)]"
             >
               {t.nav.postAd}
             </Link>

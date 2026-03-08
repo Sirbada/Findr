@@ -6,7 +6,7 @@ import { Providers } from './providers'
 const inter = Inter({ subsets: ['latin'] })
 
 export const viewport: Viewport = {
-  themeColor: '#059669',
+  themeColor: '#16a34a',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
@@ -79,7 +79,7 @@ export const metadata: Metadata = {
       { url: '/icons/icon-180x180.png', sizes: '180x180', type: 'image/png' },
     ],
     other: [
-      { rel: 'mask-icon', url: '/icons/safari-pinned-tab.svg', color: '#059669' },
+      { rel: 'mask-icon', url: '/icons/safari-pinned-tab.svg', color: '#16a34a' },
     ],
   },
   appleWebApp: {
@@ -104,7 +104,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="Findr" />
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="msapplication-TileColor" content="#059669" />
+        <meta name="msapplication-TileColor" content="#16a34a" />
         <meta name="msapplication-tap-highlight" content="no" />
         
         {/* Splash screens for iOS */}

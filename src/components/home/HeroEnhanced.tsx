@@ -14,10 +14,10 @@ const CATEGORIES = [
     icon: '🏠',
     labelFr: 'Immobilier',
     labelEn: 'Housing',
-    color: '#059669',
-    bg: 'linear-gradient(135deg, #059669, #10b981)',
-    lightBg: '#ecfdf5',
-    textColor: '#065f46',
+    color: '#16a34a',
+    bg: 'linear-gradient(135deg, #16a34a, #22c55e)',
+    lightBg: '#f0fdf4',
+    textColor: '#14532d',
   },
   {
     id: 'cars',
@@ -66,7 +66,7 @@ const CATEGORIES = [
 ]
 
 export function HeroEnhanced() {
-  const { lang } = useTranslation()
+  const { t, lang } = useTranslation()
   const router = useRouter()
   const [query, setQuery] = useState('')
   const [activeCategory, setActiveCategory] = useState('housing')
@@ -85,72 +85,65 @@ export function HeroEnhanced() {
     <section
       className="relative overflow-hidden"
       style={{
-        background: 'linear-gradient(160deg, #d1fae5 0%, #a7f3d0 15%, #ecfdf5 40%, #fafaf9 65%, #fef3c7 85%, #fde68a 100%)',
+        background: 'linear-gradient(160deg, #dcfce7 0%, #f0fdf4 25%, #f9fafb 55%, #fffbeb 85%, #fef3c7 100%)',
         minHeight: '520px',
       }}
     >
       {/* Decorative blobs */}
       <div
-        className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full pointer-events-none opacity-30"
+        className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full pointer-events-none opacity-20"
         style={{
-          background: 'radial-gradient(circle, #34d399 0%, transparent 70%)',
+          background: 'radial-gradient(circle, #4ade80 0%, transparent 70%)',
           transform: 'translate(30%, -30%)',
         }}
       />
       <div
-        className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full pointer-events-none opacity-20"
+        className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full pointer-events-none opacity-15"
         style={{
           background: 'radial-gradient(circle, #fbbf24 0%, transparent 70%)',
           transform: 'translate(-30%, 30%)',
         }}
       />
-      <div
-        className="absolute top-1/2 left-1/4 w-[300px] h-[300px] rounded-full pointer-events-none opacity-10"
-        style={{
-          background: 'radial-gradient(circle, #0ea5e9 0%, transparent 70%)',
-          transform: 'translate(-50%, -50%)',
-        }}
-      />
 
-      <div className="relative max-w-[1200px] mx-auto px-6 pt-16 pb-14 text-center">
+      <div className="relative max-w-[1280px] mx-auto px-6 pt-16 pb-14 text-center">
         {/* Eyebrow pill */}
         <div
           className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-6 text-[13px] font-semibold"
           style={{
-            background: 'linear-gradient(135deg, #d1fae5, #fef3c7)',
-            color: '#065f46',
-            border: '1px solid #a7f3d0',
+            background: '#dcfce7',
+            color: '#14532d',
+            border: '1px solid #bbf7d0',
           }}
         >
-          <span className="w-2 h-2 bg-[#059669] rounded-full animate-pulse" />
-          {lang === 'fr' ? '🇨🇲 Cameroun · Douala · Yaoundé · Kribi' : '🇨🇲 Cameroon · Douala · Yaoundé · Kribi'}
+          <span className="w-2 h-2 bg-green-600 rounded-full animate-pulse" />
+          {t.heroEnhanced.badge}
         </div>
 
         {/* Headline */}
         <h1
-          className="font-bold mb-4"
+          className="font-extrabold mb-4"
           style={{
             fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
-            letterSpacing: '-0.04em',
+            letterSpacing: '-0.02em',
             lineHeight: 1.05,
-            color: '#064e3b',
+            color: '#111827',
           }}
         >
           {lang === 'fr' ? (
             <>
-              Trouvez{' '}
-              <span style={{ color: '#059669' }}>
-                tout
+              {t.heroEnhanced.titleFind}{' '}
+              <span style={{ color: '#16a34a' }}>
+                {t.heroEnhanced.titleEverything}
               </span>{' '}
-              au Cameroun
+              {t.heroEnhanced.titleIn} Cameroun
             </>
           ) : (
             <>
-              Find{' '}
-              <span style={{ color: '#059669' }}>
-                everything
+              {t.heroEnhanced.titleFind}{' '}
+              <span style={{ color: '#16a34a' }}>
+                {t.heroEnhanced.titleEverything}
               </span>{' '}
-              in Cameroon
+              {t.heroEnhanced.titleIn} Cameroon
             </>
           )}
         </h1>
@@ -158,14 +151,12 @@ export function HeroEnhanced() {
         {/* Subheadline */}
         <p
           className="mb-8 max-w-[560px] mx-auto"
-          style={{ fontSize: '18px', color: '#4b5563', letterSpacing: '-0.01em', lineHeight: 1.5 }}
+          style={{ fontSize: '18px', color: '#6b7280', letterSpacing: '-0.01em', lineHeight: 1.6 }}
         >
-          {lang === 'fr'
-            ? 'Logements, véhicules, terrains, emplois et services — tout en un seul endroit.'
-            : 'Housing, vehicles, land, jobs and services — all in one place.'}
+          {t.heroEnhanced.subtitle}
         </p>
 
-        {/* Category tabs — colorful */}
+        {/* Category tabs */}
         <div className="flex items-center justify-center gap-2 mb-6 flex-wrap">
           {CATEGORIES.map((cat) => {
             const isActive = activeCategory === cat.id
@@ -179,7 +170,7 @@ export function HeroEnhanced() {
                     ? {
                         background: cat.bg,
                         color: '#ffffff',
-                        boxShadow: `0 4px 16px ${cat.color}40`,
+                        boxShadow: `0 4px 14px ${cat.color}40`,
                         transform: 'translateY(-1px)',
                       }
                     : {
@@ -201,7 +192,7 @@ export function HeroEnhanced() {
           <div
             className="flex items-center gap-3 bg-white rounded-2xl px-5 py-3.5"
             style={{
-              boxShadow: `0 4px 24px rgba(0,0,0,0.08), 0 0 0 1.5px ${activeCat.color}30`,
+              boxShadow: `0 1px 3px rgba(0,0,0,0.05), 0 8px 24px rgba(0,0,0,0.04), 0 0 0 1.5px ${activeCat.color}25`,
             }}
           >
             <span className="text-xl flex-shrink-0">{activeCat.icon}</span>
@@ -215,15 +206,15 @@ export function HeroEnhanced() {
                   ? `Rechercher ${activeCat.labelFr.toLowerCase()} à Douala, Yaoundé...`
                   : `Search ${activeCat.labelEn.toLowerCase()} in Douala, Yaoundé...`
               }
-              className="flex-1 bg-transparent text-[15px] outline-none"
-              style={{ color: '#1a1a1a', letterSpacing: '-0.01em' }}
+              className="flex-1 bg-transparent text-[15px] outline-none placeholder:text-gray-400"
+              style={{ color: '#111827', letterSpacing: '-0.01em' }}
             />
             <button
               onClick={handleSearch}
               className="flex items-center gap-2 px-5 py-2.5 text-white text-[14px] font-semibold rounded-xl flex-shrink-0 transition-all duration-200"
               style={{
                 background: activeCat.bg,
-                boxShadow: `0 2px 12px ${activeCat.color}40`,
+                boxShadow: `0 4px 14px ${activeCat.color}40`,
               }}
             >
               <Search className="w-4 h-4" />
@@ -233,8 +224,8 @@ export function HeroEnhanced() {
 
           {/* Popular cities */}
           <div className="flex items-center justify-center gap-2 mt-4 flex-wrap">
-            <span className="text-[12px] text-[#9ca3af] font-medium">
-              {lang === 'fr' ? 'Villes populaires :' : 'Popular cities:'}
+            <span className="text-[12px] text-gray-400 font-medium">
+              {t.heroEnhanced.popularCities}
             </span>
             {CITIES.map((city) => (
               <button
@@ -255,7 +246,7 @@ export function HeroEnhanced() {
         {/* Stats row */}
         <div className="flex items-center justify-center gap-8 mt-10 flex-wrap">
           {[
-            { value: '10K+', label: lang === 'fr' ? 'Annonces' : 'Listings', color: '#059669', bg: '#ecfdf5' },
+            { value: '10K+', label: lang === 'fr' ? 'Annonces' : 'Listings', color: '#16a34a', bg: '#f0fdf4' },
             { value: '5K+', label: lang === 'fr' ? 'Utilisateurs' : 'Users', color: '#0ea5e9', bg: '#f0f9ff' },
             { value: '50+', label: lang === 'fr' ? 'Villes' : 'Cities', color: '#d97706', bg: '#fffbeb' },
             { value: '100%', label: lang === 'fr' ? 'Gratuit' : 'Free', color: '#8b5cf6', bg: '#f5f3ff' },

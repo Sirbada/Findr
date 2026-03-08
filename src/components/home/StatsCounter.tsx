@@ -19,8 +19,8 @@ const statConfigs: StatConfig[] = [
     value: 10000,
     labelKey: 'activeListings',
     suffix: '+',
-    color: 'text-emerald-600',
-    bgColor: 'bg-emerald-50',
+    color: 'text-green-600',
+    bgColor: 'bg-green-50',
   },
   {
     icon: Users,
@@ -97,7 +97,7 @@ function StatCard({ stat, index }: { stat: StatConfig; index: number }) {
       className="group relative animate-slide-up"
       style={{ animationDelay: `${index * 0.1}s` }}
     >
-      <div className="bg-white rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover-lift border border-gray-100 group-hover:border-emerald-200">
+      <div className="bg-white rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover-lift border border-gray-100 group-hover:border-green-200">
         {/* Icon */}
         <div
           className={`inline-flex items-center justify-center w-14 h-14 ${stat.bgColor} rounded-2xl mb-4 group-hover:scale-110 transition-transform duration-300`}
@@ -117,7 +117,7 @@ function StatCard({ stat, index }: { stat: StatConfig; index: number }) {
         </div>
 
         {/* Hover effect */}
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-emerald-600/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-green-600/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </div>
     </div>
   )
@@ -129,9 +129,9 @@ export function StatsCounter() {
   return (
     <section className="py-20 bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden">
       {/* Background decoration */}
-      <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-blue-500/5 to-purple-500/5" />
+      <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 via-blue-500/5 to-purple-500/5" />
       <div className="absolute top-0 left-0 w-full h-full opacity-30">
-        <div className="absolute top-20 left-20 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl" />
+        <div className="absolute top-20 left-20 w-32 h-32 bg-green-500/10 rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-20 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl" />
       </div>
 
@@ -156,7 +156,7 @@ export function StatsCounter() {
         {/* Bottom message */}
         <div className="text-center mt-16 animate-slide-up" style={{ animationDelay: '0.4s' }}>
           <div className="inline-flex items-center space-x-2 bg-white/80 backdrop-blur-sm text-gray-700 px-6 py-3 rounded-full text-sm font-medium shadow-lg border border-gray-200">
-            <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
             <span>{t.statsCounter.badge}</span>
           </div>
         </div>
