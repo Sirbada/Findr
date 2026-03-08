@@ -3,24 +3,25 @@
 import { ButtonHTMLAttributes, forwardRef } from 'react'
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost'
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'accent'
   size?: 'sm' | 'md' | 'lg'
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className = '', variant = 'primary', size = 'md', children, ...props }, ref) => {
-    const baseStyles = 'inline-flex items-center justify-center font-semibold rounded-xl transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-400 disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px]'
+    const baseStyles = 'inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-150 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#1B5E3B]/30 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] min-h-[44px]'
 
     const variants = {
-      primary: 'bg-green-600 text-white hover:bg-green-700 shadow-[0_4px_14px_rgba(22,163,74,0.35)] hover:shadow-[0_6px_20px_rgba(22,163,74,0.45)]',
-      secondary: 'bg-white text-green-600 border-[1.5px] border-green-600 hover:bg-green-50',
-      outline: 'border border-green-400 text-green-700 hover:bg-green-50',
-      ghost: 'bg-gray-100 text-gray-700 hover:bg-gray-200',
+      primary: 'bg-[#1B5E3B] text-white hover:bg-[#0D3D24]',
+      secondary: 'bg-white text-[#1A1A18] border border-[#E8E8E4] hover:bg-[#F4F4F1] hover:border-[#D4D4CE]',
+      outline: 'border border-[#D4D4CE] text-[#1B5E3B] hover:bg-[#F0F9F4]',
+      ghost: 'text-[#4A4A45] hover:bg-[#F4F4F1] hover:text-[#1A1A18]',
+      accent: 'bg-gradient-to-r from-[#E8960C] to-[#F59E0B] text-white hover:from-[#D48500] hover:to-[#E8960C]',
     }
 
     const sizes = {
       sm: 'px-3 py-2 text-sm',
-      md: 'px-5 py-2.5 text-[15px]',
+      md: 'px-5 py-2.5 text-sm',
       lg: 'px-6 py-3 text-base',
     }
 

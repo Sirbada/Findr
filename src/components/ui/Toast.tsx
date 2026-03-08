@@ -30,10 +30,9 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       id,
       duration: toast.duration || 5000
     }
-    
+
     setToasts(prev => [...prev, newToast])
 
-    // Auto remove after duration
     setTimeout(() => {
       removeToast(id)
     }, newToast.duration)
@@ -59,32 +58,32 @@ export function useToast() {
   return context
 }
 
-function ToastContainer({ 
-  toasts, 
-  removeToast 
-}: { 
+function ToastContainer({
+  toasts,
+  removeToast
+}: {
   toasts: Toast[]
-  removeToast: (id: string) => void 
+  removeToast: (id: string) => void
 }) {
   return (
     <div className="fixed top-4 right-4 z-50 flex flex-col space-y-2">
       {toasts.map(toast => (
-        <ToastItem 
-          key={toast.id} 
-          toast={toast} 
-          onRemove={() => removeToast(toast.id)} 
+        <ToastItem
+          key={toast.id}
+          toast={toast}
+          onRemove={() => removeToast(toast.id)}
         />
       ))}
     </div>
   )
 }
 
-function ToastItem({ 
-  toast, 
-  onRemove 
-}: { 
+function ToastItem({
+  toast,
+  onRemove
+}: {
   toast: Toast
-  onRemove: () => void 
+  onRemove: () => void
 }) {
   const [isVisible, setIsVisible] = useState(false)
 
@@ -94,41 +93,41 @@ function ToastItem({
 
   const handleRemove = () => {
     setIsVisible(false)
-    setTimeout(onRemove, 300) // Wait for animation
+    setTimeout(onRemove, 300)
   }
 
   const config = {
     success: {
       icon: CheckCircle,
-      bgColor: 'bg-emerald-50',
-      borderColor: 'border-emerald-200',
-      iconColor: 'text-emerald-500',
-      titleColor: 'text-emerald-900',
-      messageColor: 'text-emerald-700'
+      bgColor: 'bg-[#F0F9F4]',
+      borderColor: 'border-[#E6F2EC]',
+      iconColor: 'text-[#2D8A5F]',
+      titleColor: 'text-[#0D3D24]',
+      messageColor: 'text-[#1B5E3B]'
     },
     error: {
       icon: XCircle,
       bgColor: 'bg-red-50',
       borderColor: 'border-red-200',
-      iconColor: 'text-red-500',
+      iconColor: 'text-[#DC2626]',
       titleColor: 'text-red-900',
       messageColor: 'text-red-700'
     },
     warning: {
       icon: AlertTriangle,
-      bgColor: 'bg-amber-50',
-      borderColor: 'border-amber-200',
-      iconColor: 'text-amber-500',
+      bgColor: 'bg-[#FFFBEB]',
+      borderColor: 'border-[#FEF3C7]',
+      iconColor: 'text-[#E8960C]',
       titleColor: 'text-amber-900',
       messageColor: 'text-amber-700'
     },
     info: {
       icon: Info,
-      bgColor: 'bg-blue-50',
-      borderColor: 'border-blue-200',
-      iconColor: 'text-blue-500',
-      titleColor: 'text-blue-900',
-      messageColor: 'text-blue-700'
+      bgColor: 'bg-[#F4F4F1]',
+      borderColor: 'border-[#E8E8E4]',
+      iconColor: 'text-[#4A4A45]',
+      titleColor: 'text-[#1A1A18]',
+      messageColor: 'text-[#4A4A45]'
     }
   }
 
@@ -138,23 +137,19 @@ function ToastItem({
     <div
       className={`
         transform transition-all duration-300 ease-in-out max-w-sm w-full
-        ${isVisible 
-          ? 'translate-x-0 opacity-100 scale-100' 
+        ${isVisible
+          ? 'translate-x-0 opacity-100 scale-100'
           : 'translate-x-full opacity-0 scale-95'
         }
       `}
     >
       <div className={`
-        ${bgColor} ${borderColor} border rounded-lg shadow-lg p-4
-        backdrop-blur-sm
+        ${bgColor} ${borderColor} border rounded-lg shadow-[0_4px_16px_rgba(0,0,0,0.06),0_1px_4px_rgba(0,0,0,0.04)] p-4
       `}>
         <div className="flex items-start">
-          {/* Icon */}
           <div className="flex-shrink-0">
             <Icon className={`w-5 h-5 ${iconColor}`} />
           </div>
-
-          {/* Content */}
           <div className="ml-3 flex-1">
             <h3 className={`text-sm font-medium ${titleColor}`}>
               {toast.title}
@@ -165,18 +160,10 @@ function ToastItem({
               </p>
             )}
           </div>
-
-          {/* Close button */}
           <div className="flex-shrink-0 ml-4">
             <button
               onClick={handleRemove}
-              className={`
-                inline-flex rounded-md p-1.5 
-                ${titleColor} 
-                hover:${bgColor} 
-                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500
-                transition-colors
-              `}
+              className="inline-flex rounded-md p-1.5 text-[#7A7A73] hover:text-[#1A1A18] hover:bg-[#EEECEA] focus:outline-none transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
@@ -187,27 +174,26 @@ function ToastItem({
   )
 }
 
-// Helper hooks for specific toast types
 export function useSuccessToast() {
   const { addToast } = useToast()
-  return (title: string, message?: string) => 
+  return (title: string, message?: string) =>
     addToast({ type: 'success', title, message })
 }
 
 export function useErrorToast() {
   const { addToast } = useToast()
-  return (title: string, message?: string) => 
+  return (title: string, message?: string) =>
     addToast({ type: 'error', title, message })
 }
 
 export function useWarningToast() {
   const { addToast } = useToast()
-  return (title: string, message?: string) => 
+  return (title: string, message?: string) =>
     addToast({ type: 'warning', title, message })
 }
 
 export function useInfoToast() {
   const { addToast } = useToast()
-  return (title: string, message?: string) => 
+  return (title: string, message?: string) =>
     addToast({ type: 'info', title, message })
 }

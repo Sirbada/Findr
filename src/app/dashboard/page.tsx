@@ -52,10 +52,10 @@ const demoUser = {
 }
 
 const statusColors = {
-  active: 'bg-[color:var(--green-50)] text-[color:var(--green-700)]',
+  active: 'bg-[#F0F9F4] text-[#4A4A45]',
   pending: 'bg-yellow-100 text-yellow-700',
   expired: 'bg-red-100 text-red-700',
-  confirmed: 'bg-[color:var(--green-50)] text-[color:var(--green-700)]',
+  confirmed: 'bg-[#F0F9F4] text-[#4A4A45]',
   quoted: 'bg-blue-100 text-blue-700',
 }
 
@@ -78,39 +78,39 @@ export default function DashboardPage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-[color:var(--background)]">
+    <div className="min-h-screen bg-[#FAFAF8]">
       <Header />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           <aside className="lg:w-64 flex-shrink-0">
             <Card className="p-6">
               <div className="text-center mb-6">
-                <div className="w-20 h-20 bg-[color:var(--green-50)] rounded-full flex items-center justify-center mx-auto mb-3">
-                  <span className="text-[color:var(--green-700)] font-bold text-2xl">
+                <div className="w-20 h-20 bg-[#F0F9F4] rounded-full flex items-center justify-center mx-auto mb-3">
+                  <span className="text-[#4A4A45] font-bold text-2xl">
                     {user.email?.charAt(0).toUpperCase() || "U"}
                   </span>
                 </div>
-                <h2 className="font-semibold text-[color:var(--green-900)]">{user.email || "User"}</h2>
-                <p className="text-sm text-[color:var(--green-600)]">{user.phone}</p>
+                <h2 className="font-semibold text-[#1A1A18]">{user.email || "User"}</h2>
+                <p className="text-sm text-[#2D8A5F]">{user.phone}</p>
                 {!user.isVerified && (
-                  <button className="mt-2 text-xs text-[color:var(--green-700)] hover:underline">
+                  <button className="mt-2 text-xs text-[#4A4A45] hover:underline">
                     Vérifier mon compte →
                   </button>
                 )}
               </div>
 
-              <div className="rounded-2xl border border-[color:var(--green-100)] bg-[color:var(--green-50)] p-4 mb-6">
+              <div className="rounded-xl border border-[#E6F2EC] bg-[#F0F9F4] p-4 mb-6">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[color:var(--green-700)] text-sm">Trust Score</span>
-                  <ShieldCheck className="w-5 h-5 text-[color:var(--green-600)]" />
+                  <span className="text-[#4A4A45] text-sm">Trust Score</span>
+                  <ShieldCheck className="w-5 h-5 text-[#2D8A5F]" />
                 </div>
-                <div className="text-2xl font-bold text-[color:var(--green-900)]">
+                <div className="text-2xl font-bold text-[#1A1A18]">
                   {user.trustScore} / 100
                 </div>
               </div>
 
-              <div className="bg-[color:var(--green-600)] rounded-2xl p-4 mb-6 text-white shadow-[var(--shadow-soft-sm)]">
+              <div className="bg-[#1B5E3B] rounded-xl p-4 mb-6 text-white shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-white/80 text-sm">Mon solde</span>
                   <Wallet className="w-5 h-5 text-white/80" />
@@ -141,8 +141,8 @@ export default function DashboardPage() {
                       onClick={() => setActiveTab(item.id as typeof activeTab)}
                       className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-left transition-colors ${
                         activeTab === item.id
-                          ? 'bg-[color:var(--green-50)] text-[color:var(--green-700)]'
-                          : 'text-[color:var(--green-700)] hover:bg-[color:var(--green-50)]'
+                          ? 'bg-[#F0F9F4] text-[#4A4A45]'
+                          : 'text-[#4A4A45] hover:bg-[#F0F9F4]'
                       }`}
                     >
                       <Icon className="w-5 h-5" />
@@ -153,7 +153,7 @@ export default function DashboardPage() {
                 <hr className="my-2" />
                 <Link
                   href="/dashboard/settings"
-                  className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-[color:var(--green-700)] hover:bg-[color:var(--green-50)]"
+                  className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-[#4A4A45] hover:bg-[#F0F9F4]"
                 >
                   <Settings className="w-5 h-5" />
                   <span>Paramètres</span>
@@ -169,10 +169,10 @@ export default function DashboardPage() {
           <main className="flex-1 space-y-6">
             <Card className="p-6 flex items-center justify-between">
               <div>
-                <h1 className="text-2xl font-semibold text-[color:var(--green-900)]">Bienvenue, {user.email || "User"}</h1>
-                <p className="text-sm text-[color:var(--green-700)]">Gérez vos réservations, services et paiements en un seul endroit.</p>
+                <h1 className="text-2xl font-semibold text-[#1A1A18]">Bienvenue, {user.email || "User"}</h1>
+                <p className="text-sm text-[#4A4A45]">Gérez vos réservations, services et paiements en un seul endroit.</p>
               </div>
-              <button className="relative p-2 text-[color:var(--green-700)] hover:text-[color:var(--green-900)]">
+              <button className="relative p-2 text-[#4A4A45] hover:text-[#1A1A18]">
                 <Bell className="w-5 h-5" />
                 <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
               </button>
@@ -184,48 +184,48 @@ export default function DashboardPage() {
                   <Card className="p-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-[color:var(--green-600)]">Annonces actives</p>
-                        <p className="text-2xl font-bold text-[color:var(--green-900)]">
+                        <p className="text-sm text-[#2D8A5F]">Annonces actives</p>
+                        <p className="text-2xl font-bold text-[#1A1A18]">
                           {user.listings.filter(l => l.status === 'active').length}
                         </p>
                       </div>
-                      <div className="w-10 h-10 bg-[color:var(--green-50)] rounded-xl flex items-center justify-center">
-                        <CheckCircle className="w-5 h-5 text-[color:var(--green-600)]" />
+                      <div className="w-10 h-10 bg-[#F0F9F4] rounded-xl flex items-center justify-center">
+                        <CheckCircle className="w-5 h-5 text-[#2D8A5F]" />
                       </div>
                     </div>
                   </Card>
                   <Card className="p-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-[color:var(--green-600)]">Réservations</p>
-                        <p className="text-2xl font-bold text-[color:var(--green-900)]">
+                        <p className="text-sm text-[#2D8A5F]">Réservations</p>
+                        <p className="text-2xl font-bold text-[#1A1A18]">
                           {user.bookings.length}
                         </p>
                       </div>
-                      <div className="w-10 h-10 bg-[color:var(--green-50)] rounded-xl flex items-center justify-center">
-                        <CalendarCheck className="w-5 h-5 text-[color:var(--green-600)]" />
+                      <div className="w-10 h-10 bg-[#F0F9F4] rounded-xl flex items-center justify-center">
+                        <CalendarCheck className="w-5 h-5 text-[#2D8A5F]" />
                       </div>
                     </div>
                   </Card>
                   <Card className="p-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-[color:var(--green-600)]">Ce mois</p>
-                        <p className="text-2xl font-bold text-[color:var(--green-700)]">+23%</p>
+                        <p className="text-sm text-[#2D8A5F]">Ce mois</p>
+                        <p className="text-2xl font-bold text-[#4A4A45]">+23%</p>
                       </div>
-                      <div className="w-10 h-10 bg-[color:var(--green-50)] rounded-xl flex items-center justify-center">
-                        <TrendingUp className="w-5 h-5 text-[color:var(--green-600)]" />
+                      <div className="w-10 h-10 bg-[#F0F9F4] rounded-xl flex items-center justify-center">
+                        <TrendingUp className="w-5 h-5 text-[#2D8A5F]" />
                       </div>
                     </div>
                   </Card>
                   <Card className="p-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-[color:var(--green-600)]">Sauvegardes offline</p>
-                        <p className="text-2xl font-bold text-[color:var(--green-900)]">{savedOffline}</p>
+                        <p className="text-sm text-[#2D8A5F]">Sauvegardes offline</p>
+                        <p className="text-2xl font-bold text-[#1A1A18]">{savedOffline}</p>
                       </div>
-                      <div className="w-10 h-10 bg-[color:var(--green-50)] rounded-xl flex items-center justify-center">
-                        <Heart className="w-5 h-5 text-[color:var(--green-600)]" />
+                      <div className="w-10 h-10 bg-[#F0F9F4] rounded-xl flex items-center justify-center">
+                        <Heart className="w-5 h-5 text-[#2D8A5F]" />
                       </div>
                     </div>
                   </Card>
@@ -234,8 +234,8 @@ export default function DashboardPage() {
                 <Card className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h2 className="text-lg font-semibold text-[color:var(--green-900)]">Mode Data‑Saver</h2>
-                      <p className="text-sm text-[color:var(--green-700)]">
+                      <h2 className="text-lg font-semibold text-[#1A1A18]">Mode Data‑Saver</h2>
+                      <p className="text-sm text-[#4A4A45]">
                         Téléchargements réduits, images optimisées et mode offline rapide.
                       </p>
                     </div>
@@ -248,7 +248,7 @@ export default function DashboardPage() {
             {activeTab === 'listings' && (
               <Card className="p-6">
                 <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-xl font-semibold text-[color:var(--green-900)]">Mes annonces</h2>
+                  <h2 className="text-xl font-semibold text-[#1A1A18]">Mes annonces</h2>
                   <Link href="/dashboard/new">
                     <Button>Nouvelle annonce</Button>
                   </Link>
@@ -262,7 +262,7 @@ export default function DashboardPage() {
                         <img
                           src={listing.image}
                           alt={listing.title}
-                          className="w-20 h-20 object-cover rounded-2xl"
+                          className="w-20 h-20 object-cover rounded-xl"
                         />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
@@ -271,10 +271,10 @@ export default function DashboardPage() {
                               {listing.status}
                             </span>
                           </div>
-                          <h3 className="font-medium text-[color:var(--green-900)] truncate">
+                          <h3 className="font-medium text-[#1A1A18] truncate">
                             {listing.title}
                           </h3>
-                          <p className="text-sm text-[color:var(--green-600)]">
+                          <p className="text-sm text-[#2D8A5F]">
                             {listing.price.toLocaleString()} XAF • {listing.views} vues
                           </p>
                         </div>
@@ -288,23 +288,23 @@ export default function DashboardPage() {
             {activeTab === 'bookings' && (
               <Card className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-semibold text-[color:var(--green-900)]">Réservations</h2>
-                  <span className="text-xs text-[color:var(--green-700)] inline-flex items-center gap-1 rounded-full bg-[color:var(--green-50)] px-3 py-1">
+                  <h2 className="text-xl font-semibold text-[#1A1A18]">Réservations</h2>
+                  <span className="text-xs text-[#4A4A45] inline-flex items-center gap-1 rounded-full bg-[#F0F9F4] px-3 py-1">
                     <ShieldCheck className="h-3 w-3" /> Availability Shield actif
                   </span>
                 </div>
                 <div className="space-y-3">
                   {user.bookings.map((booking) => (
-                    <div key={booking.id} className="flex items-center justify-between rounded-2xl border border-[color:var(--green-100)] px-4 py-3">
+                    <div key={booking.id} className="flex items-center justify-between rounded-xl border border-[#E6F2EC] px-4 py-3">
                       <div>
-                        <p className="font-medium text-[color:var(--green-900)]">{booking.title}</p>
-                        <p className="text-xs text-[color:var(--green-600)]">{booking.date}</p>
+                        <p className="font-medium text-[#1A1A18]">{booking.title}</p>
+                        <p className="text-xs text-[#2D8A5F]">{booking.date}</p>
                       </div>
                       <div className="text-right">
                         <div className={`text-xs inline-flex items-center gap-1 px-2 py-0.5 rounded ${statusColors[booking.status as keyof typeof statusColors]}`}>
                           {booking.status}
                         </div>
-                        <div className="text-sm text-[color:var(--green-700)]">{booking.price.toLocaleString()} XAF</div>
+                        <div className="text-sm text-[#4A4A45]">{booking.price.toLocaleString()} XAF</div>
                       </div>
                     </div>
                   ))}
@@ -315,15 +315,15 @@ export default function DashboardPage() {
             {activeTab === 'services' && (
               <Card className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-semibold text-[color:var(--green-900)]">Demandes de services</h2>
+                  <h2 className="text-xl font-semibold text-[#1A1A18]">Demandes de services</h2>
                   <Button variant="outline">Nouvelle demande</Button>
                 </div>
                 <div className="space-y-3">
                   {user.serviceRequests.map((request) => (
-                    <div key={request.id} className="flex items-center justify-between rounded-2xl border border-[color:var(--green-100)] px-4 py-3">
+                    <div key={request.id} className="flex items-center justify-between rounded-xl border border-[#E6F2EC] px-4 py-3">
                       <div>
-                        <p className="font-medium text-[color:var(--green-900)]">{request.title}</p>
-                        <p className="text-xs text-[color:var(--green-600)]">{request.city}</p>
+                        <p className="font-medium text-[#1A1A18]">{request.title}</p>
+                        <p className="text-xs text-[#2D8A5F]">{request.city}</p>
                       </div>
                       <div className={`text-xs inline-flex items-center gap-1 px-2 py-0.5 rounded ${statusColors[request.status as keyof typeof statusColors]}`}>
                         {request.status}
@@ -336,9 +336,9 @@ export default function DashboardPage() {
 
             {activeTab === 'favorites' && (
               <Card className="p-6 text-center">
-                <Heart className="w-10 h-10 text-[color:var(--green-200)] mx-auto mb-3" />
-                <h3 className="text-lg font-medium text-[color:var(--green-900)] mb-2">Aucun favori</h3>
-                <p className="text-sm text-[color:var(--green-600)] mb-4">
+                <Heart className="w-10 h-10 text-[#D4D4CE] mx-auto mb-3" />
+                <h3 className="text-lg font-medium text-[#1A1A18] mb-2">Aucun favori</h3>
+                <p className="text-sm text-[#2D8A5F] mb-4">
                   Sauvegardez vos annonces préférées pour les retrouver facilement.
                 </p>
                 <Link href="/">
@@ -349,11 +349,11 @@ export default function DashboardPage() {
 
             {activeTab === 'saved' && (
               <Card className="p-6">
-                <h2 className="text-xl font-semibold text-[color:var(--green-900)] mb-4">Sauvegardes offline</h2>
-                <p className="text-sm text-[color:var(--green-600)] mb-4">
+                <h2 className="text-xl font-semibold text-[#1A1A18] mb-4">Sauvegardes offline</h2>
+                <p className="text-sm text-[#2D8A5F] mb-4">
                   Ces éléments sont visibles même sans connexion.
                 </p>
-                <div className="text-sm text-[color:var(--green-700)]">
+                <div className="text-sm text-[#4A4A45]">
                   {savedOffline > 0 ? `${savedOffline} éléments sauvegardés.` : 'Aucune sauvegarde.'}
                 </div>
               </Card>
@@ -361,9 +361,9 @@ export default function DashboardPage() {
 
             {activeTab === 'messages' && (
               <Card className="p-6 text-center">
-                <MessageSquare className="w-10 h-10 text-[color:var(--green-200)] mx-auto mb-3" />
-                <h3 className="text-lg font-medium text-[color:var(--green-900)] mb-2">Aucun message</h3>
-                <p className="text-sm text-[color:var(--green-600)]">
+                <MessageSquare className="w-10 h-10 text-[#D4D4CE] mx-auto mb-3" />
+                <h3 className="text-lg font-medium text-[#1A1A18] mb-2">Aucun message</h3>
+                <p className="text-sm text-[#2D8A5F]">
                   Vos conversations apparaîtront ici.
                 </p>
               </Card>
@@ -373,10 +373,10 @@ export default function DashboardPage() {
               <Card className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h2 className="text-xl font-semibold text-[color:var(--green-900)]">Portefeuille</h2>
-                    <p className="text-sm text-[color:var(--green-700)]">Optimisé pour Orange Money et MTN MoMo.</p>
+                    <h2 className="text-xl font-semibold text-[#1A1A18]">Portefeuille</h2>
+                    <p className="text-sm text-[#4A4A45]">Optimisé pour Orange Money et MTN MoMo.</p>
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-[color:var(--green-700)]">
+                  <div className="flex items-center gap-2 text-xs text-[#4A4A45]">
                     <Sparkles className="w-4 h-4" />
                     USSD confirmé
                   </div>

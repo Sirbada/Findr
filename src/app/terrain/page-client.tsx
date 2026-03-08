@@ -94,11 +94,11 @@ export function TerrainPageClient() {
   })
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-[#FAFAF8]">
       <Header />
 
       {/* Hero */}
-      <div className="bg-gradient-to-r from-stone-800 to-stone-900 py-16 min-h-[280px] flex items-center text-white">
+      <div className="bg-gradient-to-r from-[#0D3D24] to-[#1B5E3B] py-16 min-h-[280px] flex items-center text-white">
         <div className="max-w-6xl mx-auto px-4">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
             Investissez dans la terre — le seul actif qui ne ment pas
@@ -107,40 +107,40 @@ export function TerrainPageClient() {
             Terrains titrés et vérifiés — constructibles, agricoles, commerciaux
           </p>
 
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-[#E8E8E4]">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Ville</label>
                 <select value={selectedCity} onChange={e => setSelectedCity(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white">
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 focus:ring-2 focus:ring-[#1B5E3B] focus:border-[#1B5E3B]/30 transition-all duration-300 bg-[#FAFAF8] hover:bg-white">
                   {cities.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
                 </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Type de terrain</label>
                 <select value={selectedType} onChange={e => setSelectedType(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white">
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 focus:ring-2 focus:ring-[#1B5E3B] focus:border-[#1B5E3B]/30 transition-all duration-300 bg-[#FAFAF8] hover:bg-white">
                   {terrainTypes.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
                 </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Durée</label>
                 <select value={selectedDuree} onChange={e => setSelectedDuree(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white">
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 focus:ring-2 focus:ring-[#1B5E3B] focus:border-[#1B5E3B]/30 transition-all duration-300 bg-[#FAFAF8] hover:bg-white">
                   {dureeOptions.map(d => <option key={d.value} value={d.value}>{d.label}</option>)}
                 </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Trier par</label>
                 <select value={sortBy} onChange={e => setSortBy(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 bg-gray-50 hover:bg-white">
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 focus:ring-2 focus:ring-[#1B5E3B] focus:border-[#1B5E3B]/30 transition-all duration-300 bg-[#FAFAF8] hover:bg-white">
                   <option value="newest">Plus récent</option>
                   <option value="price-low">Prix croissant</option>
                   <option value="price-high">Prix décroissant</option>
                 </select>
               </div>
               <div className="flex items-end">
-                <Button size="lg" className="w-full bg-blue-600 hover:bg-blue-700 rounded-2xl py-3 font-medium hover:scale-[1.02] transition-all duration-300">
+                <Button size="lg" className="w-full bg-[#1B5E3B] hover:bg-[#0D3D24] rounded-xl py-3 font-medium hover:scale-[1.02] transition-all duration-300">
                   <Search className="w-5 h-5 mr-3" /> Rechercher
                 </Button>
               </div>
@@ -179,22 +179,22 @@ export function TerrainPageClient() {
                 return (
                   <div key={listing.id} className="group">
                     <Link href={`/terrain/${listing.id}`}>
-                      <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-300 border border-gray-100">
+                      <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] hover:-translate-y-0.5 transition-all duration-300 border border-[#E8E8E4]">
                         <div className="relative h-48 overflow-hidden">
                           {listing.images?.[0] ? (
                             <img src={listing.images[0]} alt={listing.title}
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                           ) : (
-                            <div className="w-full h-full bg-emerald-50 flex items-center justify-center">
-                              <span className="text-4xl">🏗️</span>
+                            <div className="w-full h-full bg-[#F0F9F4] flex items-center justify-center">
+                              <Square className="w-10 h-10 text-[#7A7A73]" />
                             </div>
                           )}
-                          <span className="absolute top-3 left-3 bg-emerald-600 text-white text-xs px-2 py-1 rounded">
+                          <span className="absolute top-3 left-3 bg-[#1B5E3B] text-white text-xs px-2 py-1 rounded">
                             {listing.terrain_type || 'Terrain'}
                           </span>
                           {listing.title_deed && (
-                            <span className="absolute top-3 right-12 bg-green-600 text-white text-xs px-2 py-1 rounded">
-                              📄 Titre foncier
+                            <span className="absolute top-3 right-12 bg-[#1B5E3B] text-white text-xs px-2 py-1 rounded">
+                              Titre foncier
                             </span>
                           )}
                           <button onClick={(e) => { e.preventDefault(); if (user) toggleFav(listing.id) }}
@@ -203,7 +203,7 @@ export function TerrainPageClient() {
                           </button>
                         </div>
                         <div className="p-4">
-                          <h3 className="font-semibold text-gray-900 group-hover:text-emerald-600 transition-colors line-clamp-1 mb-1">
+                          <h3 className="font-semibold text-gray-900 group-hover:text-[#1B5E3B] transition-colors line-clamp-1 mb-1">
                             {listing.title}
                           </h3>
                           <div className="flex items-center text-gray-500 text-sm mb-2">
@@ -217,11 +217,11 @@ export function TerrainPageClient() {
                               </span>
                             )}
                             {listing.latitude && listing.longitude && (
-                              <span className="text-emerald-600">📍 GPS</span>
+                              <span className="text-[#1B5E3B]">GPS</span>
                             )}
                           </div>
                           <div className="flex items-center justify-between">
-                            <span className="text-lg font-bold text-emerald-600">
+                            <span className="text-lg font-bold text-[#1B5E3B]">
                               {formatPrice(listing.price)} XAF
                             </span>
                             <span className="text-xs text-gray-400">

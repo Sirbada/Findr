@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import { MapPin, Search, ShieldCheck, Sparkles, Star, Bookmark, Send } from 'lucide-react'
+import { MapPin, Search, ShieldCheck, Star, Bookmark, Send } from 'lucide-react'
 import { z } from 'zod'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
@@ -125,22 +125,21 @@ export default function ServicesPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[color:var(--background)]">
+    <div className="min-h-screen flex flex-col bg-[#FAFAF8]">
       <Header />
 
       <section className="px-4 pt-10 pb-8">
         <div className="mx-auto max-w-6xl">
-          <div className="rounded-3xl border border-white/50 bg-gradient-to-br from-white via-white/90 to-[color:var(--green-50)] p-6 shadow-[var(--shadow-soft)]">
+          <div className="rounded-xl border border-[#E8E8E4] bg-white p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
               <div>
-                <div className="inline-flex items-center gap-2 rounded-full bg-[color:var(--green-50)] px-3 py-1 text-xs text-[color:var(--green-700)]">
-                  <Sparkles className="h-3 w-3" />
+                <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#2D8A5F]">
                   Services premium locaux
-                </div>
-                <h1 className="mt-3 text-3xl font-semibold text-[color:var(--green-900)]">
+                </p>
+                <h1 className="mt-3 text-3xl font-semibold text-[#1A1A18]">
                   Trouvez un pro fiable, en quelques minutes
                 </h1>
-                <p className="mt-2 text-sm text-[color:var(--green-700)]">
+                <p className="mt-2 text-sm text-[#4A4A45]">
                   Plombiers, électriciens, climatisation, ménage et plus — ciblés par quartier et disponibilité.
                 </p>
               </div>
@@ -151,23 +150,23 @@ export default function ServicesPage() {
 
             <div className="mt-6 grid grid-cols-1 gap-3 md:grid-cols-4">
               <div className="md:col-span-2">
-                <label className="text-xs font-medium text-[color:var(--green-700)]">Recherche</label>
-                <div className="mt-2 flex items-center gap-2 rounded-2xl border border-[color:var(--green-100)] bg-white/80 px-3 py-2">
-                  <Search className="h-4 w-4 text-[color:var(--green-500)]" />
+                <label className="text-xs font-medium text-[#4A4A45]">Recherche</label>
+                <div className="mt-2 flex items-center gap-2 rounded-lg border border-[#E6F2EC] bg-white/80 px-3 py-2">
+                  <Search className="h-4 w-4 text-[#2D8A5F]" />
                   <input
                     value={search}
                     onChange={(event) => setSearch(event.target.value)}
                     placeholder="Plombier à Bonapriso, électricien à Akwa..."
-                    className="w-full bg-transparent text-sm text-[color:var(--green-900)] outline-none"
+                    className="w-full bg-transparent text-sm text-[#1A1A18] outline-none"
                   />
                 </div>
               </div>
               <div>
-                <label className="text-xs font-medium text-[color:var(--green-700)]">Ville</label>
+                <label className="text-xs font-medium text-[#4A4A45]">Ville</label>
                 <select
                   value={city}
                   onChange={(event) => setCity(event.target.value)}
-                  className="mt-2 w-full rounded-2xl border border-[color:var(--green-100)] bg-white/80 px-3 py-2 text-sm text-[color:var(--green-900)]"
+                  className="mt-2 w-full rounded-lg border border-[#E6F2EC] bg-white/80 px-3 py-2 text-sm text-[#1A1A18]"
                 >
                   <option value="all">Toutes les villes</option>
                   <option value="Douala">Douala</option>
@@ -176,11 +175,11 @@ export default function ServicesPage() {
                 </select>
               </div>
               <div>
-                <label className="text-xs font-medium text-[color:var(--green-700)]">Métier</label>
+                <label className="text-xs font-medium text-[#4A4A45]">Métier</label>
                 <select
                   value={category}
                   onChange={(event) => setCategory(event.target.value)}
-                  className="mt-2 w-full rounded-2xl border border-[color:var(--green-100)] bg-white/80 px-3 py-2 text-sm text-[color:var(--green-900)]"
+                  className="mt-2 w-full rounded-lg border border-[#E6F2EC] bg-white/80 px-3 py-2 text-sm text-[#1A1A18]"
                 >
                   <option value="all">Tous les métiers</option>
                   {categories.map((item) => (
@@ -191,27 +190,27 @@ export default function ServicesPage() {
                 </select>
               </div>
             </div>
-            <div className="mt-3 flex items-center gap-3 text-xs text-[color:var(--green-700)]">
-              <button onClick={handleGeo} className="rounded-full bg-[color:var(--green-50)] px-3 py-1">
+            <div className="mt-3 flex items-center gap-3 text-xs text-[#4A4A45]">
+              <button onClick={handleGeo} className="rounded-full bg-[#F0F9F4] px-3 py-1">
                 Utiliser ma position
               </button>
               {geoStatus && <span>{geoStatus}</span>}
-              <button className="ml-auto rounded-full bg-[color:var(--green-50)] px-3 py-1">
+              <button className="ml-auto rounded-full bg-[#F0F9F4] px-3 py-1">
                 Vue carte (bientôt)
               </button>
             </div>
 
-            <div className="mt-6 flex flex-wrap gap-3 text-xs text-[color:var(--green-700)]">
+            <div className="mt-6 flex flex-wrap gap-3 text-xs text-[#4A4A45]">
               <div className="inline-flex items-center gap-2 rounded-full bg-white/70 px-3 py-1">
-                <ShieldCheck className="h-4 w-4 text-[color:var(--green-600)]" />
+                <ShieldCheck className="h-4 w-4 text-[#2D8A5F]" />
                 Trust Score vérifié
               </div>
               <div className="inline-flex items-center gap-2 rounded-full bg-white/70 px-3 py-1">
-                <Star className="h-4 w-4 text-[color:var(--green-600)]" />
+                <Star className="h-4 w-4 text-[#2D8A5F]" />
                 Pros recommandés par quartier
               </div>
               <div className="inline-flex items-center gap-2 rounded-full bg-white/70 px-3 py-1">
-                <MapPin className="h-4 w-4 text-[color:var(--green-600)]" />
+                <MapPin className="h-4 w-4 text-[#2D8A5F]" />
                 Zone d’intervention intelligente
               </div>
             </div>
@@ -219,7 +218,7 @@ export default function ServicesPage() {
             <div className="mt-6">
               <button
                 onClick={() => setShowBroadcast(!showBroadcast)}
-                className="text-sm text-[color:var(--green-700)] hover:text-[color:var(--green-900)]"
+                className="text-sm text-[#4A4A45] hover:text-[#1A1A18]"
               >
                 {showBroadcast ? 'Fermer la diffusion' : 'Diffuser une demande à plusieurs pros'}
               </button>
@@ -230,31 +229,31 @@ export default function ServicesPage() {
                     <input
                       value={broadcastForm.city}
                       onChange={(event) => setBroadcastForm({ ...broadcastForm, city: event.target.value })}
-                      className="rounded-2xl border border-[color:var(--green-100)] bg-white/80 px-4 py-3 text-sm"
+                      className="rounded-lg border border-[#E6F2EC] bg-white/80 px-4 py-3 text-sm"
                       placeholder="Ville"
                     />
                     <input
                       value={broadcastForm.neighborhood}
                       onChange={(event) => setBroadcastForm({ ...broadcastForm, neighborhood: event.target.value })}
-                      className="rounded-2xl border border-[color:var(--green-100)] bg-white/80 px-4 py-3 text-sm"
+                      className="rounded-lg border border-[#E6F2EC] bg-white/80 px-4 py-3 text-sm"
                       placeholder="Quartier"
                     />
                     <input
                       value={broadcastForm.preferredDate}
                       onChange={(event) => setBroadcastForm({ ...broadcastForm, preferredDate: event.target.value })}
-                      className="rounded-2xl border border-[color:var(--green-100)] bg-white/80 px-4 py-3 text-sm"
+                      className="rounded-lg border border-[#E6F2EC] bg-white/80 px-4 py-3 text-sm"
                       placeholder="Date souhaitée (optionnel)"
                       type="date"
                     />
                     <textarea
                       value={broadcastForm.details}
                       onChange={(event) => setBroadcastForm({ ...broadcastForm, details: event.target.value })}
-                      className="min-h-[96px] rounded-2xl border border-[color:var(--green-100)] bg-white/80 px-4 py-3 text-sm md:col-span-2"
+                      className="min-h-[96px] rounded-lg border border-[#E6F2EC] bg-white/80 px-4 py-3 text-sm md:col-span-2"
                       placeholder="Décrivez votre besoin"
                     />
                   </div>
                   {broadcastStatus && (
-                    <p className="mt-3 text-xs text-[color:var(--green-700)]">{broadcastStatus}</p>
+                    <p className="mt-3 text-xs text-[#4A4A45]">{broadcastStatus}</p>
                   )}
                   <div className="mt-3 flex justify-end">
                     <Button size="sm" onClick={handleBroadcast}>
@@ -273,7 +272,7 @@ export default function ServicesPage() {
         <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[1fr_280px]">
           <div>
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-[color:var(--green-900)]">
+              <h2 className="text-lg font-semibold text-[#1A1A18]">
                 {loading ? 'Chargement...' : `${filtered.length} professionnels`}
               </h2>
               <Button variant="outline" size="sm" onClick={() => setShowBroadcast(true)}>
@@ -294,21 +293,21 @@ export default function ServicesPage() {
                     <Card className="p-5 transition-all hover:-translate-y-0.5">
                       <div className="flex items-start justify-between">
                         <div>
-                          <div className="text-xs text-[color:var(--green-600)]">
+                          <div className="text-xs text-[#2D8A5F]">
                             {service.service_categories?.name || 'Service'}
                           </div>
-                          <h3 className="mt-2 text-lg font-semibold text-[color:var(--green-900)]">
+                          <h3 className="mt-2 text-lg font-semibold text-[#1A1A18]">
                             {service.title}
                           </h3>
-                          <p className="mt-2 text-sm text-[color:var(--green-700)] line-clamp-2">
+                          <p className="mt-2 text-sm text-[#4A4A45] line-clamp-2">
                             {service.description || 'Professionnel disponible sur rendez-vous.'}
                           </p>
                         </div>
-                        <div className="rounded-2xl bg-[color:var(--green-50)] px-3 py-1 text-xs text-[color:var(--green-700)]">
+                        <div className="rounded-lg bg-[#F0F9F4] px-3 py-1 text-xs text-[#4A4A45]">
                           {service.is_verified ? 'Vérifié' : 'Nouveau'}
                         </div>
                       </div>
-                      <div className="mt-3 flex items-center justify-between text-xs text-[color:var(--green-600)]">
+                      <div className="mt-3 flex items-center justify-between text-xs text-[#2D8A5F]">
                         <span className="inline-flex items-center gap-1">
                           <ShieldCheck className="h-3 w-3" /> Trust 92
                         </span>
@@ -317,12 +316,12 @@ export default function ServicesPage() {
                             event.preventDefault()
                             handleSave(service.id)
                           }}
-                          className="inline-flex items-center gap-1 rounded-full bg-[color:var(--green-50)] px-2 py-1"
+                          className="inline-flex items-center gap-1 rounded-full bg-[#F0F9F4] px-2 py-1"
                         >
                           <Bookmark className="h-3 w-3" /> Enregistrer
                         </button>
                       </div>
-                      <div className="mt-4 flex items-center justify-between text-xs text-[color:var(--green-600)]">
+                      <div className="mt-4 flex items-center justify-between text-xs text-[#2D8A5F]">
                         <span>{service.city}</span>
                         <span>{service.views} vues</span>
                       </div>
@@ -335,8 +334,8 @@ export default function ServicesPage() {
 
           <div className="space-y-4">
             <Card variant="glass" className="h-fit p-5">
-              <h3 className="text-base font-semibold text-[color:var(--green-900)]">Pourquoi ça change tout</h3>
-              <ul className="mt-3 space-y-3 text-sm text-[color:var(--green-700)]">
+              <h3 className="text-base font-semibold text-[#1A1A18]">Pourquoi ça change tout</h3>
+              <ul className="mt-3 space-y-3 text-sm text-[#4A4A45]">
                 <li>Diffusion intelligente des demandes aux meilleurs pros</li>
                 <li>Score de fiabilité basé sur la performance réelle</li>
                 <li>Disponibilité synchronisée pour éviter les doublons</li>
@@ -344,11 +343,11 @@ export default function ServicesPage() {
               </ul>
             </Card>
             <Card className="p-5">
-              <h3 className="text-base font-semibold text-[color:var(--green-900)]">Heatmap locale</h3>
-              <p className="mt-2 text-sm text-[color:var(--green-700)]">
+              <h3 className="text-base font-semibold text-[#1A1A18]">Heatmap locale</h3>
+              <p className="mt-2 text-sm text-[#4A4A45]">
                 Les zones les plus demandées apparaîtront ici.
               </p>
-              <div className="mt-4 h-32 rounded-2xl bg-[color:var(--green-50)]" />
+              <div className="mt-4 h-32 rounded-lg bg-[#F0F9F4]" />
             </Card>
           </div>
         </div>

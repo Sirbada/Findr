@@ -9,43 +9,13 @@ interface StatConfig {
   value: number
   labelKey: 'activeListings' | 'activeUsers' | 'vehiclesSold' | 'citiesCovered'
   suffix: string
-  color: string
-  bgColor: string
 }
 
 const statConfigs: StatConfig[] = [
-  {
-    icon: Home,
-    value: 10000,
-    labelKey: 'activeListings',
-    suffix: '+',
-    color: 'text-green-600',
-    bgColor: 'bg-green-50',
-  },
-  {
-    icon: Users,
-    value: 5000,
-    labelKey: 'activeUsers',
-    suffix: '+',
-    color: 'text-blue-600',
-    bgColor: 'bg-blue-50',
-  },
-  {
-    icon: Car,
-    value: 2500,
-    labelKey: 'vehiclesSold',
-    suffix: '+',
-    color: 'text-purple-600',
-    bgColor: 'bg-purple-50',
-  },
-  {
-    icon: MapPin,
-    value: 50,
-    labelKey: 'citiesCovered',
-    suffix: '+',
-    color: 'text-orange-600',
-    bgColor: 'bg-orange-50',
-  },
+  { icon: Home, value: 10000, labelKey: 'activeListings', suffix: '+' },
+  { icon: Users, value: 5000, labelKey: 'activeUsers', suffix: '+' },
+  { icon: Car, value: 2500, labelKey: 'vehiclesSold', suffix: '+' },
+  { icon: MapPin, value: 50, labelKey: 'citiesCovered', suffix: '+' },
 ]
 
 function useCountUp(end: number, duration = 2000) {
@@ -94,69 +64,60 @@ function StatCard({ stat, index }: { stat: StatConfig; index: number }) {
   return (
     <div
       ref={elementRef}
-      className="group relative animate-slide-up"
+      className="group animate-slide-up"
       style={{ animationDelay: `${index * 0.1}s` }}
     >
-      <div className="bg-white rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover-lift border border-gray-100 group-hover:border-green-200">
+      <div className="bg-white rounded-xl p-6 md:p-8 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.03)] border border-[#E8E8E4] transition-all duration-200 hover:shadow-[0_4px_16px_rgba(0,0,0,0.06),0_1px_4px_rgba(0,0,0,0.04)] hover:-translate-y-0.5 hover:border-[#D4D4CE]">
         {/* Icon */}
-        <div
-          className={`inline-flex items-center justify-center w-14 h-14 ${stat.bgColor} rounded-2xl mb-4 group-hover:scale-110 transition-transform duration-300`}
-        >
-          <IconComponent className={`w-7 h-7 ${stat.color}`} />
+        <div className="inline-flex items-center justify-center w-12 h-12 bg-[#F0F9F4] rounded-xl mb-4">
+          <IconComponent className="w-6 h-6 text-[#1B5E3B]" />
         </div>
 
         {/* Number */}
-        <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+        <div className="text-3xl md:text-4xl font-bold text-[#1A1A18] mb-1 tracking-[-0.02em]">
           {count.toLocaleString()}
           {stat.suffix}
         </div>
 
         {/* Label */}
-        <div className={`text-sm font-medium ${stat.color} uppercase tracking-wide`}>
+        <div className="text-[12px] font-semibold text-[#2D8A5F] uppercase tracking-[0.06em]">
           {t.statsCounter[stat.labelKey]}
         </div>
-
-        {/* Hover effect */}
-        <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-green-600/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </div>
     </div>
   )
 }
 
 export function StatsCounter() {
-  const { t } = useTranslation()
+  const { t, lang } = useTranslation()
 
   return (
-    <section className="py-20 bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 via-blue-500/5 to-purple-500/5" />
-      <div className="absolute top-0 left-0 w-full h-full opacity-30">
-        <div className="absolute top-20 left-20 w-32 h-32 bg-green-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-20 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl" />
-      </div>
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-24 bg-[#FAFAF8]">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-16 animate-slide-up">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+        <div className="mb-16 animate-slide-up">
+          <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#2D8A5F] mb-3">
+            {lang === 'fr' ? 'En chiffres' : 'By the numbers'}
+          </p>
+          <h2 className="text-[32px] font-semibold text-[#1A1A18] tracking-[-0.015em] mb-4">
             {t.statsCounter.title}
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-[#4A4A45] max-w-2xl leading-relaxed">
             {t.statsCounter.subtitle}
           </p>
         </div>
 
         {/* Stats grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
           {statConfigs.map((stat, index) => (
             <StatCard key={index} stat={stat} index={index} />
           ))}
         </div>
 
-        {/* Bottom message */}
-        <div className="text-center mt-16 animate-slide-up" style={{ animationDelay: '0.4s' }}>
-          <div className="inline-flex items-center space-x-2 bg-white/80 backdrop-blur-sm text-gray-700 px-6 py-3 rounded-full text-sm font-medium shadow-lg border border-gray-200">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+        {/* Badge */}
+        <div className="mt-12 animate-slide-up" style={{ animationDelay: '0.4s' }}>
+          <div className="inline-flex items-center space-x-2 bg-[#F0F9F4] text-[#1B5E3B] px-4 py-2 rounded-full text-sm font-medium border border-[#E6F2EC]">
+            <div className="w-1.5 h-1.5 bg-[#2D8A5F] rounded-full" />
             <span>{t.statsCounter.badge}</span>
           </div>
         </div>
