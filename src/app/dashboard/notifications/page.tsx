@@ -106,13 +106,13 @@ export default function NotificationsPage() {
   }) {
     return (
       <div className={`flex items-start space-x-4 p-4 rounded-lg border ${
-        disabled ? 'bg-gray-50 border-gray-200' : 'bg-white border-gray-200 hover:border-[#E6F2EC]'
+        disabled ? 'bg-gray-50 border-gray-200' : 'bg-white border-gray-200 hover:border-[#FFF4EC]'
       }`}>
         <div className="flex-shrink-0">
           <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-            enabled ? 'bg-[#E6F2EC]' : 'bg-gray-100'
+            enabled ? 'bg-[#FFF4EC]' : 'bg-gray-100'
           }`}>
-            <Icon className={`w-5 h-5 ${enabled ? 'text-[#1B5E3B]' : 'text-gray-400'}`} />
+            <Icon className={`w-5 h-5 ${enabled ? 'text-[#E8630A]' : 'text-gray-400'}`} />
           </div>
         </div>
         
@@ -135,7 +135,7 @@ export default function NotificationsPage() {
                 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all 
                 ${disabled 
                   ? 'opacity-50 cursor-not-allowed' 
-                  : 'peer-checked:bg-[#1B5E3B] hover:bg-gray-300 peer-checked:hover:bg-[#0D3D24]'
+                  : 'peer-checked:bg-[#E8630A] hover:bg-gray-300 peer-checked:hover:bg-[#1A1A2E]'
                 }`}>
               </div>
             </label>
@@ -190,7 +190,7 @@ export default function NotificationsPage() {
               </h1>
             </div>
             
-            <Link href="/dashboard" className="text-sm text-[#1B5E3B] hover:text-[#1B5E3B]">
+            <Link href="/dashboard" className="text-sm text-[#E8630A] hover:text-[#E8630A]">
               ← Retour au tableau de bord
             </Link>
           </div>
@@ -365,7 +365,7 @@ export default function NotificationsPage() {
               <Button
                 onClick={savePreferences}
                 disabled={saving}
-                className="bg-[#1B5E3B] hover:bg-[#0D3D24] text-white"
+                className="bg-[#E8630A] hover:bg-[#1A1A2E] text-white"
               >
                 {saving ? (
                   <>

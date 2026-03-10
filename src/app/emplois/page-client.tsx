@@ -139,7 +139,7 @@ export function EmploisPageClient() {
       <Header />
       
       {/* Hero Search */}
-      <div className="bg-gradient-to-r from-[#0D3D24] to-[#1B5E3B] py-16 text-white">
+      <div className="bg-gradient-to-r from-[#1A1A2E] to-[#E8630A] py-16 text-white">
         <div className="max-w-6xl mx-auto px-4">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             {content.heroTitle}
@@ -160,7 +160,7 @@ export function EmploisPageClient() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Ex: Développeur, comptable..."
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-[#1B5E3B] focus:border-[#1B5E3B]/30 transition-all duration-300 bg-gray-50 hover:bg-white"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-[#E8630A] focus:border-[#E8630A]/30 transition-all duration-300 bg-gray-50 hover:bg-white"
                 />
               </div>
 
@@ -169,7 +169,7 @@ export function EmploisPageClient() {
                 <select
                   value={selectedCity}
                   onChange={(e) => setSelectedCity(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-[#1B5E3B] focus:border-[#1B5E3B]/30 transition-all duration-300 bg-gray-50 hover:bg-white"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-[#E8630A] focus:border-[#E8630A]/30 transition-all duration-300 bg-gray-50 hover:bg-white"
                 >
                   {content.cities.map(city => (
                     <option key={city.value} value={city.value}>{city.label}</option>
@@ -182,7 +182,7 @@ export function EmploisPageClient() {
                 <select
                   value={selectedContractType}
                   onChange={(e) => setSelectedContractType(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-[#1B5E3B] focus:border-[#1B5E3B]/30 transition-all duration-300 bg-gray-50 hover:bg-white"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-[#E8630A] focus:border-[#E8630A]/30 transition-all duration-300 bg-gray-50 hover:bg-white"
                 >
                   {content.contractTypes.map(type => (
                     <option key={type.value} value={type.value}>{type.label}</option>
@@ -191,7 +191,7 @@ export function EmploisPageClient() {
               </div>
               
               <div className="flex items-end">
-                <Button size="lg" className="w-full bg-[#1B5E3B] hover:bg-[#0D3D24] rounded-lg py-3 font-medium">
+                <Button size="lg" className="w-full bg-[#E8630A] hover:bg-[#1A1A2E] rounded-lg py-3 font-medium">
                   <Search className="w-5 h-5 mr-3" />
                   {content.search}
                 </Button>
@@ -219,7 +219,7 @@ export function EmploisPageClient() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="pl-3 pr-8 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:ring-2 focus:ring-[#1B5E3B] focus:border-transparent appearance-none"
+                className="pl-3 pr-8 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:ring-2 focus:ring-[#E8630A] focus:border-transparent appearance-none"
               >
                 <option value="newest">Plus récent</option>
                 <option value="salary-high">Salaire décroissant</option>
@@ -252,10 +252,10 @@ export function EmploisPageClient() {
                   href={`/emplois/${listing.id}`}
                   className="group block"
                 >
-                  <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] hover:-translate-y-0.5 transition-all duration-300 border border-[#E8E8E4]">
+                  <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] hover:-translate-y-0.5 transition-all duration-300 border border-[#E5E7EB]">
                     <div className="flex justify-between items-start mb-4">
                       <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-gray-900 group-hover:text-[#1B5E3B] transition-colors mb-1">
+                        <h3 className="text-lg font-semibold text-gray-900 group-hover:text-[#E8630A] transition-colors mb-1">
                           {listing.title}
                         </h3>
                         <p className="text-gray-600 mb-2 flex items-center">
@@ -275,7 +275,7 @@ export function EmploisPageClient() {
                       </div>
                       
                       <div className="text-right">
-                        <div className="text-lg font-bold text-[#1B5E3B] mb-1">
+                        <div className="text-lg font-bold text-[#E8630A] mb-1">
                           {listing.price ? `${formatSalary(listing.price)} XAF` : 'À négocier'}
                         </div>
                         <div className="text-sm text-gray-500">par mois</div>
@@ -294,14 +294,14 @@ export function EmploisPageClient() {
                           </span>
                         )}
                         {listing.is_verified && (
-                          <span className="bg-[#E6F2EC] text-[#1B5E3B] text-xs font-medium px-2 py-1 rounded flex items-center gap-1">
+                          <span className="bg-[#FFF4EC] text-[#E8630A] text-xs font-medium px-2 py-1 rounded flex items-center gap-1">
                             <CheckCircle className="w-3 h-3" />
                             Vérifié
                           </span>
                         )}
                       </div>
                       
-                      <button className="text-gray-400 hover:text-[#1B5E3B] transition-colors">
+                      <button className="text-gray-400 hover:text-[#E8630A] transition-colors">
                         <Heart className="w-5 h-5" />
                       </button>
                     </div>
@@ -314,8 +314,8 @@ export function EmploisPageClient() {
           {/* No Results */}
           {!loading && filteredAndSortedListings.length === 0 && (
             <div className="text-center py-16">
-              <div className="w-24 h-24 mx-auto mb-8 bg-[#E6F2EC] rounded-full flex items-center justify-center">
-                <Briefcase className="w-12 h-12 text-[#1B5E3B]" />
+              <div className="w-24 h-24 mx-auto mb-8 bg-[#FFF4EC] rounded-full flex items-center justify-center">
+                <Briefcase className="w-12 h-12 text-[#E8630A]" />
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-3">
                 {content.noResults}
@@ -324,7 +324,7 @@ export function EmploisPageClient() {
                 {content.tryDifferent}
               </p>
               <Link href="/dashboard/new">
-                <Button size="lg" className="bg-[#1B5E3B] hover:bg-[#0D3D24] px-8">
+                <Button size="lg" className="bg-[#E8630A] hover:bg-[#1A1A2E] px-8">
                   Publier une offre d'emploi
                 </Button>
               </Link>

@@ -21,7 +21,7 @@ export function VerifiedBadge({ type, size = 'md' }: VerifiedBadgeProps) {
   }
 
   return (
-    <span className="inline-flex items-center gap-1 text-[#1B5E3B]" title={labels[type]}>
+    <span className="inline-flex items-center gap-1 text-[#16A34A]" title={labels[type]}>
       <CheckCircle className={sizes[size]} />
       <span className="text-xs font-medium">{labels[type]}</span>
     </span>
@@ -45,14 +45,14 @@ export function SocialProof({ viewingNow, recentlyContacted, totalViews }: Socia
       )}
 
       {recentlyContacted && (
-        <span className="inline-flex items-center gap-1 text-[#4A4A45] bg-[#F4F4F1] px-2 py-1 rounded-full">
+        <span className="inline-flex items-center gap-1 text-[#4B5563] bg-[#F4F4F1] px-2 py-1 rounded-full">
           <Clock className="w-3 h-3" />
           <span>Contact\u00e9 {recentlyContacted}</span>
         </span>
       )}
 
       {totalViews && totalViews > 10 && (
-        <span className="inline-flex items-center gap-1 text-[#7A7A73] bg-[#F4F4F1] px-2 py-1 rounded-full">
+        <span className="inline-flex items-center gap-1 text-[#6B7280] bg-[#F4F4F1] px-2 py-1 rounded-full">
           <Eye className="w-3 h-3" />
           <span>{totalViews} vues</span>
         </span>
@@ -82,8 +82,8 @@ export function ScarcityAlert({ type, message }: ScarcityAlertProps) {
     },
     new: {
       icon: Star,
-      bg: 'bg-[#F0F9F4]',
-      text: 'text-[#1B5E3B]',
+      bg: 'bg-[#FFF4EC]',
+      text: 'text-[#E8630A]',
       defaultMessage: 'Nouveau sur Findr',
     },
   }
@@ -106,7 +106,7 @@ interface TrustGuaranteeProps {
 export function TrustGuarantee({ variant = 'default' }: TrustGuaranteeProps) {
   if (variant === 'compact') {
     return (
-      <div className="flex items-center gap-2 text-[#1B5E3B] text-sm">
+      <div className="flex items-center gap-2 text-[#E8630A] text-sm">
         <Shield className="w-4 h-4" />
         <span>Protection Findr</span>
       </div>
@@ -114,12 +114,12 @@ export function TrustGuarantee({ variant = 'default' }: TrustGuaranteeProps) {
   }
 
   return (
-    <div className="border border-[#E6F2EC] bg-[#F0F9F4] rounded-xl p-4">
-      <div className="flex items-center gap-2 text-[#0D3D24] mb-2">
+    <div className="border border-[#FFF4EC] bg-[#FFF4EC] rounded-xl p-4">
+      <div className="flex items-center gap-2 text-[#1A1A2E] mb-2">
         <Shield className="w-5 h-5" />
         <span className="font-semibold">Protection Findr</span>
       </div>
-      <ul className="text-sm text-[#1B5E3B] space-y-1">
+      <ul className="text-sm text-[#E8630A] space-y-1">
         <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5" /> Vendeurs v\u00e9rifi\u00e9s</li>
         <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5" /> Paiement s\u00e9curis\u00e9</li>
         <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5" /> Support 24/7</li>
@@ -145,9 +145,9 @@ export function ReviewSummary({ rating, reviewCount, breakdown }: ReviewSummaryP
     <div className="flex items-center gap-4">
       <div className="flex items-center gap-1">
         <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-        <span className="text-lg font-bold text-[#1A1A18]">{rating.toFixed(1)}</span>
+        <span className="text-lg font-bold text-[#111827]">{rating.toFixed(1)}</span>
       </div>
-      <span className="text-[#7A7A73] text-sm">
+      <span className="text-[#6B7280] text-sm">
         ({reviewCount} avis)
       </span>
 
@@ -155,7 +155,7 @@ export function ReviewSummary({ rating, reviewCount, breakdown }: ReviewSummaryP
         <div className="hidden md:flex items-center gap-1">
           {[5, 4, 3, 2, 1].map((star) => (
             <div key={star} className="flex items-center gap-1">
-              <span className="text-xs text-[#ADADAA]">{star}</span>
+              <span className="text-xs text-[#9CA3AF]">{star}</span>
               <div className="w-16 h-1.5 bg-[#EEECEA] rounded-full overflow-hidden">
                 <div
                   className="h-full bg-yellow-400 rounded-full"
@@ -191,7 +191,7 @@ export function PriceHighlight({
     <div className="space-y-1">
       {originalPrice && originalPrice > currentPrice && (
         <div className="flex items-center gap-2">
-          <span className="text-[#ADADAA] line-through text-sm">
+          <span className="text-[#9CA3AF] line-through text-sm">
             {formatPrice(originalPrice)} {currency}
           </span>
           <span className="bg-red-100 text-[#DC2626] text-xs font-medium px-2 py-0.5 rounded">
@@ -201,16 +201,16 @@ export function PriceHighlight({
       )}
 
       <div className="flex items-baseline gap-2">
-        <span className="text-2xl font-bold text-[#1B5E3B]">
+        <span className="text-2xl font-bold text-[#E8630A]">
           {formatPrice(currentPrice)} {currency}
         </span>
         {period && (
-          <span className="text-[#7A7A73] text-sm">/{period}</span>
+          <span className="text-[#6B7280] text-sm">/{period}</span>
         )}
       </div>
 
       {isGoodDeal && (
-        <span className="inline-flex items-center gap-1 text-[#2D8A5F] text-sm font-medium">
+        <span className="inline-flex items-center gap-1 text-[#16A34A] text-sm font-medium">
           <CheckCircle className="w-4 h-4" />
           Bon prix pour ce quartier
         </span>

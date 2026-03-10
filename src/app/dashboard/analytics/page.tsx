@@ -39,7 +39,7 @@ function SimpleBarChart({
             <div className="flex-1 mx-3">
               <div className="bg-gray-200 rounded-full h-2">
                 <div 
-                  className="bg-[#F0F9F4]0 h-2 rounded-full transition-all duration-300"
+                  className="bg-[#FFF4EC]0 h-2 rounded-full transition-all duration-300"
                   style={{ width: `${(item.views / maxValue) * 100}%` }}
                 />
               </div>
@@ -137,8 +137,8 @@ function MetricCard({
             </div>
           )}
         </div>
-        <div className="w-12 h-12 bg-[#E6F2EC] rounded-lg flex items-center justify-center">
-          <Icon className="w-6 h-6 text-[#1B5E3B]" />
+        <div className="w-12 h-12 bg-[#FFF4EC] rounded-lg flex items-center justify-center">
+          <Icon className="w-6 h-6 text-[#E8630A]" />
         </div>
       </div>
     </div>
@@ -253,7 +253,7 @@ export default function AnalyticsPage() {
                 ))}
               </div>
               
-              <Link href="/dashboard" className="text-sm text-[#1B5E3B] hover:text-[#1B5E3B]">
+              <Link href="/dashboard" className="text-sm text-[#E8630A] hover:text-[#E8630A]">
                 ← Retour au tableau de bord
               </Link>
             </div>
@@ -332,7 +332,7 @@ export default function AnalyticsPage() {
                       </div>
                       <div className="bg-gray-200 rounded-full h-2">
                         <div 
-                          className="bg-[#F0F9F4]0 h-2 rounded-full transition-all duration-300"
+                          className="bg-[#FFF4EC]0 h-2 rounded-full transition-all duration-300"
                           style={{ width: `${percentage}%` }}
                         />
                       </div>
@@ -350,9 +350,9 @@ export default function AnalyticsPage() {
             </h3>
             <div className="space-y-4">
               {[
-                { label: 'Vues • Views', value: analyticsData.conversionFunnel.views, color: 'bg-[#F0F9F4]0' },
-                { label: 'Contacts • Contacts', value: analyticsData.conversionFunnel.contacts, color: 'bg-[#2D8A5F]' },
-                { label: 'Conversions • Conversions', value: analyticsData.conversionFunnel.conversions, color: 'bg-[#2D8A5F]' }
+                { label: 'Vues • Views', value: analyticsData.conversionFunnel.views, color: 'bg-[#FFF4EC]0' },
+                { label: 'Contacts • Contacts', value: analyticsData.conversionFunnel.contacts, color: 'bg-[#E8630A]' },
+                { label: 'Conversions • Conversions', value: analyticsData.conversionFunnel.conversions, color: 'bg-[#E8630A]' }
               ].map((step, index) => {
                 const percentage = index === 0 ? 100 : 
                                  Math.round((step.value / analyticsData.conversionFunnel.views) * 100)
@@ -416,7 +416,7 @@ export default function AnalyticsPage() {
                       {listing.contacts.toLocaleString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-[#E6F2EC] text-[#1B5E3B]">
+                      <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-[#FFF4EC] text-[#E8630A]">
                         {listing.views > 0 ? Math.round((listing.contacts / listing.views) * 100) : 0}%
                       </span>
                     </td>

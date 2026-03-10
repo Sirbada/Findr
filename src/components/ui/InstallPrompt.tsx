@@ -193,11 +193,11 @@ export function InstallBanner() {
     <>
       {/* Banner */}
       <div className="fixed bottom-0 left-0 right-0 z-40 safe-area-bottom">
-        <div className="bg-gradient-to-r from-[#1B5E3B] to-[#0D3D24] text-white p-4 shadow-lg">
+        <div className="bg-gradient-to-r from-[#1A1A2E] to-[#2D3A6B] text-white p-4 shadow-lg">
           <div className="flex items-center justify-between max-w-lg mx-auto">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center">
-                <span className="text-[#1B5E3B] font-bold text-lg">F</span>
+                <span className="text-[#E8630A] font-bold text-lg">F</span>
               </div>
               <div>
                 <p className="font-semibold text-sm">{t.banner.title}</p>
@@ -208,14 +208,14 @@ export function InstallBanner() {
               <Button
                 onClick={handleInstall}
                 size="sm"
-                className="bg-white text-[#1B5E3B] hover:bg-[#F0F9F4]"
+                className="bg-white text-[#E8630A] hover:bg-[#FFF4EC]"
               >
                 <Download className="w-4 h-4 mr-1" />
                 {t.installButton}
               </Button>
               <button
                 onClick={dismiss}
-                className="p-2 hover:bg-[#F0F9F4]0 rounded-full transition-colors"
+                className="p-2 hover:bg-[#FFF4EC]0 rounded-full transition-colors"
                 aria-label="Fermer"
               >
                 <X className="w-4 h-4" />
@@ -250,8 +250,8 @@ function IOSInstallModal({ onClose }: { onClose: () => void }) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="text-center mb-6">
-          <div className="w-16 h-16 bg-[#E6F2EC] rounded-xl flex items-center justify-center mx-auto mb-4">
-            <Smartphone className="w-8 h-8 text-[#1B5E3B]" />
+          <div className="w-16 h-16 bg-[#FFF4EC] rounded-xl flex items-center justify-center mx-auto mb-4">
+            <Smartphone className="w-8 h-8 text-[#E8630A]" />
           </div>
           <h2 className="text-xl font-bold text-gray-900">{t.ios.title}</h2>
         </div>
@@ -259,7 +259,7 @@ function IOSInstallModal({ onClose }: { onClose: () => void }) {
         <div className="space-y-4">
           {/* Step 1 */}
           <div className="flex items-start gap-4">
-            <div className="w-8 h-8 bg-[#1B5E3B] text-white rounded-full flex items-center justify-center font-bold text-sm">
+            <div className="w-8 h-8 bg-[#E8630A] text-white rounded-full flex items-center justify-center font-bold text-sm">
               1
             </div>
             <div className="flex-1">
@@ -275,7 +275,7 @@ function IOSInstallModal({ onClose }: { onClose: () => void }) {
 
           {/* Step 2 */}
           <div className="flex items-start gap-4">
-            <div className="w-8 h-8 bg-[#1B5E3B] text-white rounded-full flex items-center justify-center font-bold text-sm">
+            <div className="w-8 h-8 bg-[#E8630A] text-white rounded-full flex items-center justify-center font-bold text-sm">
               2
             </div>
             <div className="flex-1">
@@ -339,7 +339,7 @@ export function InstallPrompt({ onClose }: { onClose?: () => void }) {
     <div className="bg-white rounded-xl shadow-lg p-6 max-w-md mx-auto">
       {/* Header */}
       <div className="text-center mb-6">
-        <div className="w-20 h-20 bg-gradient-to-br from-[#1B5E3B] to-[#0D3D24] rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+        <div className="w-20 h-20 bg-gradient-to-br from-[#E8630A] to-[#1A1A2E] rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
           <span className="text-white font-bold text-3xl">F</span>
         </div>
         <h2 className="text-2xl font-bold text-gray-900">{t.install}</h2>
@@ -348,16 +348,16 @@ export function InstallPrompt({ onClose }: { onClose?: () => void }) {
 
       {/* Features */}
       <div className="space-y-3 mb-6">
-        <div className="flex items-center gap-3 p-3 bg-[#F0F9F4] rounded-xl">
-          <Check className="w-5 h-5 text-[#1B5E3B]" />
+        <div className="flex items-center gap-3 p-3 bg-[#FFF4EC] rounded-xl">
+          <Check className="w-5 h-5 text-[#E8630A]" />
           <span className="text-gray-700">{t.features.offline}</span>
         </div>
-        <div className="flex items-center gap-3 p-3 bg-[#F0F9F4] rounded-xl">
-          <Check className="w-5 h-5 text-[#1B5E3B]" />
+        <div className="flex items-center gap-3 p-3 bg-[#FFF4EC] rounded-xl">
+          <Check className="w-5 h-5 text-[#E8630A]" />
           <span className="text-gray-700">{t.features.fast}</span>
         </div>
-        <div className="flex items-center gap-3 p-3 bg-[#F0F9F4] rounded-xl">
-          <Check className="w-5 h-5 text-[#1B5E3B]" />
+        <div className="flex items-center gap-3 p-3 bg-[#FFF4EC] rounded-xl">
+          <Check className="w-5 h-5 text-[#E8630A]" />
           <span className="text-gray-700">{t.features.notifications}</span>
         </div>
       </div>
@@ -365,10 +365,10 @@ export function InstallPrompt({ onClose }: { onClose?: () => void }) {
       {/* Actions */}
       {installed ? (
         <div className="text-center">
-          <div className="w-16 h-16 bg-[#E6F2EC] rounded-full flex items-center justify-center mx-auto mb-3">
-            <Check className="w-8 h-8 text-[#1B5E3B]" />
+          <div className="w-16 h-16 bg-[#F0FDF4] rounded-full flex items-center justify-center mx-auto mb-3">
+            <Check className="w-8 h-8 text-[#16A34A]" />
           </div>
-          <p className="text-[#1B5E3B] font-semibold">{t.installed}</p>
+          <p className="text-[#16A34A] font-semibold">{t.installed}</p>
         </div>
       ) : device === 'ios' ? (
         <div className="space-y-4">
@@ -376,11 +376,11 @@ export function InstallPrompt({ onClose }: { onClose?: () => void }) {
             <p className="text-sm text-gray-600 mb-2">{t.ios.title}:</p>
             <ol className="text-sm text-gray-700 space-y-2">
               <li className="flex items-center gap-2">
-                <span className="w-5 h-5 bg-[#1B5E3B] text-white rounded-full text-xs flex items-center justify-center">1</span>
+                <span className="w-5 h-5 bg-[#E8630A] text-white rounded-full text-xs flex items-center justify-center">1</span>
                 {t.ios.step1} <Share className="w-4 h-4 inline" />
               </li>
               <li className="flex items-center gap-2">
-                <span className="w-5 h-5 bg-[#1B5E3B] text-white rounded-full text-xs flex items-center justify-center">2</span>
+                <span className="w-5 h-5 bg-[#E8630A] text-white rounded-full text-xs flex items-center justify-center">2</span>
                 {t.ios.step2} <Plus className="w-4 h-4 inline" />
               </li>
             </ol>

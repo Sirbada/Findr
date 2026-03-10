@@ -67,20 +67,20 @@ function StatCard({ stat, index }: { stat: StatConfig; index: number }) {
       className="group animate-slide-up"
       style={{ animationDelay: `${index * 0.1}s` }}
     >
-      <div className="bg-white rounded-xl p-6 md:p-8 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.03)] border border-[#E8E8E4] transition-all duration-200 hover:shadow-[0_4px_16px_rgba(0,0,0,0.06),0_1px_4px_rgba(0,0,0,0.04)] hover:-translate-y-0.5 hover:border-[#D4D4CE]">
+      <div className="bg-white rounded-xl p-6 md:p-8 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.03)] border border-[#E5E7EB] transition-all duration-200 hover:shadow-[0_4px_16px_rgba(0,0,0,0.06),0_1px_4px_rgba(0,0,0,0.04)] hover:-translate-y-0.5 hover:border-[#D1D5DB]">
         {/* Icon */}
-        <div className="inline-flex items-center justify-center w-12 h-12 bg-[#F0F9F4] rounded-xl mb-4">
-          <IconComponent className="w-6 h-6 text-[#1B5E3B]" />
+        <div className="inline-flex items-center justify-center w-12 h-12 bg-[#FFF4EC] rounded-xl mb-4">
+          <IconComponent className="w-6 h-6 text-[#E8630A]" />
         </div>
 
         {/* Number */}
-        <div className="text-3xl md:text-4xl font-bold text-[#1A1A18] mb-1 tracking-[-0.02em]">
+        <div className="text-3xl md:text-4xl font-bold text-[#111827] mb-1 tracking-[-0.02em]">
           {count.toLocaleString()}
           {stat.suffix}
         </div>
 
         {/* Label */}
-        <div className="text-[12px] font-semibold text-[#2D8A5F] uppercase tracking-[0.06em]">
+        <div className="text-[12px] font-semibold text-[#E8630A] uppercase tracking-[0.06em]">
           {t.statsCounter[stat.labelKey]}
         </div>
       </div>
@@ -96,13 +96,13 @@ export function StatsCounter() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-16 animate-slide-up">
-          <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#2D8A5F] mb-3">
+          <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#E8630A] mb-3">
             {lang === 'fr' ? 'En chiffres' : 'By the numbers'}
           </p>
-          <h2 className="text-[32px] font-semibold text-[#1A1A18] tracking-[-0.015em] mb-4">
+          <h2 className="text-[32px] font-semibold text-[#111827] tracking-[-0.015em] mb-4">
             {t.statsCounter.title}
           </h2>
-          <p className="text-lg text-[#4A4A45] max-w-2xl leading-relaxed">
+          <p className="text-lg text-[#4B5563] max-w-2xl leading-relaxed">
             {t.statsCounter.subtitle}
           </p>
         </div>
@@ -116,8 +116,8 @@ export function StatsCounter() {
 
         {/* Badge */}
         <div className="mt-12 animate-slide-up" style={{ animationDelay: '0.4s' }}>
-          <div className="inline-flex items-center space-x-2 bg-[#F0F9F4] text-[#1B5E3B] px-4 py-2 rounded-full text-sm font-medium border border-[#E6F2EC]">
-            <div className="w-1.5 h-1.5 bg-[#2D8A5F] rounded-full" />
+          <div className="inline-flex items-center space-x-2 bg-[#FFF4EC] text-[#E8630A] px-4 py-2 rounded-full text-sm font-medium border border-[#FFF4EC]">
+            <div className="w-1.5 h-1.5 bg-[#E8630A] rounded-full" />
             <span>{t.statsCounter.badge}</span>
           </div>
         </div>

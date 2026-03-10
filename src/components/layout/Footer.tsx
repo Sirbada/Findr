@@ -38,7 +38,7 @@ export function Footer() {
   ]
 
   return (
-    <footer className="bg-[#0D3D24]">
+    <footer className="bg-[#1A1A2E]">
       <div className="max-w-6xl mx-auto px-6 py-16">
         {/* Top row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
@@ -46,7 +46,7 @@ export function Footer() {
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-4">
               <div className="w-7 h-7 bg-white rounded-lg flex items-center justify-center">
-                <span className="text-[#0D3D24] font-bold text-sm">F</span>
+                <span className="text-[#1A1A2E] font-bold text-sm">F</span>
               </div>
               <span className="font-semibold text-[15px] text-white tracking-[-0.02em]">Findr</span>
             </Link>
