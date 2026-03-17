@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoltFind Logo Preview</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #374151;
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        .logo-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-title {
+            color: #059669;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .logo-item {
+            text-align: center;
+            padding: 1.5rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        
+        .logo-item h3 {
+            color: #374151;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .logo-item img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 1rem;
+        }
+        
+        .logo-item.dark {
+            background: #1f2937;
+        }
+        
+        .logo-item.dark h3 {
+            color: #d1d5db;
+        }
+        
+        .icon-sizes {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .icon-demo {
+            text-align: center;
+        }
+        
+        .icon-demo img {
+            display: block;
+            margin: 0 auto 0.5rem;
+        }
+        
+        .icon-demo span {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+        
+        .color-palette {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .color-card {
+            text-align: center;
+            padding: 1rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+        }
+        
+        .color-emerald { background: #059669; }
+        .color-teal { background: #14B8A6; }
+        .color-coral { background: #FF6B6B; }
+        .color-coral-light { background: #FF8E53; }
+        
+        .usage-examples {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        .example-card {
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .light-bg {
+            background: white;
+        }
+        
+        .dark-bg {
+            background: #1f2937;
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .usage-examples {
+                grid-template-columns: 1fr;
+            }
+            
+            .logo-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 VoltFind Logo Family</h1>
+        
+        <div class="logo-section">
+            <h2 class="section-title">🎨 Full Logos</h2>
+            <div class="logo-grid">
+                <div class="logo-item">
+                    <h3>Primary Logo (Light)</h3>
+                    <img src="logo-full.svg" alt="VoltFind Logo Light" width="320">
+                    <p><code>logo-full.svg</code></p>
+                </div>
+                
+                <div class="logo-item dark">
+                    <h3>Dark Mode Logo</h3>
+                    <img src="logo-full-dark.svg" alt="VoltFind Logo Dark" width="320">
+                    <p><code>logo-full-dark.svg</code></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="logo-section">
+            <h2 class="section-title">📱 Icon Variations</h2>
+            <div class="logo-grid">
+                <div class="logo-item">
+                    <h3>App Icon</h3>
+                    <img src="logo-icon.svg" alt="VoltFind Icon" width="120">
+                    <p><code>logo-icon.svg</code></p>
+                </div>
+                
+                <div class="logo-item">
+                    <h3>PNG Sizes</h3>
+                    <div class="icon-sizes">
+                        <div class="icon-demo">
+                            <img src="logo-icon-512.png" width="64" alt="512px">
+                            <span>512px</span>
+                        </div>
+                        <div class="icon-demo">
+                            <img src="logo-icon-192.png" width="48" alt="192px">
+                            <span>192px</span>
+                        </div>
+                        <div class="icon-demo">
+                            <img src="favicon-32.png" width="32" alt="32px">
+                            <span>32px</span>
+                        </div>
+                        <div class="icon-demo">
+                            <img src="favicon-16.png" width="16" alt="16px">
+                            <span>16px</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="logo-section">
+            <h2 class="section-title">⚫ Monochrome Versions</h2>
+            <div class="logo-grid">
+                <div class="logo-item dark">
+                    <h3>White Version</h3>
+                    <img src="logo-mono-white.svg" alt="VoltFind White" width="320">
+                    <p><code>logo-mono-white.svg</code></p>
+                </div>
+                
+                <div class="logo-item">
+                    <h3>Black Version</h3>
+                    <img src="logo-mono-black.svg" alt="VoltFind Black" width="320">
+                    <p><code>logo-mono-black.svg</code></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="logo-section">
+            <h2 class="section-title">🎨 Color Palette</h2>
+            <div class="color-palette">
+                <div class="color-card color-emerald">
+                    <h3>Emerald Primary</h3>
+                    <p>#059669</p>
+                </div>
+                <div class="color-card color-teal">
+                    <h3>Teal Accent</h3>
+                    <p>#14B8A6</p>
+                </div>
+                <div class="color-card color-coral">
+                    <h3>Coral Warm</h3>
+                    <p>#FF6B6B</p>
+                </div>
+                <div class="color-card color-coral-light">
+                    <h3>Coral Light</h3>
+                    <p>#FF8E53</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="logo-section">
+            <h2 class="section-title">💻 Usage Examples</h2>
+            <div class="usage-examples">
+                <div class="example-card light-bg">
+                    <img src="logo-full.svg" alt="Light background example" width="240">
+                    <h3 style="color: #374151; margin-top: 1rem;">Light Backgrounds</h3>
+                    <p style="color: #6b7280;">Websites, documents, light interfaces</p>
+                </div>
+                
+                <div class="example-card dark-bg">
+                    <img src="logo-full-dark.svg" alt="Dark background example" width="240">
+                    <h3 style="margin-top: 1rem;">Dark Backgrounds</h3>
+                    <p style="color: #d1d5db;">Dark mode, presentations, premium materials</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="logo-section">
+            <h2 class="section-title">📋 Brand Guidelines</h2>
+            <div style="background: #f3f4f6; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #059669;">
+                <h3 style="color: #374151; margin-bottom: 1rem;">✅ Do's</h3>
+                <ul style="color: #6b7280; line-height: 1.6; margin-left: 1.5rem;">
+                    <li>Maintain minimum clear space around logo</li>
+                    <li>Use provided color variants for different backgrounds</li>
+                    <li>Scale proportionally - never distort</li>
+                    <li>Use monochrome versions for single-color applications</li>
+                </ul>
+                
+                <h3 style="color: #374151; margin: 1.5rem 0 1rem;">❌ Don'ts</h3>
+                <ul style="color: #6b7280; line-height: 1.6; margin-left: 1.5rem;">
+                    <li>Don't change colors outside approved palette</li>
+                    <li>Don't add unauthorized effects or shadows</li>
+                    <li>Don't place on busy backgrounds without contrast</li>
+                    <li>Don't use below minimum size (120px width for full logo)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

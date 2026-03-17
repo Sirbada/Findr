@@ -1,15 +1,6 @@
 'use client'
 
-import { CheckCircle, Shield, Clock, Eye, Users, Star, TrendingUp, AlertCircle } from 'lucide-react'
-
-/**
- * Trust & Urgency Elements inspired by Booking.com and Airbnb
- * 
- * These components increase conversion by:
- * 1. Building trust (verification, reviews)
- * 2. Creating urgency (scarcity, social proof)
- * 3. Reducing friction (clear pricing, guarantees)
- */
+import { CheckCircle, Shield, Clock, Eye, Users, Star, TrendingUp, AlertCircle, Check } from 'lucide-react'
 
 interface VerifiedBadgeProps {
   type: 'user' | 'listing' | 'seller'
@@ -22,15 +13,15 @@ export function VerifiedBadge({ type, size = 'md' }: VerifiedBadgeProps) {
     md: 'w-4 h-4',
     lg: 'w-5 h-5',
   }
-  
+
   const labels = {
-    user: 'Utilisateur vérifié',
-    listing: 'Annonce vérifiée',
-    seller: 'Vendeur vérifié',
+    user: 'Utilisateur v\u00e9rifi\u00e9',
+    listing: 'Annonce v\u00e9rifi\u00e9e',
+    seller: 'Vendeur v\u00e9rifi\u00e9',
   }
-  
+
   return (
-    <span className="inline-flex items-center gap-1 text-blue-600" title={labels[type]}>
+    <span className="inline-flex items-center gap-1 text-[#1B5E3B]" title={labels[type]}>
       <CheckCircle className={sizes[size]} />
       <span className="text-xs font-medium">{labels[type]}</span>
     </span>
@@ -39,7 +30,7 @@ export function VerifiedBadge({ type, size = 'md' }: VerifiedBadgeProps) {
 
 interface SocialProofProps {
   viewingNow?: number
-  recentlyContacted?: string // "il y a 2 heures"
+  recentlyContacted?: string
   totalViews?: number
 }
 
@@ -47,21 +38,21 @@ export function SocialProof({ viewingNow, recentlyContacted, totalViews }: Socia
   return (
     <div className="flex flex-wrap gap-3 text-sm">
       {viewingNow && viewingNow > 0 && (
-        <span className="inline-flex items-center gap-1 text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
+        <span className="inline-flex items-center gap-1 text-[#E8960C] bg-[#FFFBEB] px-2 py-1 rounded-full">
           <Users className="w-3 h-3" />
           <span className="font-medium">{viewingNow} personnes regardent</span>
         </span>
       )}
-      
+
       {recentlyContacted && (
-        <span className="inline-flex items-center gap-1 text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
+        <span className="inline-flex items-center gap-1 text-[#4A4A45] bg-[#F4F4F1] px-2 py-1 rounded-full">
           <Clock className="w-3 h-3" />
-          <span>Contacté {recentlyContacted}</span>
+          <span>Contact\u00e9 {recentlyContacted}</span>
         </span>
       )}
-      
+
       {totalViews && totalViews > 10 && (
-        <span className="inline-flex items-center gap-1 text-gray-600 bg-gray-100 px-2 py-1 rounded-full">
+        <span className="inline-flex items-center gap-1 text-[#7A7A73] bg-[#F4F4F1] px-2 py-1 rounded-full">
           <Eye className="w-3 h-3" />
           <span>{totalViews} vues</span>
         </span>
@@ -80,26 +71,26 @@ export function ScarcityAlert({ type, message }: ScarcityAlertProps) {
     limited: {
       icon: AlertCircle,
       bg: 'bg-red-50',
-      text: 'text-red-700',
-      defaultMessage: 'Dernière disponibilité !',
+      text: 'text-[#DC2626]',
+      defaultMessage: 'Derni\u00e8re disponibilit\u00e9 !',
     },
     popular: {
       icon: TrendingUp,
-      bg: 'bg-blue-50',
-      text: 'text-blue-700',
-      defaultMessage: 'Très demandé - 5 personnes ont contacté le vendeur aujourd\'hui',
+      bg: 'bg-[#FFFBEB]',
+      text: 'text-[#E8960C]',
+      defaultMessage: 'Tr\u00e8s demand\u00e9 - 5 personnes ont contact\u00e9 le vendeur aujourd\'hui',
     },
     new: {
       icon: Star,
-      bg: 'bg-blue-50',
-      text: 'text-blue-700',
+      bg: 'bg-[#F0F9F4]',
+      text: 'text-[#1B5E3B]',
       defaultMessage: 'Nouveau sur Findr',
     },
   }
-  
+
   const config = configs[type]
   const Icon = config.icon
-  
+
   return (
     <div className={`flex items-center gap-2 ${config.bg} ${config.text} px-3 py-2 rounded-lg text-sm`}>
       <Icon className="w-4 h-4 flex-shrink-0" />
@@ -115,23 +106,23 @@ interface TrustGuaranteeProps {
 export function TrustGuarantee({ variant = 'default' }: TrustGuaranteeProps) {
   if (variant === 'compact') {
     return (
-      <div className="flex items-center gap-2 text-blue-600 text-sm">
+      <div className="flex items-center gap-2 text-[#1B5E3B] text-sm">
         <Shield className="w-4 h-4" />
         <span>Protection Findr</span>
       </div>
     )
   }
-  
+
   return (
-    <div className="border border-blue-200 bg-blue-50 rounded-lg p-4">
-      <div className="flex items-center gap-2 text-blue-700 mb-2">
+    <div className="border border-[#E6F2EC] bg-[#F0F9F4] rounded-xl p-4">
+      <div className="flex items-center gap-2 text-[#0D3D24] mb-2">
         <Shield className="w-5 h-5" />
         <span className="font-semibold">Protection Findr</span>
       </div>
-      <ul className="text-sm text-blue-600 space-y-1">
-        <li>✓ Vendeurs vérifiés</li>
-        <li>✓ Paiement sécurisé</li>
-        <li>✓ Support 24/7</li>
+      <ul className="text-sm text-[#1B5E3B] space-y-1">
+        <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5" /> Vendeurs v\u00e9rifi\u00e9s</li>
+        <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5" /> Paiement s\u00e9curis\u00e9</li>
+        <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5" /> Support 24/7</li>
       </ul>
     </div>
   )
@@ -154,19 +145,19 @@ export function ReviewSummary({ rating, reviewCount, breakdown }: ReviewSummaryP
     <div className="flex items-center gap-4">
       <div className="flex items-center gap-1">
         <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-        <span className="text-lg font-bold">{rating.toFixed(1)}</span>
+        <span className="text-lg font-bold text-[#1A1A18]">{rating.toFixed(1)}</span>
       </div>
-      <span className="text-gray-500 text-sm">
+      <span className="text-[#7A7A73] text-sm">
         ({reviewCount} avis)
       </span>
-      
+
       {breakdown && (
         <div className="hidden md:flex items-center gap-1">
           {[5, 4, 3, 2, 1].map((star) => (
             <div key={star} className="flex items-center gap-1">
-              <span className="text-xs text-gray-400">{star}</span>
-              <div className="w-16 h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                <div 
+              <span className="text-xs text-[#ADADAA]">{star}</span>
+              <div className="w-16 h-1.5 bg-[#EEECEA] rounded-full overflow-hidden">
+                <div
                   className="h-full bg-yellow-400 rounded-full"
                   style={{ width: `${(breakdown[star as keyof typeof breakdown] / reviewCount) * 100}%` }}
                 />
@@ -187,39 +178,39 @@ interface PriceHighlightProps {
   isGoodDeal?: boolean
 }
 
-export function PriceHighlight({ 
-  originalPrice, 
-  currentPrice, 
-  currency = 'XAF', 
+export function PriceHighlight({
+  originalPrice,
+  currentPrice,
+  currency = 'XAF',
   period,
-  isGoodDeal 
+  isGoodDeal
 }: PriceHighlightProps) {
   const formatPrice = (price: number) => new Intl.NumberFormat('fr-FR').format(price)
-  
+
   return (
     <div className="space-y-1">
       {originalPrice && originalPrice > currentPrice && (
         <div className="flex items-center gap-2">
-          <span className="text-gray-400 line-through text-sm">
+          <span className="text-[#ADADAA] line-through text-sm">
             {formatPrice(originalPrice)} {currency}
           </span>
-          <span className="bg-red-100 text-red-700 text-xs font-medium px-2 py-0.5 rounded">
+          <span className="bg-red-100 text-[#DC2626] text-xs font-medium px-2 py-0.5 rounded">
             -{Math.round((1 - currentPrice / originalPrice) * 100)}%
           </span>
         </div>
       )}
-      
+
       <div className="flex items-baseline gap-2">
-        <span className="text-2xl font-bold text-blue-600">
+        <span className="text-2xl font-bold text-[#1B5E3B]">
           {formatPrice(currentPrice)} {currency}
         </span>
         {period && (
-          <span className="text-gray-500 text-sm">/{period}</span>
+          <span className="text-[#7A7A73] text-sm">/{period}</span>
         )}
       </div>
-      
+
       {isGoodDeal && (
-        <span className="inline-flex items-center gap-1 text-blue-600 text-sm font-medium">
+        <span className="inline-flex items-center gap-1 text-[#2D8A5F] text-sm font-medium">
           <CheckCircle className="w-4 h-4" />
           Bon prix pour ce quartier
         </span>
@@ -228,12 +219,11 @@ export function PriceHighlight({
   )
 }
 
-// Demo function to generate random social proof data
 export function generateSocialProof() {
   const viewingNow = Math.random() > 0.5 ? Math.floor(Math.random() * 8) + 1 : 0
   const hoursAgo = Math.floor(Math.random() * 12) + 1
   const totalViews = Math.floor(Math.random() * 200) + 20
-  
+
   return {
     viewingNow,
     recentlyContacted: `il y a ${hoursAgo}h`,

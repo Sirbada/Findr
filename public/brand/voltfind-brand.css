@@ -1,0 +1,206 @@
+/*!
+ * VoltFind Brand CSS
+ * Utility classes for consistent logo and brand usage
+ * Version: 1.0.0
+ */
+
+:root {
+  /* VoltFind Brand Colors */
+  --voltfind-emerald: #059669;
+  --voltfind-emerald-light: #10B981;
+  --voltfind-teal: #14B8A6;
+  --voltfind-coral: #FF6B6B;
+  --voltfind-coral-light: #FF8E53;
+  --voltfind-coral-dark: #FF8A80;
+  
+  /* Brand Gradients */
+  --voltfind-gradient-primary: linear-gradient(135deg, #059669 0%, #14B8A6 100%);
+  --voltfind-gradient-accent: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+  --voltfind-gradient-primary-dark: linear-gradient(135deg, #10B981 0%, #34D399 100%);
+  
+  /* Typography */
+  --voltfind-font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  
+  /* Shadows and Effects */
+  --voltfind-shadow-soft: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --voltfind-shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --voltfind-glow-emerald: 0 0 12px rgba(16, 185, 129, 0.3);
+}
+
+/* Logo Container Classes */
+.voltfind-logo {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.voltfind-logo img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Logo Size Variations */
+.voltfind-logo--xs { width: 80px; }   /* Extra small */
+.voltfind-logo--sm { width: 120px; }  /* Small (minimum recommended) */
+.voltfind-logo--md { width: 180px; }  /* Medium */
+.voltfind-logo--lg { width: 240px; }  /* Large */
+.voltfind-logo--xl { width: 320px; }  /* Extra large */
+
+/* Icon Size Variations */
+.voltfind-icon { width: 40px; height: 40px; }
+.voltfind-icon--sm { width: 24px; height: 24px; }
+.voltfind-icon--md { width: 40px; height: 40px; }
+.voltfind-icon--lg { width: 64px; height: 64px; }
+.voltfind-icon--xl { width: 96px; height: 96px; }
+
+/* Brand Color Classes */
+.voltfind-text-emerald { color: var(--voltfind-emerald); }
+.voltfind-text-coral { color: var(--voltfind-coral); }
+.voltfind-bg-emerald { background-color: var(--voltfind-emerald); }
+.voltfind-bg-coral { background-color: var(--voltfind-coral); }
+
+/* Gradient Classes */
+.voltfind-bg-gradient-primary { background: var(--voltfind-gradient-primary); }
+.voltfind-bg-gradient-accent { background: var(--voltfind-gradient-accent); }
+.voltfind-text-gradient-primary {
+  background: var(--voltfind-gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Brand Typography */
+.voltfind-font {
+  font-family: var(--voltfind-font-family);
+}
+
+.voltfind-heading {
+  font-family: var(--voltfind-font-family);
+  font-weight: 700;
+  color: var(--voltfind-emerald);
+  letter-spacing: -0.025em;
+}
+
+.voltfind-tagline {
+  font-family: var(--voltfind-font-family);
+  font-size: 0.875rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #6B7280;
+  opacity: 0.8;
+}
+
+/* Navigation Logo Styles */
+.voltfind-nav-logo {
+  height: 32px;
+  width: auto;
+}
+
+.voltfind-nav-logo--large {
+  height: 40px;
+  width: auto;
+}
+
+/* Footer Logo Styles */
+.voltfind-footer-logo {
+  height: 28px;
+  width: auto;
+  opacity: 0.9;
+}
+
+/* App Icon Styles */
+.voltfind-app-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  box-shadow: var(--voltfind-shadow-medium);
+}
+
+.voltfind-app-icon--rounded {
+  border-radius: 50%;
+}
+
+/* Brand Cards and Components */
+.voltfind-brand-card {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: var(--voltfind-shadow-medium);
+  border: 1px solid #E5E7EB;
+}
+
+.voltfind-brand-card--dark {
+  background: #1F2937;
+  color: white;
+  border-color: #374151;
+}
+
+/* Responsive Logo Behavior */
+@media (max-width: 768px) {
+  .voltfind-logo--responsive {
+    width: 140px;
+  }
+  
+  .voltfind-nav-logo {
+    height: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .voltfind-logo--responsive {
+    width: 120px;
+  }
+  
+  .voltfind-nav-logo {
+    height: 24px;
+  }
+}
+
+/* High DPI / Retina Optimization */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .voltfind-icon,
+  .voltfind-app-icon {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* Animation Classes */
+.voltfind-hover-grow {
+  transition: transform 0.2s ease-in-out;
+}
+
+.voltfind-hover-grow:hover {
+  transform: scale(1.05);
+}
+
+.voltfind-hover-glow {
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.voltfind-hover-glow:hover {
+  box-shadow: var(--voltfind-glow-emerald);
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .voltfind-auto-dark {
+    filter: brightness(1.1) contrast(1.1);
+  }
+  
+  .voltfind-brand-card {
+    background: #1F2937;
+    color: white;
+    border-color: #374151;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .voltfind-logo,
+  .voltfind-icon {
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+}

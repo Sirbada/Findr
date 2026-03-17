@@ -1,201 +1,108 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
-export async function GET(request: NextRequest) {
-  try {
-    const supabase = await createClient()
-    
-    // Get current user
-    const { data: { user }, error: userError } = await supabase.auth.getUser()
-    
-    if (userError || !user) {
-      return NextResponse.json(
-        { success: false, error: 'Authentication required' },
-        { status: 401 }
-      )
-    }
+// POST: save a search alert
+export async function POST(request: Request) {
+  const supabase = await createClient()
+  const authClient: any = (supabase as any).auth
+  const sessionData = authClient.getSession
+    ? await authClient.getSession()
+    : await authClient.getUser()
+  const user = sessionData?.data?.session?.user || sessionData?.data?.user
 
-    // Fetch user's active alerts
-    const { data: alerts, error: alertsError } = await supabase
-      .from('alerts')
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('is_active', true)
-      .order('created_at', { ascending: false })
-
-    if (alertsError) {
-      console.error('Error fetching alerts:', alertsError)
-      return NextResponse.json(
-        { success: false, error: 'Failed to fetch alerts' },
-        { status: 500 }
-      )
-    }
-
-    return NextResponse.json({
-      success: true,
-      data: alerts || []
-    })
-
-  } catch (error) {
-    console.error('Get alerts API error:', error)
-    
-    return NextResponse.json(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    )
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
-}
 
-export async function POST(request: NextRequest) {
-  try {
-    const supabase = await createClient()
-    
-    // Get current user
-    const { data: { user }, error: userError } = await supabase.auth.getUser()
-    
-    if (userError || !user) {
-      return NextResponse.json(
-        { success: false, error: 'Authentication required' },
-        { status: 401 }
-      )
-    }
+  const body = await request.json().catch(() => null)
+  if (!body || !body.category) {
+    return NextResponse.json({ error: 'Invalid payload' }, { status: 400 })
+  }
 
-    const body = await request.json()
-    
-    // Validate required fields
-    const { category, city, min_price, max_price, rooms_min, property_type } = body
+  const { category, filters, label, alert_frequency } = body
 
-    if (!category || !city) {
-      return NextResponse.json(
-        { success: false, error: 'category and city are required' },
-        { status: 400 }
-      )
-    }
+  const validCategories = ['housing', 'cars', 'services', 'emplois']
+  if (!validCategories.includes(category)) {
+    return NextResponse.json({ error: 'Invalid category' }, { status: 400 })
+  }
 
-    // Validate category
-    if (!['housing', 'cars', 'jobs'].includes(category)) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid category. Must be housing, cars, or jobs' },
-        { status: 400 }
-      )
-    }
+  const validFrequencies = ['instant', 'daily', 'weekly']
+  const frequency = validFrequencies.includes(alert_frequency) ? alert_frequency : 'daily'
 
-    // Check if user already has 10+ alerts (prevent spam)
-    const { count: existingAlerts } = await supabase
-      .from('alerts')
-      .select('id', { count: 'exact' })
-      .eq('user_id', user.id)
-      .eq('is_active', true)
-
-    if (existingAlerts && existingAlerts >= 10) {
-      return NextResponse.json(
-        { success: false, error: 'Maximum 10 active alerts allowed' },
-        { status: 429 }
-      )
-    }
-
-    // Create alert
-    const alertData = {
+  const { data, error } = await supabase
+    .from('saved_searches')
+    .insert({
       user_id: user.id,
       category,
-      city: city.toLowerCase(),
-      min_price: min_price || 0,
-      max_price: max_price || 999999999,
-      rooms_min: rooms_min || 0,
-      property_type: property_type || null,
-      is_active: true
-    }
+      filters: filters || {},
+      label: label || null,
+      alert_frequency: frequency,
+    })
+    .select('id')
+    .single()
 
-    const { data: alert, error: insertError } = await supabase
-      .from('alerts')
-      .insert([alertData])
-      .select()
-      .single()
-
-    if (insertError) {
-      console.error('Error creating alert:', insertError)
-      return NextResponse.json(
-        { success: false, error: 'Failed to create alert' },
-        { status: 500 }
-      )
-    }
-
-    return NextResponse.json({
-      success: true,
-      data: alert,
-      message: 'Alert created successfully. You\'ll be notified when matching listings are posted.'
-    }, { status: 201 })
-
-  } catch (error) {
-    console.error('Create alert API error:', error)
-    
-    return NextResponse.json(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    )
+  if (error) {
+    return NextResponse.json({ error: 'Failed to save search' }, { status: 500 })
   }
+
+  return NextResponse.json({ id: data.id }, { status: 201 })
 }
 
-export async function DELETE(request: NextRequest) {
-  try {
-    const supabase = await createClient()
-    
-    // Get current user
-    const { data: { user }, error: userError } = await supabase.auth.getUser()
-    
-    if (userError || !user) {
-      return NextResponse.json(
-        { success: false, error: 'Authentication required' },
-        { status: 401 }
-      )
-    }
+// GET: list user's saved searches
+export async function GET() {
+  const supabase = await createClient()
+  const authClient: any = (supabase as any).auth
+  const sessionData = authClient.getSession
+    ? await authClient.getSession()
+    : await authClient.getUser()
+  const user = sessionData?.data?.session?.user || sessionData?.data?.user
 
-    const { searchParams } = new URL(request.url)
-    const alertId = searchParams.get('id')
-    
-    if (!alertId) {
-      return NextResponse.json(
-        { success: false, error: 'Alert ID is required' },
-        { status: 400 }
-      )
-    }
-
-    // Delete/deactivate alert (soft delete)
-    const { data: alert, error: deleteError } = await supabase
-      .from('alerts')
-      .update({ is_active: false, updated_at: new Date().toISOString() })
-      .eq('id', alertId)
-      .eq('user_id', user.id) // Ensure user can only delete their own alerts
-      .select()
-      .single()
-
-    if (deleteError) {
-      if (deleteError.code === 'PGRST116') {
-        return NextResponse.json(
-          { success: false, error: 'Alert not found' },
-          { status: 404 }
-        )
-      }
-      
-      console.error('Error deleting alert:', deleteError)
-      return NextResponse.json(
-        { success: false, error: 'Failed to delete alert' },
-        { status: 500 }
-      )
-    }
-
-    return NextResponse.json({
-      success: true,
-      data: alert,
-      message: 'Alert deleted successfully'
-    })
-
-  } catch (error) {
-    console.error('Delete alert API error:', error)
-    
-    return NextResponse.json(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    )
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
+
+  const { data, error } = await supabase
+    .from('saved_searches')
+    .select('*')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    return NextResponse.json({ error: 'Failed to fetch saved searches' }, { status: 500 })
+  }
+
+  return NextResponse.json({ saved_searches: data })
+}
+
+// DELETE: remove a saved search (query param ?id=)
+export async function DELETE(request: Request) {
+  const supabase = await createClient()
+  const authClient: any = (supabase as any).auth
+  const sessionData = authClient.getSession
+    ? await authClient.getSession()
+    : await authClient.getUser()
+  const user = sessionData?.data?.session?.user || sessionData?.data?.user
+
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const { searchParams } = new URL(request.url)
+  const id = searchParams.get('id')
+
+  if (!id) {
+    return NextResponse.json({ error: 'Missing id parameter' }, { status: 400 })
+  }
+
+  const { error } = await supabase
+    .from('saved_searches')
+    .delete()
+    .eq('id', id)
+    .eq('user_id', user.id)
+
+  if (error) {
+    return NextResponse.json({ error: 'Failed to delete saved search' }, { status: 500 })
+  }
+
+  return NextResponse.json({ success: true })
 }

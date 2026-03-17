@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_Preview__preview_start",
+      "Bash(ls node_modules/.bin/next*)",
+      "Bash(npm install)",
+      "Bash(git fetch origin master)",
+      "Bash(git reset --hard origin/master)"
+    ]
+  }
+}

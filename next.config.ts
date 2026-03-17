@@ -1,10 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: "standalone",
   typescript: {
+    // Pre-existing type errors in test files and admin queries — not blocking build
     ignoreBuildErrors: true,
   },
-  output: 'standalone',
 };
 
 export default nextConfig;

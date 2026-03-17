@@ -2,7 +2,7 @@ import { createClient } from './client'
 
 export type Listing = {
   id: string
-  category: 'housing' | 'cars' | 'terrain' | 'jobs' | 'services'
+  category: 'housing' | 'cars' | 'jobs'
   title: string
   description: string | null
   price: number
@@ -29,21 +29,67 @@ export type Listing = {
   fuel_type: string | null
   transmission: string | null
   seats: number | null
-  // Terrain
-  terrain_type: string | null
-  zoning: string | null
-  title_deed: boolean | null
-  // GPS
-  latitude: number | null
-  longitude: number | null
   // Jobs
   job_type: string | null
   company_name: string | null
   salary_min: number | null
   salary_max: number | null
-  whatsapp_number: string | null
-  user_id: string
-  is_active: boolean
+  // Terrain
+  terrain_type: string | null
+  title_deed: boolean | null
+  latitude: number | null
+  longitude: number | null
+  created_at: string
+}
+
+export type Property = {
+  id: string
+  owner_id: string | null
+  title: string
+  description: string | null
+  city: string
+  neighborhood: string | null
+  address: string | null
+  images: string[]
+  status: string
+  is_featured: boolean
+  is_verified: boolean
+  views: number
+  property_type: string
+  price_per_night: number
+  currency: string
+  bedrooms: number | null
+  bathrooms: number | null
+  surface_m2: number | null
+  max_guests: number | null
+  furnished: boolean
+  amenities: string[]
+  created_at: string
+}
+
+export type Vehicle = {
+  id: string
+  owner_id: string | null
+  title: string
+  description: string | null
+  city: string
+  neighborhood: string | null
+  address: string | null
+  images: string[]
+  status: string
+  is_featured: boolean
+  is_verified: boolean
+  views: number
+  brand: string | null
+  model: string | null
+  year: number | null
+  price_per_day: number
+  currency: string
+  fuel_type: string | null
+  transmission: string | null
+  seats: number | null
+  mileage_km: number | null
+  extras: string[]
   created_at: string
 }
 
@@ -101,7 +147,8 @@ export async function getListing(id: string) {
     return null
   }
 
-  // TODO: Increment view count when function is created
+  // Increment view count (fire-and-forget)
+  supabase.rpc('increment_views', { row_id: id, table_name: 'listings' }).then(() => {})
 
   return data as Listing
 }
@@ -125,78 +172,88 @@ export async function searchListings(query: string) {
   return data as Listing[]
 }
 
-export async function createListing(listingData: Partial<Listing>) {
+export async function getProperties(options?: {
+  city?: string
+  limit?: number
+  featured?: boolean
+}) {
   const supabase = createClient()
-  
-  const { data, error } = await supabase
-    .from('listings')
-    .insert([{
-      ...listingData,
-      status: 'active', // Auto-approve for now
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    }])
-    .select()
-    .single()
-
-  if (error) {
-    console.error('Error creating listing:', error)
-    throw error
-  }
-
-  return data as Listing
-}
-
-export async function updateListing(id: string, updates: Partial<Listing>) {
-  const supabase = createClient()
-  
-  const { data, error } = await supabase
-    .from('listings')
-    .update({
-      ...updates,
-      updated_at: new Date().toISOString()
-    })
-    .eq('id', id)
-    .select()
-    .single()
-
-  if (error) {
-    console.error('Error updating listing:', error)
-    throw error
-  }
-
-  return data as Listing
-}
-
-export async function deleteListing(id: string) {
-  const supabase = createClient()
-  
-  const { error } = await supabase
-    .from('listings')
-    .delete()
-    .eq('id', id)
-
-  if (error) {
-    console.error('Error deleting listing:', error)
-    throw error
-  }
-
-  return true
-}
-
-export async function getUserListings(userId: string) {
-  const supabase = createClient()
-  
-  const { data, error } = await supabase
-    .from('listings')
+  let query = supabase
+    .from('properties')
     .select('*')
-    .eq('user_id', userId)
+    .eq('status', 'active')
     .order('created_at', { ascending: false })
 
+  if (options?.city) query = query.ilike('city', `%${options.city}%`)
+  if (options?.featured) query = query.eq('is_featured', true)
+  if (options?.limit) query = query.limit(options.limit)
+
+  const { data, error } = await query
   if (error) {
-    console.error('Error fetching user listings:', error)
+    console.error('Error fetching properties:', error)
     return []
   }
+  return data as Property[]
+}
 
-  return data as Listing[]
+export async function getProperty(id: string) {
+  const supabase = createClient()
+  const { data, error } = await supabase
+    .from('properties')
+    .select('*')
+    .eq('id', id)
+    .single()
+
+  if (error) {
+    console.error('Error fetching property:', error)
+    return null
+  }
+
+  // Increment view count (fire-and-forget)
+  supabase.rpc('increment_views', { row_id: id, table_name: 'properties' }).then(() => {})
+
+  return data as Property
+}
+
+export async function getVehicles(options?: {
+  city?: string
+  limit?: number
+  featured?: boolean
+}) {
+  const supabase = createClient()
+  let query = supabase
+    .from('vehicles')
+    .select('*')
+    .eq('status', 'active')
+    .order('created_at', { ascending: false })
+
+  if (options?.city) query = query.ilike('city', `%${options.city}%`)
+  if (options?.featured) query = query.eq('is_featured', true)
+  if (options?.limit) query = query.limit(options.limit)
+
+  const { data, error } = await query
+  if (error) {
+    console.error('Error fetching vehicles:', error)
+    return []
+  }
+  return data as Vehicle[]
+}
+
+export async function getVehicle(id: string) {
+  const supabase = createClient()
+  const { data, error } = await supabase
+    .from('vehicles')
+    .select('*')
+    .eq('id', id)
+    .single()
+
+  if (error) {
+    console.error('Error fetching vehicle:', error)
+    return null
+  }
+
+  // Increment view count (fire-and-forget)
+  supabase.rpc('increment_views', { row_id: id, table_name: 'vehicles' }).then(() => {})
+
+  return data as Vehicle
 }

@@ -97,14 +97,11 @@ export async function initiateOrangeMoneyPayment(params: {
   phone: string
   orderId: string
 }) {
-  // TODO: Implement Orange Money API
-  // This requires merchant account from Orange Cameroon
-  
+  // TODO: Replace with real Orange Money Web Pay API call
+  // Requires merchant account from Orange Cameroon
+  // Docs: https://developer.orange.com/apis/om-webpay
   const { amount, phone, orderId } = params
-  
-  // Placeholder for API call
-  console.log('Orange Money payment initiated:', { amount, phone, orderId })
-  
+  void amount; void phone; void orderId
   return {
     success: true,
     transactionId: `OM_${Date.now()}`,
@@ -125,13 +122,11 @@ export async function initiateMTNMomoPayment(params: {
   phone: string
   orderId: string
 }) {
-  // TODO: Implement MTN MoMo API
-  // This requires merchant account from MTN Cameroon
-  
+  // TODO: Replace with real MTN MoMo API call
+  // Requires merchant account from MTN Cameroon
+  // Docs: https://momodeveloper.mtn.com/
   const { amount, phone, orderId } = params
-  
-  console.log('MTN MoMo payment initiated:', { amount, phone, orderId })
-  
+  void amount; void phone; void orderId
   return {
     success: true,
     transactionId: `MTN_${Date.now()}`,
@@ -168,12 +163,10 @@ export async function initiateCardPayment(params: {
   email: string
   orderId: string
 }) {
-  // TODO: Implement Paystack/Stripe
-  
+  // TODO: Replace with real Paystack/Stripe API call
+  // Docs: https://paystack.com/docs/api/
   const { amount, email, orderId } = params
-  
-  console.log('Card payment initiated:', { amount, email, orderId })
-  
+  void amount; void email
   return {
     success: true,
     checkoutUrl: `https://checkout.paystack.com/${orderId}`,

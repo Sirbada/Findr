@@ -535,9 +535,8 @@ export function PayPalButton({
         setPaypalOrderId(result.orderId)
         setStatus('waiting')
         
-        // In production, would redirect to result.approvalUrl
-        // For demo, we simulate the approval
-        console.log('[DEMO] PayPal approval URL:', result.approvalUrl)
+        // In production, redirect to result.approvalUrl for PayPal approval
+        // Demo mode: approval is auto-simulated by the mock service
       } else {
         setStatus('failed')
         setError(result.error || t.failed)
