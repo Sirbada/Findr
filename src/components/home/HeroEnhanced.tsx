@@ -35,7 +35,7 @@ export function HeroEnhanced() {
     <section
       className="relative overflow-hidden"
       style={{
-        background: 'linear-gradient(160deg, #0D3D24 0%, #1B5E3B 60%, #2D8A5F 100%)',
+        background: 'linear-gradient(135deg, #1A1A2E 0%, #2D3A6B 100%)',
         minHeight: '520px',
       }}
     >
@@ -77,7 +77,7 @@ export function HeroEnhanced() {
                 onClick={() => setActiveCategory(cat.id)}
                 className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
                   isActive
-                    ? 'bg-white text-[#0D3D24]'
+                    ? 'bg-white text-[#1A1A2E]'
                     : 'bg-white/10 text-white border border-white/15 hover:bg-white/15'
                 }`}
               >
@@ -91,7 +91,7 @@ export function HeroEnhanced() {
         {/* Search bar */}
         <div className="max-w-[600px]">
           <div className="flex items-center gap-3 bg-white rounded-xl px-4 py-3 shadow-[0_4px_16px_rgba(0,0,0,0.06),0_1px_4px_rgba(0,0,0,0.04)]">
-            <Search className="w-5 h-5 text-[#7A7A73] flex-shrink-0" />
+            <Search className="w-5 h-5 text-[#6B7280] flex-shrink-0" />
             <input
               type="text"
               value={query}
@@ -102,11 +102,11 @@ export function HeroEnhanced() {
                   ? `Rechercher ${activeCat.labelFr.toLowerCase()} \u00e0 Douala, Yaound\u00e9...`
                   : `Search ${activeCat.labelEn.toLowerCase()} in Douala, Yaound\u00e9...`
               }
-              className="flex-1 bg-transparent text-[15px] text-[#1A1A18] outline-none placeholder:text-[#ADADAA]"
+              className="flex-1 bg-transparent text-[15px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
             />
             <button
               onClick={handleSearch}
-              className="flex items-center gap-2 px-5 py-2 bg-[#1B5E3B] hover:bg-[#0D3D24] text-white text-sm font-semibold rounded-lg flex-shrink-0 transition-all duration-150 active:scale-[0.98]"
+              className="flex items-center gap-2 px-5 py-2 bg-[#E8630A] hover:bg-[#C55208] text-white text-sm font-semibold rounded-lg flex-shrink-0 transition-all duration-150 active:scale-[0.98]"
             >
               {lang === 'fr' ? 'Rechercher' : 'Search'}
             </button>

@@ -166,21 +166,21 @@ function CategorySection({
     <div className="animate-slide-up" style={{ animationDelay: `${index * 0.2}s` }}>
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-[#E6F2EC] rounded-xl flex items-center justify-center">
-            <IconComponent className="w-6 h-6 text-[#1B5E3B]" />
+          <div className="w-12 h-12 bg-[#FFF4EC] rounded-xl flex items-center justify-center">
+            <IconComponent className="w-6 h-6 text-[#E8630A]" />
           </div>
           <div>
-            <h2 className="text-xl font-semibold text-[#1A1A18] tracking-[-0.01em]">
+            <h2 className="text-xl font-semibold text-[#111827] tracking-[-0.01em]">
               {title}
             </h2>
-            <p className="text-sm text-[#7A7A73]">
+            <p className="text-sm text-[#6B7280]">
               {subtitle}
             </p>
           </div>
         </div>
         <Link
           href={href}
-          className="group flex items-center gap-2 text-[#1B5E3B] font-medium text-sm px-4 py-2 rounded-lg hover:bg-[#F0F9F4] transition-colors duration-150"
+          className="group flex items-center gap-2 text-[#E8630A] font-medium text-sm px-4 py-2 rounded-lg hover:bg-[#FFF4EC] transition-colors duration-150"
         >
           {viewAllLabel}
           <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-150" />
@@ -192,7 +192,7 @@ function CategorySection({
           <Link
             key={listing.id}
             href={`/${listing.category}/${listing.id}`}
-            className="group bg-white rounded-xl overflow-hidden border border-[#E8E8E4] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06),0_1px_4px_rgba(0,0,0,0.04)] hover:-translate-y-0.5 hover:border-[#D4D4CE] transition-all duration-200 animate-scale-in"
+            className="group bg-white rounded-xl overflow-hidden border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06),0_1px_4px_rgba(0,0,0,0.04)] hover:-translate-y-0.5 hover:border-[#D1D5DB] transition-all duration-200 animate-scale-in"
             style={{ animationDelay: `${index * 0.2 + listingIndex * 0.1}s` }}
           >
             <div className="relative h-48 overflow-hidden">
@@ -222,10 +222,10 @@ function CategorySection({
               </div>
             </div>
             <div className="p-4">
-              <h3 className="font-semibold text-[#1A1A18] text-sm mb-2 line-clamp-2 group-hover:text-[#1B5E3B] transition-colors duration-150">
+              <h3 className="font-semibold text-[#111827] text-sm mb-2 line-clamp-2 group-hover:text-[#E8630A] transition-colors duration-150">
                 {listing.title}
               </h3>
-              <div className="flex items-center text-[#7A7A73] text-xs">
+              <div className="flex items-center text-[#6B7280] text-xs">
                 <MapPin className="w-3 h-3 mr-1 flex-shrink-0" />
                 <span className="truncate">
                   {listing.neighborhood ? `${listing.neighborhood}, ` : ''}{listing.city}
@@ -278,10 +278,10 @@ export function CategoriesEnhanced() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-16 animate-slide-up">
-          <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#2D8A5F] mb-3">
+          <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#E8630A] mb-3">
             {t.categoryGrid.title}
           </p>
-          <h2 className="text-[32px] font-semibold text-[#1A1A18] tracking-[-0.015em] mb-4">
+          <h2 className="text-[32px] font-semibold text-[#111827] tracking-[-0.015em] mb-4">
             {t.categoryGrid.subtitle}
           </h2>
         </div>
@@ -307,16 +307,16 @@ export function CategoriesEnhanced() {
 
         {/* Call to action */}
         <div className="mt-16 animate-slide-up" style={{ animationDelay: '0.8s' }}>
-          <div className="inline-flex flex-col items-start space-y-4 bg-[#FAFAF8] rounded-xl p-8 border border-[#E8E8E4]">
-            <h3 className="text-xl font-semibold text-[#1A1A18]">
+          <div className="inline-flex flex-col items-start space-y-4 bg-[#FAFAF8] rounded-xl p-8 border border-[#E5E7EB]">
+            <h3 className="text-xl font-semibold text-[#111827]">
               {t.categoryGrid.noCategory}
             </h3>
-            <p className="text-[#4A4A45] max-w-md">
+            <p className="text-[#4B5563] max-w-md">
               {t.categoryGrid.noCategoryDesc}
             </p>
             <Link
               href="/publish"
-              className="inline-flex items-center justify-center bg-[#1B5E3B] text-white px-6 py-3 rounded-lg hover:bg-[#0D3D24] transition-colors duration-150 font-semibold text-sm"
+              className="inline-flex items-center justify-center bg-[#E8630A] text-white px-6 py-3 rounded-lg hover:bg-[#1A1A2E] transition-colors duration-150 font-semibold text-sm"
             >
               {t.nav.postAd}
             </Link>

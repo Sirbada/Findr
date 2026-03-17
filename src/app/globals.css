@@ -1,11 +1,12 @@
 @import "tailwindcss";
 @config "../../tailwind.config.ts";
+@source "../../src";
 
 /* ============================================
-   FINDR — Calm Luxury Design System
-   Linear precision · Mercury trust · Loom warmth
-   Primary: Deep Forest Green #1B5E3B
-   Accent: Sun Amber #E8960C (sparingly)
+   FINDR — Clean Modern Design System
+   Trustworthy · Precise · Warm accent
+   Primary: Burnt Orange #E8630A
+   Dark: Navy #1A1A2E
    ============================================ */
 
 :root {
@@ -15,28 +16,28 @@
   --bg-subtle: #F4F4F1;
   --bg-overlay: #EEECEA;
 
-  /* === PRIMARY (deep forest green) === */
-  --primary-900: #0D3D24;
-  --primary-700: #1B5E3B;
-  --primary-500: #2D8A5F;
-  --primary-100: #E6F2EC;
-  --primary-50: #F0F9F4;
+  /* === PRIMARY (orange accent) === */
+  --primary-900: #1A1A2E;
+  --primary-700: #E8630A;
+  --primary-500: #E8630A;
+  --primary-100: #FFF4EC;
+  --primary-50: #FFF4EC;
 
   /* === ACCENT (warm amber — used sparingly) === */
   --accent-500: #E8960C;
   --accent-100: #FEF3C7;
   --accent-50: #FFFBEB;
 
-  /* === TEXT (warm-tinted neutrals, never pure black) === */
-  --text-primary: #1A1A18;
-  --text-secondary: #4A4A45;
-  --text-tertiary: #7A7A73;
-  --text-disabled: #ADADAA;
+  /* === TEXT (cool neutrals) === */
+  --text-primary: #111827;
+  --text-secondary: #4B5563;
+  --text-tertiary: #6B7280;
+  --text-disabled: #9CA3AF;
   --text-inverse: #FFFFFF;
 
-  /* === BORDERS (whisper-thin, soft) === */
-  --border-soft: #E8E8E4;
-  --border-medium: #D4D4CE;
+  /* === BORDERS (clean, cool) === */
+  --border-soft: #E5E7EB;
+  --border-medium: #D1D5DB;
 
   /* === SHADOWS (layered, neutral — no color) === */
   --shadow-card: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
@@ -51,15 +52,33 @@
   --radius-full: 999px;
 
   /* === STATUS (toasts, badges only) === */
-  --success: #2D8A5F;
+  --success: #16A34A;
   --warning: #E8960C;
   --error: #DC2626;
-  --info: #4A4A45;
+  --info: #4B5563;
+
+  /* === GREEN OVERRIDES (remap Tailwind green to orange/navy) === */
+  --green-50: #FFF4EC;
+  --green-100: #FFF4EC;
+  --green-200: #FFE4CC;
+  --green-300: #F5A962;
+  --green-500: #E8630A;
+  --green-600: #E8630A;
+  --green-700: #E8630A;
+  --green-900: #111827;
 }
 
 @theme inline {
   --color-background: var(--bg-base);
   --color-foreground: var(--text-primary);
+  --color-green-50: #FFF4EC;
+  --color-green-100: #FFF4EC;
+  --color-green-200: #FFE4CC;
+  --color-green-300: #F5A962;
+  --color-green-500: #E8630A;
+  --color-green-600: #E8630A;
+  --color-green-700: #E8630A;
+  --color-green-900: #111827;
 }
 
 /* ============================================
@@ -126,7 +145,7 @@ body {
 .premium-input:focus {
   background: var(--bg-surface);
   border-color: var(--primary-700);
-  box-shadow: 0 0 0 3px rgba(27, 94, 59, 0.08);
+  box-shadow: 0 0 0 3px rgba(232, 99, 10, 0.08);
 }
 
 .premium-input::placeholder {

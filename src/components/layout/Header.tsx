@@ -19,33 +19,33 @@ export function Header() {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-[#1B5E3B] rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-[#E8630A] rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-xl">F</span>
               </div>
-              <span className="text-xl font-semibold text-[#1A1A18] tracking-[-0.02em]">Findr</span>
+              <span className="text-xl font-semibold text-[#111827] tracking-[-0.02em]">Findr</span>
             </Link>
           </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center justify-center flex-1">
             <div className="flex items-center space-x-8">
-              <Link href="/housing" className="flex items-center gap-1.5 text-sm font-medium text-[#4A4A45] hover:text-[#1A1A18] transition-colors duration-150">
+              <Link href="/housing" className="flex items-center gap-1.5 text-sm font-medium text-[#4B5563] hover:text-[#111827] transition-colors duration-150">
                 <Home className="w-4 h-4" />
                 {t.nav.housing}
               </Link>
-              <Link href="/cars" className="flex items-center gap-1.5 text-sm font-medium text-[#4A4A45] hover:text-[#1A1A18] transition-colors duration-150">
+              <Link href="/cars" className="flex items-center gap-1.5 text-sm font-medium text-[#4B5563] hover:text-[#111827] transition-colors duration-150">
                 <Car className="w-4 h-4" />
                 {t.nav.cars}
               </Link>
-              <Link href="/services" className="flex items-center gap-1.5 text-sm font-medium text-[#4A4A45] hover:text-[#1A1A18] transition-colors duration-150">
+              <Link href="/services" className="flex items-center gap-1.5 text-sm font-medium text-[#4B5563] hover:text-[#111827] transition-colors duration-150">
                 <Wrench className="w-4 h-4" />
                 Services
               </Link>
-              <Link href="/emplois" className="flex items-center gap-1.5 text-sm font-medium text-[#4A4A45] hover:text-[#1A1A18] transition-colors duration-150">
+              <Link href="/emplois" className="flex items-center gap-1.5 text-sm font-medium text-[#4B5563] hover:text-[#111827] transition-colors duration-150">
                 <Briefcase className="w-4 h-4" />
                 {t.emplois.name}
               </Link>
-              <Link href="/onboarding" className="flex items-center gap-1.5 text-sm font-medium text-[#4A4A45] hover:text-[#1A1A18] transition-colors duration-150">
+              <Link href="/onboarding" className="flex items-center gap-1.5 text-sm font-medium text-[#4B5563] hover:text-[#111827] transition-colors duration-150">
                 <Compass className="w-4 h-4" />
                 {lang === 'fr' ? 'Commencer' : 'Get Started'}
               </Link>
@@ -58,7 +58,7 @@ export function Header() {
 
             <button
               onClick={() => setLang(lang === 'fr' ? 'en' : 'fr')}
-              className="flex items-center space-x-1 text-[#4A4A45] hover:text-[#1A1A18] transition-colors duration-150"
+              className="flex items-center space-x-1 text-[#4B5563] hover:text-[#111827] transition-colors duration-150"
             >
               <Globe className="w-4 h-4" />
               <span className="text-sm font-medium">{lang.toUpperCase()}</span>
@@ -80,7 +80,7 @@ export function Header() {
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="text-[#4A4A45] hover:text-[#1A1A18] transition-colors"
+              className="text-[#4B5563] hover:text-[#111827] transition-colors"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -88,32 +88,32 @@ export function Header() {
         </div>
 
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-[#E8E8E4]">
+          <div className="md:hidden py-4 border-t border-[#E5E7EB]">
             <div className="space-y-3">
-              <Link href="/housing" className="flex items-center gap-2 text-[#4A4A45] hover:text-[#1A1A18] font-medium transition-colors">
+              <Link href="/housing" className="flex items-center gap-2 text-[#4B5563] hover:text-[#111827] font-medium transition-colors">
                 <Home className="w-4 h-4" />
                 {t.nav.housing}
               </Link>
-              <Link href="/cars" className="flex items-center gap-2 text-[#4A4A45] hover:text-[#1A1A18] font-medium transition-colors">
+              <Link href="/cars" className="flex items-center gap-2 text-[#4B5563] hover:text-[#111827] font-medium transition-colors">
                 <Car className="w-4 h-4" />
                 {t.nav.cars}
               </Link>
-              <Link href="/services" className="flex items-center gap-2 text-[#4A4A45] hover:text-[#1A1A18] font-medium transition-colors">
+              <Link href="/services" className="flex items-center gap-2 text-[#4B5563] hover:text-[#111827] font-medium transition-colors">
                 <Wrench className="w-4 h-4" />
                 Services
               </Link>
-              <Link href="/emplois" className="flex items-center gap-2 text-[#4A4A45] hover:text-[#1A1A18] font-medium transition-colors">
+              <Link href="/emplois" className="flex items-center gap-2 text-[#4B5563] hover:text-[#111827] font-medium transition-colors">
                 <Briefcase className="w-4 h-4" />
                 {t.emplois.name}
               </Link>
-              <Link href="/onboarding" className="flex items-center gap-2 text-[#4A4A45] hover:text-[#1A1A18] font-medium transition-colors">
+              <Link href="/onboarding" className="flex items-center gap-2 text-[#4B5563] hover:text-[#111827] font-medium transition-colors">
                 <Compass className="w-4 h-4" />
                 {lang === 'fr' ? 'Commencer' : 'Get Started'}
               </Link>
-              <hr className="border-[#E8E8E4] my-3" />
+              <hr className="border-[#E5E7EB] my-3" />
               <button
                 onClick={() => setLang(lang === 'fr' ? 'en' : 'fr')}
-                className="flex items-center space-x-2 text-[#4A4A45] hover:text-[#1A1A18]"
+                className="flex items-center space-x-2 text-[#4B5563] hover:text-[#111827]"
               >
                 <Globe className="w-4 h-4" />
                 <span>{lang === 'fr' ? 'English' : 'Fran\u00e7ais'}</span>

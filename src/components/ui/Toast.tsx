@@ -99,11 +99,11 @@ function ToastItem({
   const config = {
     success: {
       icon: CheckCircle,
-      bgColor: 'bg-[#F0F9F4]',
-      borderColor: 'border-[#E6F2EC]',
-      iconColor: 'text-[#2D8A5F]',
-      titleColor: 'text-[#0D3D24]',
-      messageColor: 'text-[#1B5E3B]'
+      bgColor: 'bg-[#F0FDF4]',
+      borderColor: 'border-[#DCFCE7]',
+      iconColor: 'text-[#16A34A]',
+      titleColor: 'text-[#14532D]',
+      messageColor: 'text-[#15803D]'
     },
     error: {
       icon: XCircle,
@@ -124,10 +124,10 @@ function ToastItem({
     info: {
       icon: Info,
       bgColor: 'bg-[#F4F4F1]',
-      borderColor: 'border-[#E8E8E4]',
-      iconColor: 'text-[#4A4A45]',
-      titleColor: 'text-[#1A1A18]',
-      messageColor: 'text-[#4A4A45]'
+      borderColor: 'border-[#E5E7EB]',
+      iconColor: 'text-[#4B5563]',
+      titleColor: 'text-[#111827]',
+      messageColor: 'text-[#4B5563]'
     }
   }
 
@@ -163,7 +163,7 @@ function ToastItem({
           <div className="flex-shrink-0 ml-4">
             <button
               onClick={handleRemove}
-              className="inline-flex rounded-md p-1.5 text-[#7A7A73] hover:text-[#1A1A18] hover:bg-[#EEECEA] focus:outline-none transition-colors"
+              className="inline-flex rounded-md p-1.5 text-[#6B7280] hover:text-[#111827] hover:bg-[#EEECEA] focus:outline-none transition-colors"
             >
               <X className="w-4 h-4" />
             </button>

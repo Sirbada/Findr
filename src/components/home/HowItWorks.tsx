@@ -29,10 +29,10 @@ export function HowItWorks() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-16 animate-slide-up">
-          <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#2D8A5F] mb-3">
+          <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#E8630A] mb-3">
             {t.howItWorksSimple.title}
           </p>
-          <h2 className="text-[32px] font-semibold text-[#1A1A18] tracking-[-0.015em] mb-4">
+          <h2 className="text-[32px] font-semibold text-[#111827] tracking-[-0.015em] mb-4">
             {t.howItWorksSimple.subtitle}
           </h2>
         </div>
@@ -49,27 +49,27 @@ export function HowItWorks() {
               >
                 {/* Connection line */}
                 {index < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-16 left-full w-full h-px bg-[#E8E8E4] transform -translate-x-6 z-0" />
+                  <div className="hidden md:block absolute top-16 left-full w-full h-px bg-[#E5E7EB] transform -translate-x-6 z-0" />
                 )}
 
                 {/* Step card */}
-                <div className="relative bg-white rounded-xl p-8 border border-[#E8E8E4] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06),0_1px_4px_rgba(0,0,0,0.04)] hover:-translate-y-0.5 hover:border-[#D4D4CE] transition-all duration-200 z-10">
+                <div className="relative bg-white rounded-xl p-8 border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06),0_1px_4px_rgba(0,0,0,0.04)] hover:-translate-y-0.5 hover:border-[#D1D5DB] transition-all duration-200 z-10">
                   {/* Step number */}
-                  <div className="absolute -top-3.5 left-8 flex items-center justify-center w-7 h-7 bg-white border border-[#E8E8E4] rounded-full text-xs font-semibold text-[#7A7A73]">
+                  <div className="absolute -top-3.5 left-8 flex items-center justify-center w-7 h-7 bg-white border border-[#E5E7EB] rounded-full text-xs font-semibold text-[#6B7280]">
                     {index + 1}
                   </div>
 
                   {/* Icon */}
-                  <div className="inline-flex items-center justify-center w-12 h-12 bg-[#F0F9F4] rounded-xl mb-6">
-                    <IconComponent className="w-6 h-6 text-[#1B5E3B]" />
+                  <div className="inline-flex items-center justify-center w-12 h-12 bg-[#FFF4EC] rounded-xl mb-6">
+                    <IconComponent className="w-6 h-6 text-[#E8630A]" />
                   </div>
 
                   {/* Content */}
-                  <h3 className="text-lg font-semibold text-[#1A1A18] mb-3 tracking-[-0.01em]">
+                  <h3 className="text-lg font-semibold text-[#111827] mb-3 tracking-[-0.01em]">
                     {step.title}
                   </h3>
 
-                  <p className="text-sm text-[#4A4A45] leading-relaxed">{step.description}</p>
+                  <p className="text-sm text-[#4B5563] leading-relaxed">{step.description}</p>
                 </div>
               </div>
             )
@@ -78,8 +78,8 @@ export function HowItWorks() {
 
         {/* Badge */}
         <div className="mt-12 animate-slide-up" style={{ animationDelay: '0.5s' }}>
-          <div className="inline-flex items-center space-x-2 bg-[#F0F9F4] text-[#1B5E3B] px-4 py-2 rounded-full text-sm font-medium border border-[#E6F2EC]">
-            <div className="w-1.5 h-1.5 bg-[#2D8A5F] rounded-full" />
+          <div className="inline-flex items-center space-x-2 bg-[#FFF4EC] text-[#E8630A] px-4 py-2 rounded-full text-sm font-medium border border-[#FFF4EC]">
+            <div className="w-1.5 h-1.5 bg-[#E8630A] rounded-full" />
             <span>{t.howItWorksSimple.badge}</span>
           </div>
         </div>

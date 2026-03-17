@@ -59,14 +59,14 @@ export function TrustedBy() {
   ]
 
   return (
-    <section className="py-24 bg-white border-t border-[#E8E8E4]">
+    <section className="py-24 bg-white border-t border-[#E5E7EB]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-12 animate-slide-up">
-          <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#7A7A73] mb-3">
+          <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#6B7280] mb-3">
             {t.trustedBy.eyebrow}
           </p>
-          <h2 className="text-xl font-semibold text-[#1A1A18] tracking-[-0.01em]">
+          <h2 className="text-xl font-semibold text-[#111827] tracking-[-0.01em]">
             {t.trustedBy.title}
           </h2>
         </div>
@@ -91,7 +91,7 @@ export function TrustedBy() {
                   }}
                 />
                 <div
-                  className="hidden items-center justify-center h-12 bg-[#F4F4F1] rounded-lg text-[#7A7A73] font-semibold text-xs px-3"
+                  className="hidden items-center justify-center h-12 bg-[#F4F4F1] rounded-lg text-[#6B7280] font-semibold text-xs px-3"
                   style={{ display: 'none' }}
                 >
                   {company.name}
@@ -112,14 +112,14 @@ export function TrustedBy() {
                 style={{ animationDelay: `${0.6 + index * 0.1}s` }}
               >
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-10 h-10 bg-[#F0F9F4] rounded-xl flex items-center justify-center">
-                    <IconComponent className="w-5 h-5 text-[#1B5E3B]" />
+                  <div className="flex-shrink-0 w-10 h-10 bg-[#FFF4EC] rounded-xl flex items-center justify-center">
+                    <IconComponent className="w-5 h-5 text-[#E8630A]" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-[#1A1A18] text-sm mb-1">
+                    <h3 className="font-semibold text-[#111827] text-sm mb-1">
                       {indicator.title}
                     </h3>
-                    <p className="text-sm text-[#7A7A73] leading-relaxed">
+                    <p className="text-sm text-[#6B7280] leading-relaxed">
                       {indicator.description}
                     </p>
                   </div>

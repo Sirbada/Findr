@@ -253,13 +253,13 @@ export default function ProDashboardPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-gradient-to-r from-[#0D3D24] to-[#1B5E3B] text-white">
+      <header className="bg-gradient-to-r from-[#1A1A2E] to-[#E8630A] text-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-4">
               <Link href="/" className="flex items-center space-x-2">
                 <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-                  <span className="text-[#1B5E3B] font-bold text-xl">F</span>
+                  <span className="text-[#E8630A] font-bold text-xl">F</span>
                 </div>
                 <span className="text-xl font-bold">Findr</span>
               </Link>
@@ -295,7 +295,7 @@ export default function ProDashboardPage() {
                   <span className="text-sm text-gray-500">{t.plan.current}</span>
                   <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
                     agent.plan === 'basic' ? 'bg-gray-100 text-gray-700' :
-                    agent.plan === 'pro' ? 'bg-[#E6F2EC] text-[#1B5E3B]' :
+                    agent.plan === 'pro' ? 'bg-[#FFF4EC] text-[#E8630A]' :
                     'bg-purple-100 text-purple-700'
                   }`}>
                     {t.plan[agent.plan]}
@@ -306,14 +306,14 @@ export default function ProDashboardPage() {
                 </div>
                 <div className="mt-2 h-2 bg-gray-200 rounded-full overflow-hidden">
                   <div 
-                    className="h-full bg-[#F0F9F4]0 rounded-full transition-all"
+                    className="h-full bg-[#FFF4EC]0 rounded-full transition-all"
                     style={{ width: `${(agent.stats.listings / agent.stats.listingsLimit) * 100}%` }}
                   />
                 </div>
                 {agent.plan === 'basic' && (
                   <button
                     onClick={() => setActiveTab('upgrade')}
-                    className="mt-3 w-full text-sm text-[#1B5E3B] font-medium hover:underline flex items-center justify-center gap-1"
+                    className="mt-3 w-full text-sm text-[#E8630A] font-medium hover:underline flex items-center justify-center gap-1"
                   >
                     <Zap className="w-4 h-4" />
                     {t.plan.upgrade} Pro
@@ -335,7 +335,7 @@ export default function ProDashboardPage() {
                     onClick={() => setActiveTab(item.id as typeof activeTab)}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
                       activeTab === item.id 
-                        ? 'bg-[#F0F9F4] text-[#1B5E3B]' 
+                        ? 'bg-[#FFF4EC] text-[#E8630A]' 
                         : 'text-gray-600 hover:bg-gray-50'
                     }`}
                   >
@@ -394,7 +394,7 @@ export default function ProDashboardPage() {
                   
                   <div className="bg-white rounded-xl p-4 shadow-sm">
                     <div className="flex items-center justify-between mb-2">
-                      <Home className="w-5 h-5 text-[#2D8A5F]" />
+                      <Home className="w-5 h-5 text-[#E8630A]" />
                     </div>
                     <p className="text-2xl font-bold text-gray-900">{agent.stats.listings}</p>
                     <p className="text-sm text-gray-500">{t.stats.totalListings}</p>
@@ -424,7 +424,7 @@ export default function ProDashboardPage() {
                     <h2 className="font-semibold text-gray-900">{t.requests.title}</h2>
                     <button 
                       onClick={() => setActiveTab('requests')}
-                      className="text-sm text-[#1B5E3B] hover:underline"
+                      className="text-sm text-[#E8630A] hover:underline"
                     >
                       Voir tout →
                     </button>
@@ -453,9 +453,9 @@ export default function ProDashboardPage() {
                 {/* Quick Actions */}
                 <div className="grid grid-cols-2 gap-4">
                   <Link href="/dashboard/new">
-                    <div className="bg-[#F0F9F4] border-2 border-dashed border-[#E6F2EC] rounded-xl p-6 text-center hover:border-[#2D8A5F] transition-colors cursor-pointer">
-                      <Plus className="w-8 h-8 text-[#1B5E3B] mx-auto mb-2" />
-                      <p className="font-medium text-[#1B5E3B]">Nouvelle annonce</p>
+                    <div className="bg-[#FFF4EC] border-2 border-dashed border-[#FFF4EC] rounded-xl p-6 text-center hover:border-[#E8630A] transition-colors cursor-pointer">
+                      <Plus className="w-8 h-8 text-[#E8630A] mx-auto mb-2" />
+                      <p className="font-medium text-[#E8630A]">Nouvelle annonce</p>
                     </div>
                   </Link>
                   <div 
@@ -543,7 +543,7 @@ export default function ProDashboardPage() {
                                 <button className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg">
                                   <Eye className="w-4 h-4" />
                                 </button>
-                                <button className="p-2 text-gray-400 hover:text-[#1B5E3B] hover:bg-[#F0F9F4] rounded-lg">
+                                <button className="p-2 text-gray-400 hover:text-[#E8630A] hover:bg-[#FFF4EC] rounded-lg">
                                   <Edit className="w-4 h-4" />
                                 </button>
                                 <button className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg">
@@ -589,7 +589,7 @@ export default function ProDashboardPage() {
                         {Object.entries(t.verification.steps).map(([key, label], idx) => (
                           <div key={key} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                             <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                              idx < 2 ? 'bg-gray-200 text-gray-500' : 'bg-[#E6F2EC] text-[#1B5E3B]'
+                              idx < 2 ? 'bg-gray-200 text-gray-500' : 'bg-[#FFF4EC] text-[#E8630A]'
                             }`}>
                               {idx < 2 ? idx + 1 : <CheckCircle className="w-4 h-4" />}
                             </div>
@@ -623,16 +623,16 @@ export default function ProDashboardPage() {
                   {/* Basic Plan */}
                   <div className={`group relative bg-white rounded-xl p-6 transition-all duration-300 cursor-pointer
                     ${agent.plan === 'basic' 
-                      ? 'ring-2 ring-[#1B5E3B] shadow-lg shadow-[#1B5E3B]/20' 
-                      : 'shadow-sm hover:shadow-xl hover:shadow-[#1B5E3B]/10 hover:ring-2 hover:ring-[#2D8A5F]'
+                      ? 'ring-2 ring-[#E8630A] shadow-lg shadow-[#E8630A]/20' 
+                      : 'shadow-sm hover:shadow-xl hover:shadow-[#E8630A]/10 hover:ring-2 hover:ring-[#E8630A]'
                     }`}
                   >
                     {/* Glow effect on hover */}
-                    <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#1B5E3B]/0 to-[#1B5E3B]/0 group-hover:from-[#1B5E3B]/5 group-hover:to-[#2D8A5F]/5 transition-all duration-300"></div>
+                    <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#E8630A]/0 to-[#E8630A]/0 group-hover:from-[#E8630A]/5 group-hover:to-[#E8630A]/5 transition-all duration-300"></div>
                     
                     <div className="relative">
                       <div className="text-center mb-6">
-                        <h3 className="text-lg font-semibold text-gray-900 group-hover:text-[#1B5E3B] transition-colors">{t.plan.basic}</h3>
+                        <h3 className="text-lg font-semibold text-gray-900 group-hover:text-[#E8630A] transition-colors">{t.plan.basic}</h3>
                         <div className="mt-2">
                           <span className="text-3xl font-bold text-gray-900">{t.plan.free}</span>
                         </div>
@@ -641,13 +641,13 @@ export default function ProDashboardPage() {
                       <ul className="space-y-3 mb-6">
                         {t.plan.features.basic.map((feature, idx) => (
                           <li key={idx} className="flex items-center gap-2 text-sm text-gray-600">
-                            <CheckCircle className="w-4 h-4 text-gray-400 group-hover:text-[#2D8A5F] transition-colors" />
+                            <CheckCircle className="w-4 h-4 text-gray-400 group-hover:text-[#E8630A] transition-colors" />
                             {feature}
                           </li>
                         ))}
                       </ul>
                       {agent.plan === 'basic' && (
-                        <div className="text-center text-sm text-[#1B5E3B] font-medium py-2 bg-[#F0F9F4] rounded-lg">
+                        <div className="text-center text-sm text-[#E8630A] font-medium py-2 bg-[#FFF4EC] rounded-lg">
                           ✓ {t.plan.current}
                         </div>
                       )}
@@ -657,28 +657,28 @@ export default function ProDashboardPage() {
                   {/* Pro Plan */}
                   <div className={`group relative bg-white rounded-xl p-6 transition-all duration-300 cursor-pointer
                     ${agent.plan === 'pro' 
-                      ? 'ring-2 ring-[#1B5E3B] shadow-lg shadow-[#1B5E3B]/20' 
-                      : 'shadow-sm hover:shadow-xl hover:shadow-[#1B5E3B]/20 hover:ring-2 hover:ring-[#1B5E3B] hover:-translate-y-1'
+                      ? 'ring-2 ring-[#E8630A] shadow-lg shadow-[#E8630A]/20' 
+                      : 'shadow-sm hover:shadow-xl hover:shadow-[#E8630A]/20 hover:ring-2 hover:ring-[#E8630A] hover:-translate-y-1'
                     }`}
                   >
                     {/* Popular badge */}
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
-                      <span className="bg-gradient-to-r from-[#0D3D24] to-[#1B5E3B] text-white text-xs font-semibold px-4 py-1 rounded-full shadow-lg">
+                      <span className="bg-gradient-to-r from-[#1A1A2E] to-[#E8630A] text-white text-xs font-semibold px-4 py-1 rounded-full shadow-lg">
                         ⭐ Populaire
                       </span>
                     </div>
                     
                     {/* Glow effect on hover */}
-                    <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#1B5E3B]/0 to-[#1B5E3B]/0 group-hover:from-[#1B5E3B]/10 group-hover:to-[#2D8A5F]/10 transition-all duration-300"></div>
+                    <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#E8630A]/0 to-[#E8630A]/0 group-hover:from-[#E8630A]/10 group-hover:to-[#E8630A]/10 transition-all duration-300"></div>
                     
                     <div className="relative">
                       <div className="text-center mb-6">
-                        <h3 className="text-lg font-semibold text-gray-900 flex items-center justify-center gap-2 group-hover:text-[#1B5E3B] transition-colors">
-                          <Crown className="w-5 h-5 text-[#1B5E3B]" />
+                        <h3 className="text-lg font-semibold text-gray-900 flex items-center justify-center gap-2 group-hover:text-[#E8630A] transition-colors">
+                          <Crown className="w-5 h-5 text-[#E8630A]" />
                           {t.plan.pro}
                         </h3>
                         <div className="mt-2">
-                          <span className="text-3xl font-bold text-gray-900 group-hover:text-[#1B5E3B] transition-colors">15 000</span>
+                          <span className="text-3xl font-bold text-gray-900 group-hover:text-[#E8630A] transition-colors">15 000</span>
                           <span className="text-gray-500"> XAF{t.plan.perMonth}</span>
                         </div>
                         <p className="text-sm text-gray-500 mt-1">50 {t.plan.listings}</p>
@@ -686,18 +686,18 @@ export default function ProDashboardPage() {
                       <ul className="space-y-3 mb-6">
                         {t.plan.features.pro.map((feature, idx) => (
                           <li key={idx} className="flex items-center gap-2 text-sm text-gray-600">
-                            <CheckCircle className="w-4 h-4 text-[#2D8A5F]" />
+                            <CheckCircle className="w-4 h-4 text-[#E8630A]" />
                             {feature}
                           </li>
                         ))}
                       </ul>
                       {agent.plan === 'pro' ? (
-                        <div className="text-center text-sm text-[#1B5E3B] font-medium py-2 bg-[#F0F9F4] rounded-lg">
+                        <div className="text-center text-sm text-[#E8630A] font-medium py-2 bg-[#FFF4EC] rounded-lg">
                           ✓ {t.plan.current}
                         </div>
                       ) : (
                         <Button 
-                          className="w-full group-hover:bg-[#0D3D24] transition-colors" 
+                          className="w-full group-hover:bg-[#1A1A2E] transition-colors" 
                           onClick={() => {
                             setSelectedPlan('pro')
                             setShowUpgradeModal(true)

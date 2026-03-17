@@ -110,13 +110,13 @@ export function Testimonials() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-16 animate-slide-up">
-          <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#2D8A5F] mb-3">
+          <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#E8630A] mb-3">
             {lang === 'fr' ? 'Témoignages' : 'Testimonials'}
           </p>
-          <h2 className="text-[32px] font-semibold text-[#1A1A18] tracking-[-0.015em] mb-4">
+          <h2 className="text-[32px] font-semibold text-[#111827] tracking-[-0.015em] mb-4">
             {t.testimonialSection.title}
           </h2>
-          <p className="text-lg text-[#4A4A45] max-w-2xl leading-relaxed">
+          <p className="text-lg text-[#4B5563] max-w-2xl leading-relaxed">
             {t.testimonialSection.subtitle}
           </p>
         </div>
@@ -124,9 +124,9 @@ export function Testimonials() {
         {/* Main testimonial */}
         <div className="mb-16 animate-scale-in">
           <div className="max-w-3xl">
-            <div className="relative bg-white rounded-xl p-8 md:p-12 border border-[#E8E8E4] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.03)]">
+            <div className="relative bg-white rounded-xl p-8 md:p-12 border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.03)]">
               {/* Quote icon */}
-              <div className="absolute top-6 left-6 text-[#2D8A5F] opacity-15">
+              <div className="absolute top-6 left-6 text-[#E8630A] opacity-15">
                 <Quote size={48} />
               </div>
 
@@ -139,7 +139,7 @@ export function Testimonials() {
                 </div>
 
                 {/* Testimonial text */}
-                <blockquote className="text-xl text-[#1A1A18] mb-8 leading-relaxed">
+                <blockquote className="text-xl text-[#111827] mb-8 leading-relaxed">
                   &ldquo;{testimonials[currentIndex].testimonial[lang]}&rdquo;
                 </blockquote>
 
@@ -148,13 +148,13 @@ export function Testimonials() {
                   <img
                     src={testimonials[currentIndex].avatar}
                     alt={testimonials[currentIndex].name}
-                    className="w-12 h-12 rounded-full object-cover mr-4 border-2 border-[#E6F2EC]"
+                    className="w-12 h-12 rounded-full object-cover mr-4 border-2 border-[#FFF4EC]"
                   />
                   <div>
-                    <div className="font-semibold text-[#1A1A18]">
+                    <div className="font-semibold text-[#111827]">
                       {testimonials[currentIndex].name}
                     </div>
-                    <div className="text-sm text-[#7A7A73]">
+                    <div className="text-sm text-[#6B7280]">
                       {testimonials[currentIndex].role} &bull; {testimonials[currentIndex].city}
                     </div>
                   </div>
@@ -169,7 +169,7 @@ export function Testimonials() {
           {testimonials.slice(0, 3).map((testimonial, index) => (
             <div
               key={testimonial.id}
-              className="bg-white rounded-xl p-6 border border-[#E8E8E4] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06),0_1px_4px_rgba(0,0,0,0.04)] hover:-translate-y-0.5 hover:border-[#D4D4CE] transition-all duration-200 animate-slide-up"
+              className="bg-white rounded-xl p-6 border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06),0_1px_4px_rgba(0,0,0,0.04)] hover:-translate-y-0.5 hover:border-[#D1D5DB] transition-all duration-200 animate-slide-up"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               {/* Rating */}
@@ -180,7 +180,7 @@ export function Testimonials() {
               </div>
 
               {/* Testimonial */}
-              <p className="text-[#4A4A45] mb-4 text-sm leading-relaxed">
+              <p className="text-[#4B5563] mb-4 text-sm leading-relaxed">
                 &ldquo;{testimonial.testimonial[lang]}&rdquo;
               </p>
 
@@ -189,11 +189,11 @@ export function Testimonials() {
                 <img
                   src={testimonial.avatar}
                   alt={testimonial.name}
-                  className="w-10 h-10 rounded-full object-cover mr-3 border-2 border-[#E6F2EC]"
+                  className="w-10 h-10 rounded-full object-cover mr-3 border-2 border-[#FFF4EC]"
                 />
                 <div>
-                  <div className="font-semibold text-[#1A1A18] text-sm">{testimonial.name}</div>
-                  <div className="text-[#7A7A73] text-xs">
+                  <div className="font-semibold text-[#111827] text-sm">{testimonial.name}</div>
+                  <div className="text-[#6B7280] text-xs">
                     {testimonial.role} &bull; {testimonial.city}
                   </div>
                 </div>
@@ -210,8 +210,8 @@ export function Testimonials() {
               onClick={() => setCurrentIndex(index)}
               className={`w-2 h-2 rounded-full transition-all duration-200 ${
                 index === currentIndex
-                  ? 'bg-[#1B5E3B] w-6'
-                  : 'bg-[#D4D4CE] hover:bg-[#ADADAA]'
+                  ? 'bg-[#E8630A] w-6'
+                  : 'bg-[#D1D5DB] hover:bg-[#9CA3AF]'
               }`}
             />
           ))}
